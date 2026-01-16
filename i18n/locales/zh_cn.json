@@ -1,0 +1,47 @@
+{
+  "title": "Where Moon Meets Code",
+  "description": "推开月之门，进入一个由代码构筑的探索空间。这里记录着关于全栈开发、系统思考以及如何优雅解决复杂问题的沉思与笔记。",
+  "navigationBar": [
+    { "id": 1, "name": "文章", "link": "/articles" },
+    { "id": 2, "name": "关于", "link": "/about" },
+    { "id": 3, "name": "设置", "link": "/settings" }
+  ],
+  "search": {
+    "placeholder": "搜索文章",
+    "options": [
+      { "id": 1, "name": "仅标题" },
+      { "id": 2, "name": "包含描述" }
+    ],
+    "findCount": "已查询到 {count} 条文档"
+  },
+  "settings": {
+    "theme": {
+      "name": "主题",
+      "options": [
+        { "id": 11, "name": "system" },
+        { "id": 12, "name": "light" },
+        { "id": 13, "name": "dark" }
+      ]
+    },
+    "language": {
+      "name": "语言",
+      "options": [
+        { "id": 21, "name": "简体中文", "code": "zh_cn" },
+        { "id": 22, "name": "English", "code": "en" },
+        { "id": 23, "name": "日本語", "code": "ja" }
+      ]
+    },
+    "homePage": {
+      "name": "进入网站时",
+      "options": [
+        { "id": 31, "name": "先看看网站介绍" },
+        { "id": 32, "name": "直接开始浏览文章" }
+      ]
+    }
+  },
+  "errorPage": {
+    "statusMessage": "未找到页面",
+    "message": "您正在查找的页面不存在。",
+    "backToHome": "返回首页"
+  }
+}

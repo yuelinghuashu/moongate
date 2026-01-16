@@ -1,0 +1,294 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme static {
+  /* ====== 浅色模式品牌色系 (保持不变) ====== */
+  --color-brand-light-50: #f0fbff;
+  --color-brand-light-100: #e0f7fe;
+  --color-brand-light-200: #baeefd;
+  --color-brand-light-300: #7dddfc;
+  --color-brand-light-400: #38bdf8;
+  --color-brand-light-500: #0ea5e9;
+  --color-brand-light-600: #0284c7; /* 浅色模式主色 */
+  --color-brand-light-700: #0369a1;
+  --color-brand-light-800: #075985;
+  --color-brand-light-900: #0c4a6e;
+  --color-brand-light-950: #082f49;
+
+  /* ====== 深色模式品牌色系 (保持不变) ====== */
+  --color-brand-dark-50: #eff6ff;
+  --color-brand-dark-100: #dbeafe;
+  --color-brand-dark-200: #bfdbfe;
+  --color-brand-dark-300: #93c5fd;
+  --color-brand-dark-400: #60a5fa; /* 深色模式主色 - 柔和蓝色 */
+  --color-brand-dark-500: #3b82f6; /* 深色模式核心色 */
+  --color-brand-dark-600: #2563eb;
+  --color-brand-dark-700: #1d4ed8;
+  --color-brand-dark-800: #1e40af;
+  --color-brand-dark-900: #1e3a8a;
+  --color-brand-dark-950: #172554;
+
+  /* 中性色阶 (保持不变) */
+  --color-gate-light-bg: #e6edf2;
+  --color-gate-light-muted: #d1dbe3;
+  --color-gate-light-card: #ffffff;
+  --color-gate-light-border: #b8c5d0;
+
+  --color-gate-dark-bg: #151d2c;
+  --color-gate-dark-muted: #1e2738;
+  --color-gate-dark-card: #1a2233;
+  --color-gate-dark-border: #2d3748;
+
+  /* 文本颜色 */
+  --color-gate-light-text: #1e293b;
+  --color-gate-light-muted-text: #64748b;
+
+  --color-gate-dark-text: #e2e8f0;
+  --color-gate-dark-muted-text: #94a3b8;
+
+  /* === 删除紫色系变量，改为蓝色系 === */
+  --sidebar-active-bg-opacity: 0.1; /* 背景透明度 */
+  --sidebar-hover-opacity: 0.05; /* 悬停透明度 */
+}
+
+:root {
+  /* --- 布局与基础令牌 --- */
+  --ui-radius: 0rem;
+  --ui-container: 80rem;
+  --ui-header-height: --spacing(16);
+
+  /* ====== 浅色模式：使用明亮品牌色 ====== */
+  --ui-primary: var(--color-brand-light-600); /* 0284c7 */
+  --ui-bg: var(--color-gate-light-bg);
+  --ui-bg-muted: var(--color-gate-light-muted);
+  --ui-bg-elevated: var(--color-gate-light-card);
+  --ui-bg-hover: #c8d3dd;
+  --ui-bg-active: var(--color-brand-light-100);
+
+  /* === 浅色模式侧边栏高亮颜色 (使用主题蓝色) === */
+  --sidebar-active-color: var(
+    --color-brand-light-600
+  ); /* 0284c7 - 与主色一致 */
+  --sidebar-active-color-secondary: var(
+    --color-brand-light-400
+  ); /* 38bdf8 - 浅一点的蓝色用于渐变 */
+
+  --ui-text: var(--color-gate-light-text);
+  --ui-text-muted: var(--color-gate-light-muted-text);
+  --ui-text-hover: var(--color-brand-light-700);
+  --ui-text-active: var(--color-brand-light-800);
+
+  --ui-border: var(--color-gate-light-border);
+  --ui-border-hover: var(--color-brand-light-400);
+
+  /* 交互状态透明度 */
+  --ui-opacity-disabled: 0.5;
+  --ui-opacity-hover: 0.9;
+
+  /* 浅色模式主色阶映射 */
+  --ui-primary-50: var(--color-brand-light-50);
+  --ui-primary-100: var(--color-brand-light-100);
+  --ui-primary-200: var(--color-brand-light-200);
+  --ui-primary-300: var(--color-brand-light-300);
+  --ui-primary-400: var(--color-brand-light-400);
+  --ui-primary-500: var(--color-brand-light-500);
+  --ui-primary-600: var(--color-brand-light-600);
+  --ui-primary-700: var(--color-brand-light-700);
+  --ui-primary-800: var(--color-brand-light-800);
+  --ui-primary-900: var(--color-brand-light-900);
+  --ui-primary-950: var(--color-brand-light-950);
+
+  /* 状态颜色 */
+  --ui-success: #10b981;
+  --ui-warning: #f59e0b;
+  --ui-error: #ef4444;
+  --ui-info: var(--color-brand-light-500);
+}
+
+.dark {
+  /* ====== 深色模式：使用柔和品牌色 ====== */
+  --ui-primary: var(--color-brand-dark-500); /* 3b82f6 */
+  --ui-bg: var(--color-gate-dark-bg);
+  --ui-bg-muted: var(--color-gate-dark-muted);
+  --ui-bg-elevated: var(--color-gate-dark-card);
+  --ui-bg-hover: #252e40;
+  --ui-bg-active: var(--color-brand-dark-900);
+
+  /* === 深色模式侧边栏高亮颜色 (使用主题蓝色) === */
+  --sidebar-active-color: var(--color-brand-dark-500); /* 3b82f6 - 与主色一致 */
+  --sidebar-active-color-secondary: var(
+    --color-brand-dark-300
+  ); /* 93c5fd - 浅一点的蓝色用于渐变 */
+
+  --ui-text: var(--color-gate-dark-text);
+  --ui-text-muted: var(--color-gate-dark-muted-text);
+  --ui-text-hover: var(--color-brand-dark-400); /* 60a5fa */
+  --ui-text-active: var(--color-brand-dark-300); /* 93c5fd */
+
+  --ui-border: var(--color-gate-dark-border);
+  --ui-border-hover: var(--color-brand-dark-600); /* 2563eb */
+
+  /* 深色模式主色阶映射 */
+  --ui-primary-50: var(--color-brand-dark-50);
+  --ui-primary-100: var(--color-brand-dark-100);
+  --ui-primary-200: var(--color-brand-dark-200);
+  --ui-primary-300: var(--color-brand-dark-300);
+  --ui-primary-400: var(--color-brand-dark-400);
+  --ui-primary-500: var(--color-brand-dark-500);
+  --ui-primary-600: var(--color-brand-dark-600);
+  --ui-primary-700: var(--color-brand-dark-700);
+  --ui-primary-800: var(--color-brand-dark-800);
+  --ui-primary-900: var(--color-brand-dark-900);
+  --ui-primary-950: var(--color-brand-dark-950);
+
+  /* 状态颜色调整 */
+  --ui-success: #34d399;
+  --ui-warning: #fbbf24;
+  --ui-error: #f87171;
+  --ui-info: var(--color-brand-dark-400);
+
+  /* 深色模式下的柔和光效 */
+  --ui-glow: 0 0 10px color-mix(in srgb, var(--ui-primary), transparent 75%);
+}
+
+/* ====== 左侧侧边栏样式 (组件特定样式，保留透明度效果) ====== */
+
+/* 侧边栏基础样式 - 保持您原来的半透明效果 */
+.layout-sidebar {
+  background-color: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .layout-sidebar {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* 导航链接基础样式 */
+.nav-link {
+  position: relative;
+  transition: all 0.2s ease;
+  margin-bottom: 4px;
+  cursor: pointer;
+  border-radius: 6px;
+  color: var(--ui-text);
+  text-decoration: none;
+}
+
+/* 悬停效果 */
+.nav-link:hover {
+  background-color: rgba(0, 0, 0, var(--sidebar-hover-opacity));
+}
+
+.dark .nav-link:hover {
+  background-color: rgba(255, 255, 255, var(--sidebar-hover-opacity));
+}
+
+/* 活跃状态样式 - 使用主题蓝色 */
+.nav-link.active {
+  background-color: color-mix(
+    in srgb,
+    var(--sidebar-active-color),
+    transparent calc(100% - var(--sidebar-active-bg-opacity) * 100%)
+  );
+}
+
+.nav-link.active .cursor-pointer {
+  color: var(--sidebar-active-color);
+  font-weight: 500;
+}
+
+/* 导航链接内部的文字 */
+.nav-link .cursor-pointer {
+  color: inherit;
+  transition: color 0.2s ease;
+}
+
+/* ====== 其他通用样式保持不变 ====== */
+
+/* 导航链接悬停效果 */
+[class*="nav-"]:not(.nav-link),
+a[href]:not(.button) {
+  transition: all 0.2s ease;
+  text-decoration: none;
+  color: var(--ui-text);
+}
+
+[class*="nav-"]:not(.nav-link):hover,
+a[href]:not(.button):hover {
+  color: var(--ui-text-hover);
+  background-color: var(--ui-bg-hover);
+  border-left: 2px solid var(--ui-primary);
+  padding-left: 0.5rem;
+  margin-left: -0.5rem;
+}
+
+.dark [class*="nav-"]:not(.nav-link):hover,
+.dark a[href]:not(.button):hover {
+  box-shadow: var(--ui-glow);
+}
+
+/* 按钮悬停效果 */
+.button,
+button,
+[type="button"],
+[type="submit"] {
+  transition: all 0.2s ease;
+  border: 1px solid var(--ui-border);
+}
+
+.button:hover,
+button:hover,
+[type="button"]:hover,
+[type="submit"]:hover {
+  background-color: var(--ui-bg-hover);
+  border-color: var(--ui-border-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dark .button:hover,
+.dark button:hover,
+.dark [type="button"]:hover,
+.dark [type="submit"]:hover {
+  box-shadow: var(--ui-glow);
+}
+
+/* 卡片悬停效果 */
+.card,
+[class*="card-"],
+.article-card {
+  transition: all 0.2s ease;
+  border: 1px solid var(--ui-border);
+  background-color: var(--ui-bg-elevated);
+}
+
+.card:hover,
+[class*="card-"]:hover,
+.article-card:hover {
+  border-color: var(--ui-border-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dark .card:hover,
+.dark [class*="card-"]:hover,
+.dark .article-card:hover {
+  box-shadow: var(--ui-glow);
+}
+
+/* 输入框聚焦效果 */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--ui-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ui-primary), transparent 70%);
+}
+
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+  box-shadow: var(--ui-glow);
+}
+
+/* ====== 响应式调整 ====== */

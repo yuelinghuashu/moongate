@@ -1,0 +1,59 @@
+{
+  "title": "Where Moon Meets Code",
+  "description": "月の門を押し開け、コードで築かれた探求の空間へと足を踏み入れましょう。ここには、フルスタック開発、システム思考、そして複雑な問題を優雅に解きほぐす技術に関する思索と記録が綴られています。",
+  "navigationBar": [
+    {
+      "id": 1,
+      "name": "記事",
+      "link": "/ja/articles"
+    },
+    {
+      "id": 2,
+      "name": "概要",
+      "link": "/ja/about"
+    },
+    {
+      "id": 3,
+      "name": "設定",
+      "link": "/ja/settings"
+    }
+  ],
+  "search": {
+    "placeholder": "記事を検索",
+    "options": [
+      { "id": 1, "name": "タイトルのみ" },
+      { "id": 2, "name": "説明を含む" }
+    ],
+    "findCount": "{count} 件の文書が見つかりました"
+  },
+  "settings": {
+    "theme": {
+      "name": "テーマ",
+      "options": [
+        { "id": 11, "name": "system" },
+        { "id": 12, "name": "light" },
+        { "id": 13, "name": "dark" }
+      ]
+    },
+    "language": {
+      "name": "言語",
+      "options": [
+        { "id": 21, "name": "简体中文", "code": "zh_cn" },
+        { "id": 22, "name": "English", "code": "en" },
+        { "id": 23, "name": "日本語", "code": "ja" }
+      ]
+    },
+    "homePage": {
+      "name": "サイトにアクセスした時",
+      "options": [
+        { "id": 31, "name": "まずはサイト紹介を見る" },
+        { "id": 32, "name": "直接記事を閲覧する" }
+      ]
+    }
+  },
+  "errorPage": {
+    "statusMessage": "ページが見つかりません",
+    "message": "お探しのページは存在しません。",
+    "backToHome": "ホームに戻る"
+  }
+}

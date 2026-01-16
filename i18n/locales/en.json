@@ -1,0 +1,59 @@
+{
+  "title": "Where Moon Meets Code",
+  "description": "Push open the Moon Gate, and step into an exploratory space built with code. Here lie contemplations and notes on full-stack development, systems thinking, and the art of elegantly untangling complexity.",
+  "navigationBar": [
+    {
+      "id": 1,
+      "name": "Articles",
+      "link": "/en/articles"
+    },
+    {
+      "id": 2,
+      "name": "About",
+      "link": "/en/about"
+    },
+    {
+      "id": 3,
+      "name": "Settings",
+      "link": "/en/settings"
+    }
+  ],
+  "search": {
+    "placeholder": "Search articles",
+    "options": [
+      { "id": 1, "name": "Title only" },
+      { "id": 2, "name": "Include description" }
+    ],
+    "findCount": "Found {count} documents"
+  },
+  "settings": {
+    "theme": {
+      "name": "Theme",
+      "options": [
+        { "id": 11, "name": "system" },
+        { "id": 12, "name": "light" },
+        { "id": 13, "name": "dark" }
+      ]
+    },
+    "language": {
+      "name": "Language",
+      "options": [
+        { "id": 21, "name": "简体中文", "code": "zh_cn" },
+        { "id": 22, "name": "English", "code": "en" },
+        { "id": 23, "name": "日本語", "code": "ja" }
+      ]
+    },
+    "homePage": {
+      "name": "When entering the site",
+      "options": [
+        { "id": 31, "name": "Show introduction first" },
+        { "id": 32, "name": "Go directly to articles" }
+      ]
+    }
+  },
+  "errorPage": {
+    "statusMessage": "Page Not Found",
+    "message": "The page you are looking for does not exist.",
+    "backToHome": "Back to Home"
+  }
+}
