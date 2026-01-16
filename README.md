@@ -26,11 +26,11 @@
 git clone https://github.com/yuelinghuashu/moongate.git
 
 # 安装依赖
-pnpm install
+npm install
 
 # 开发模式
-pnpm dev
+npm run dev
 
 # 构建生产版本
-pnpm build
+npm run build
 ```
