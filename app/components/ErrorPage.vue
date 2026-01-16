@@ -12,6 +12,7 @@
         @click="navigateTo(locale === 'zh_cn' ? `/` : `/${locale}`)"
         >{{$tm('errorPage.backToHome.loc.source')}}</UButton
       >
+      
     </template>
   </UError>
 </template>

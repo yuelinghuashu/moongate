@@ -40,8 +40,8 @@
   <!-- 主体 -->
   <UPage class="flex mt-8">
     <!-- 左侧导航栏 -->
-    <template #left>
-      <NavigationBar class="page-left" />
+    <template class="leading-0" #left>
+      <NavigationBar class="page-left h-fit sticky top-25" />
     </template>
 
     <!-- 内容区域 -->

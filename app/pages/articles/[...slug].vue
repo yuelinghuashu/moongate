@@ -6,7 +6,7 @@
     </div>
 
     <!-- 大纲目录 -->
-    <Outline :outline="page?.body.toc?.links" />
+    <Outline :outline="page?.body.toc?.links" class="sticky top-25" />
   </div>
   <div v-else>
     <ErrorPage />

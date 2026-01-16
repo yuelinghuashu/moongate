@@ -2,7 +2,7 @@
 date: 2025-12-28
 title: 08-@nuxt/content 配置实战：从入门到优雅渲染
 description: 记录了我从零开始配置 @nuxt/content 模块，并集成 Tailwind CSS v4 和 Typography 插件来优雅渲染 Markdown 内容的完整过程。
-tags: ["Nuxt"]
+tags: Nuxt
 ---
 
 # Nuxt Content 配置实战：从入门到优雅渲染

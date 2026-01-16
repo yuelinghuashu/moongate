@@ -1,4 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
+import tailwindcss from "@tailwindcss/vite";
+
 export default defineNuxtConfig({
   modules: [
     '@nuxtjs/color-mode',
@@ -11,6 +14,19 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
   ],
+  sourcemap: false,
+  vite: {
+    build: {
+      terserOptions: {
+        compress: {
+          drop_console: true
+        }
+      }
+    },
+    plugins: [
+      tailwindcss()
+    ]
+  },
   devtools: {
     enabled: true
   },
@@ -21,7 +37,7 @@ export default defineNuxtConfig({
           depth: 4,
           searchDepth: 3
         }
-      }
+      },
     }
   },
   css: ['~/assets/css/main.css'],
@@ -68,13 +84,4 @@ export default defineNuxtConfig({
     '/': { prerender: true }
   },
   compatibilityDate: '2025-01-15',
-  vite: {
-    build: {
-      terserOptions: {
-        compress: {
-          drop_console: process.env.NODE_ENV === 'production'
-        }
-      }
-    }
-  }
 })

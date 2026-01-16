@@ -47,8 +47,7 @@
 import useGlobalStore from "~/stores/global";
 const { locales } = useI18n();
 
-const { settings, setTheme, setLanguage, setHomepageBehavior } =
-  useGlobalStore();
+const { settings, setTheme, setLanguage } = useGlobalStore();
 </script>
 
 <style scoped>

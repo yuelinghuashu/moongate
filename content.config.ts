@@ -7,9 +7,9 @@ export default defineContentConfig({
       type: 'page',
       source: 'articles/*.md',
     }),
-    about:defineCollection({
+    about: defineCollection({
       type: 'page',
       source: 'about/*.md',
     })
-  },
+  }
 })
