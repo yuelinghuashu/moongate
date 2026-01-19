@@ -21,16 +21,18 @@
       </UInput>
 
       <!-- 文章搜索选项 -->
-      <USelect
-        v-model="settings.searchOption"
-        :items="$tm('search.options')"
-        label-key="name.loc.source"
-        value-key="id"
-        size="lg"
-        placeholder="搜索选项"
-        class="ml-2"
-        @update:model-value="searchArticles()"
-      />
+      <ClientOnly>
+        <USelect
+          v-model="settings.searchOption"
+          :items="tm('search.options')"
+          :label-key="isDev ? 'name.loc.source' : 'name'"
+          value-key="id"
+          size="lg"
+          placeholder="搜索选项"
+          class="ml-2"
+          @update:model-value="searchArticles()"
+        />
+      </ClientOnly>
     </form>
 
     <!-- 文章预览组件 -->
@@ -74,8 +76,9 @@
 <script lang="ts" setup>
 import useGlobalStore from "~/stores/global";
 
-const { locale } = useI18n();
 const { settings } = useGlobalStore();
+const { locale, tm } = useI18n();
+const isDev = import.meta.env.DEV;
 
 onMounted(() => {
   getArticleList();

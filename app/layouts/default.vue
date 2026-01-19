@@ -4,7 +4,9 @@
     <!-- 网站标题 -->
     <template #title>
       <ClientOnly>
-        <NuxtLink :to="locale === 'zh_cn' ? '/' : `/${locale}`" class="text-2xl"
+        <NuxtLink
+          :to="locale === 'zh_cn' ? '/' : `/${locale}/`"
+          class="text-2xl"
           >MOONGATE</NuxtLink
         >
       </ClientOnly>
@@ -20,8 +22,8 @@
           :icon="colorMode.value === 'dark' ? 'i-custom-moon' : 'i-custom-sun'"
           @click="
             setTheme(
-              colorMode.preference === 'dark' ||
-                colorMode.preference === 'system'
+              colorMode.value === 'dark' ||
+                colorMode.value === 'system'
                 ? 'light'
                 : 'dark',
             )
@@ -51,7 +53,11 @@
       </div>
     </template>
 
-    <template #right> </template>
+    <template
+      v-if="route.path === '/' || route.path === `/${locale}/`"
+      #right
+    >
+    </template>
   </UPage>
 </template>
 
@@ -59,7 +65,7 @@
 import useGlobalStore from "~/stores/global";
 
 const { setTheme } = useGlobalStore();
-
+const route = useRoute();
 const { locale } = useI18n();
 const colorMode = useColorMode();
 </script>

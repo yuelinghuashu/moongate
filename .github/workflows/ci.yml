@@ -1,4 +1,4 @@
-name: ci
+name: Deploy to Aliyun
 
 on: push
 
@@ -15,21 +15,44 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Install npm
-        uses: npm/action-setup@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
 
       - name: Install node
         uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node }}
-          cache: npm
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm install
+        run: pnpm install
 
       - name: Lint
-        run: npm run lint
+        run: pnpm run lint
 
       - name: Typecheck
-        run: npm run typecheck
-  
+        run: pnpm run typecheck
+        
+      # ===== 新增部分 =====
+      - name: Build Nuxt app
+        run: pnpm build # 构建静态文件
+
+      - name: Deploy to Aliyun server
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: ".output/public/*" # Nuxt 4 的构建输出目录
+          target: "/var/www/my-site"
+
+      - name: Restart Caddy (if needed)
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # 如果改了配置文件可能需要重启
+            sudo systemctl reload caddy 2>/dev/null || true
+            echo "部署完成: $(date)"

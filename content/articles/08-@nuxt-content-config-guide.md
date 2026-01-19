@@ -50,6 +50,9 @@ pnpm add -D @tailwindcss/typography
 # 在项目根目录创建 pnpm-workspace.yaml 配置文件，内容如下
 onlyBuiltDependencies:
   - better-sqlite3
+
+# 或者直接使用pnpm add <package> --allow-build=<package> 命令来安装，这个命令会自动帮你配置文件，并把包名添加到 onlyBuiltDependencies 配置里
+pnpm add better-sqlite3 --allow-build=better-sqlite3
 ```
 
 - 对`better-sqlite3`模块进行重新编译，并确保二进制文件被放置在正确的位置。

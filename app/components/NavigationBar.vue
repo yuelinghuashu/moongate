@@ -2,17 +2,21 @@
   <nav class="text-center">
     <ul>
       <li
-        v-for="item in $tm('navigationBar')"
+        v-for="item in tm('navigationBar')"
         :key="item.id"
         class="py-4 nav-link"
-        :class="{ active: route.fullPath.includes(item.link.loc.source) }"
-        @click="navigateTo(item.link.loc.source)"
+        :class="{
+          active: route.fullPath.includes(
+            isDev ? item.link.loc.source : item.link,
+          ),
+        }"
+        @click="navigateTo(isDev ? item.link.loc.source : item.link)"
       >
         <NuxtLink
-          :to="locale === 'zh_cn' ? '/' : `/${locale}`"
+          :to="isDev ? item.link.loc.source : item.link"
           class="text-xl cursor-pointer"
         >
-          {{ item.name.loc.source }}
+          {{ isDev ? item.name.loc.source : item.name }}
         </NuxtLink>
       </li>
     </ul>
@@ -20,6 +24,7 @@
 </template>
 
 <script lang="ts" setup>
-const { locale } = useI18n();
+const { tm } = useI18n();
 const route = useRoute();
+const isDev = import.meta.env.DEV;
 </script>

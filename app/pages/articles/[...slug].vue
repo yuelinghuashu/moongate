@@ -14,24 +14,24 @@
 </template>
 
 <script lang="ts" setup>
-const { locale, defaultLocale } = useI18n();
+import { withLeadingSlash } from "ufo";
+const { locale } = useI18n();
 const route = useRoute();
 
-// 计算应该查询的 Content 路径
-const contentPath = computed(() => {
-  if (locale.value === defaultLocale) {
-    return route.path;
-  }
-
-  // 移除语言前缀
-  return route.path.replace(`/${locale.value}`, "") || "/";
+// 核心：移除语言前缀，得到原始路径
+// 例如：/en/articles/welcome -> /articles/welcome
+const slug = computed(() => {
+  const path = withLeadingSlash(String(route.params.slug || "/"));
+  // 移除语言前缀部分
+  return path.replace(new RegExp(`^/(${locale.value})`), "") || "/";
 });
 
-// 查询对应的文章
+// 稳定查询：永远只查询 'articles' 这个集合
 const { data: page } = await useAsyncData(
   route.path,
   () => {
-    return queryCollection("articles").path(contentPath.value).first();
+    return queryCollection("articles").path(`/articles${slug.value}`).first();
+    // 注意：查询路径需要加上 '/articles' 前缀，以匹配 content/articles/ 下的文件
   },
   {
     // 设置 transform 确保数据一致性

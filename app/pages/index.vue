@@ -1,5 +1,5 @@
 <template>
-  <div class="index-container">
+  <div class="flex flex-col">
     <!-- 页面英雄区 -->
       <UPageHero
       :title="$t('title')"
@@ -28,8 +28,4 @@ const { buttonType, buttonColor } = useGlobalStore();
 </script>
 
 <style scoped>
-.index-container {
-  display: flex;
-  flex-direction: column;
-}
 </style>

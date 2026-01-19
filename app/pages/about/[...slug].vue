@@ -2,13 +2,7 @@
   <div v-if="page" class="flex">
     <!-- 文档内容 -->
     <div class="overflow-auto h-screen">
-      <!-- <header class="mb-4">
-        <UBadge :label="`// 创建日期： ${page.meta.date}`" />
-      </header> -->
-
       <ContentRenderer v-if="page" :value="page" />
-
-      <footer><!-- ... --></footer>
     </div>
 
     <!-- 大纲目录 -->
@@ -20,23 +14,20 @@
 </template>
 
 <script lang="ts" setup>
-const { locale, defaultLocale } = useI18n();
 const route = useRoute();
+import { withLeadingSlash } from "ufo";
+const { locale } = useI18n();
 
-// 计算应该查询的 Content 路径
-const contentPath = computed(() => {
-  if (locale.value === defaultLocale) {
-    return route.path;
-  }
-
-  // 移除语言前缀
-  return route.path.replace(`/${locale.value}`, "") || "/";
+const slug = computed(() => {
+  const path = withLeadingSlash(String(route.params.slug || "/"));
+  // 移除语言前缀部分
+  return path.replace(new RegExp(`^/(${locale.value})`), "") || "/";
 });
 
 const { data: page } = await useAsyncData(
   route.path,
   () => {
-    return queryCollection("about").path(contentPath.value).first();
+    return queryCollection("about").path(`/about${slug.value}`).first();
   },
   {
     // 设置 transform 确保数据一致性

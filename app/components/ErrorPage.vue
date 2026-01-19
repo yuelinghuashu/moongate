@@ -2,21 +2,21 @@
   <UError
     :error="{
       statusCode: 404,
-      statusMessage: $tm('errorPage.statusMessage.loc.source'),
-      message: $tm('errorPage.message.loc.source'),
+      statusMessage: t('errorPage.statusMessage'),
+      message: t('errorPage.message'),
     }"
   >
     <template #links>
       <UButton
+        :label="t('errorPage.backToHome')"
         size="xl"
-        @click="navigateTo(locale === 'zh_cn' ? `/` : `/${locale}`)"
-        >{{$tm('errorPage.backToHome.loc.source')}}</UButton
-      >
-      
+        @click="navigateTo('/')"
+        class="cursor-pointer"
+      ></UButton>
     </template>
   </UError>
 </template>
 
 <script lang="ts" setup>
-const { locale } = useI18n();
+const { t } = useI18n();
 </script>

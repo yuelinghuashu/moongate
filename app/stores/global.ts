@@ -38,6 +38,7 @@ const useGlobalStore = defineStore('global', () => {
     settings.value.appearance.language = lang
   }
 
+
   return {
     buttonType,
     buttonColor,

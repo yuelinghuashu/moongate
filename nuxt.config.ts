@@ -1,6 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-
-import tailwindcss from "@tailwindcss/vite";
+import removeConsole from 'vite-plugin-remove-console'
 
 export default defineNuxtConfig({
   modules: [
@@ -14,21 +13,14 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
   ],
-  sourcemap: false,
-  vite: {
-    build: {
-      terserOptions: {
-        compress: {
-          drop_console: true
-        }
-      }
-    },
-    plugins: [
-      tailwindcss()
-    ]
-  },
+  ssr: true,
   devtools: {
-    enabled: true
+    enabled: false
+  },
+  vite: {
+    plugins: [
+      removeConsole({ includes: ['log', 'warn', 'error'] }) // 移除所有console
+    ]
   },
   content: {
     build: {
@@ -83,5 +75,5 @@ export default defineNuxtConfig({
   routeRules: {
     '/': { prerender: true }
   },
-  compatibilityDate: '2025-01-15',
+  compatibilityDate: '2024-11-01',
 })
