@@ -33,14 +33,6 @@ jobs:
       - name: Build
         run: pnpm run build
 
-      - name: 🌐 网络连通性终极测试
-        run: |
-          echo "测试连接到 ${{ secrets.SERVER_HOST }}:22 ..."
-          # 使用 telnet 风格测试，这是最原始的网络测试
-          timeout 3 bash -c "(echo > /dev/tcp/${{ secrets.SERVER_HOST }}/22) 2>/dev/null" && 
-            echo "✅ 成功：服务器的22端口可从GitHub Actions网络访问" || 
-            echo "❌ 失败：无法连接到服务器的22端口。根本原因：阿里云安全组或服务器防火墙阻止。"
-
       - name: Deploy to Server via Rsync
         uses: burnett01/rsync-deployments@7.0.1
         with:
