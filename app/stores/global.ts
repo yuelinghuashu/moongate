@@ -34,7 +34,7 @@ const useGlobalStore = defineStore('global', () => {
 
   // 设置语言
   const setLanguage = (lang: string) => {
-    setLocale(lang as any)
+    setLocale(lang)
     settings.value.appearance.language = lang
   }
 

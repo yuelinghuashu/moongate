@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <UCard class="w-100 ml-4 h-full leading-7.5 min-w-60 min-h-100 sticky">
     <!-- 二级标题 -->
@@ -28,6 +29,7 @@
 </template>
 
 <script lang="ts" setup>
+// eslint-disable-next-line vue/require-prop-types
 const prop = defineProps(["outline"]);
 </script>
 

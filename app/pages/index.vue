@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col">
     <!-- 页面英雄区 -->
-      <UPageHero
+    <UPageHero
       :title="$t('title')"
       :description="$t('description')"
       :links="[
@@ -16,7 +16,7 @@
           color: buttonColor,
         },
       ]"
-    </UPageHero>
+    />
   </div>
 </template>
 
@@ -24,8 +24,6 @@
 import useGlobalStore from "~/stores/global";
 
 const { buttonType, buttonColor } = useGlobalStore();
-
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

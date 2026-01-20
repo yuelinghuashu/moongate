@@ -11,11 +11,11 @@
  * 
  * 注意：此中间件仅在客户端执行，避免服务端渲染时访问客户端状态
  */
-export default defineNuxtRouteMiddleware((to, from) => {
+export default defineNuxtRouteMiddleware((to) => {
   if (import.meta.client) {
     const nuxtApp = useNuxtApp()
     const locale = nuxtApp.$i18n.locale
-    const { homepageBehavior } = nuxtApp.$pinia?.state.value?.global?.settings
+    const { homepageBehavior } = nuxtApp.$pinia.state.value.global.settings
 
     if (to.path === '/' || to.path === `/${locale.value}/`) {
       try {
@@ -24,7 +24,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
         // - 31: "显示入口页" (Show landing page)
         // - 32: "跳过入口页" (Skip landing page)
         if (homepageBehavior === 32) {
-          return navigateTo('/articles')
+          return navigateTo(locale.value === 'zh_cn' ? '/articles' : `/${locale.value}/articles`)
         }
       } catch (error) {
         // ⚠️ 错误处理：如果访问状态失败，记录警告但不中断流程

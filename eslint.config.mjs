@@ -1,10 +1,6 @@
 // @ts-check
-import withNuxt from './.nuxt/eslint.config.mjs'
+import withNuxt from './node_modules/.cache/nuxt/.nuxt/eslint.config.mjs'
 
 export default withNuxt(
   // Your custom configs here
-  Strings must use singlequote
-  rules:{
-    strings: ['error', 'single'],
-  }
 )

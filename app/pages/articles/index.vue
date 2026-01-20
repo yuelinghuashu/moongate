@@ -3,8 +3,8 @@
     <form class="flex items-center search">
       <!-- 搜索组件 -->
       <UInput
-        icon="i-custom-search"
         v-model="articleSearchValue"
+        icon="i-custom-search"
         :placeholder="$t('search.placeholder')"
         size="lg"
         @update:model-value="searchArticles()"
@@ -63,8 +63,8 @@
       <USelect
         v-model="articlePageination.size"
         :items="articlePageination.sizeOptions"
-        @update:model-value="handlePageChange()"
         class="ml-5"
+        @update:model-value="handlePageChange()"
       />
       <span class="ml-5">
         {{ $t("search.findCount", { count: articlePageination.total }) }}

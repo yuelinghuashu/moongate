@@ -10,9 +10,9 @@
       <UButton
         :label="t('errorPage.backToHome')"
         size="xl"
-        @click="navigateTo('/')"
         class="cursor-pointer"
-      ></UButton>
+        @click="navigateTo('/')"
+      />
     </template>
   </UError>
 </template>

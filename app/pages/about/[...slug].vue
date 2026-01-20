@@ -14,8 +14,8 @@
 </template>
 
 <script lang="ts" setup>
-const route = useRoute();
 import { withLeadingSlash } from "ufo";
+const route = useRoute();
 const { locale } = useI18n();
 
 const slug = computed(() => {
