@@ -1,0 +1,17 @@
+# caddy/Caddyfile
+# 替换 yourdomain.com 为你的真实域名
+moongate.top, www.moongate.top {
+    # 设置网站根目录（必须和上面 remote_path 一致）
+    root * /var/www/my-site
+    # 启用静态文件服务器
+    file_server
+    # 对单页应用很重要：让前端路由生效
+    try_files {path} /index.html
+    # 启用 gzip 压缩
+    encode gzip zstd
+}
+
+# 可选：HTTP 自动跳转到 HTTPS
+http://moongate.top, http://www.moongate.top {
+    redir https://{host}{uri} permanent
+}

@@ -35,4 +35,13 @@ jobs:
 
       - name: Build
         run: pnpm run build
-        
+      
+      - name: Deploy to Server via Rsync
+        uses: burnett01/rsync-deployments@7.0.1
+        with:
+          switches: -avz --delete # 递归、压缩、同步删除
+          path: .output/public/ # 👈 Nuxt 的静态文件输出目录
+          remote_path: /var/www/my-site/ # 👈 服务器上的目标目录
+          remote_host: ${{ secrets.SERVER_HOST }} # 服务器 IP
+          remote_user: ${{ secrets.SERVER_USER }} # 登录用户名
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }} # SSH 私钥
