@@ -33,12 +33,6 @@ export default defineNuxtConfig({
     }
   },
   css: ['~/assets/css/main.css'],
-  icon: {
-    customCollections: [{
-      prefix: 'custom',
-      dir: './public/icons'
-    }]
-  },
   i18n: {
     locales: [{
       code: 'zh_cn',        // 程序内部标识符（URL路径使用）

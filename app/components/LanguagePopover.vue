@@ -2,7 +2,7 @@
   <!-- 语言栏选项框组件 -->
   <UPopover mode="hover" arrow>
     <!-- 语言选项按钮 -->
-    <UButton icon="i-custom-language" color="neutral" variant="ghost" />
+    <UButton icon="i-tabler:language" color="neutral" variant="ghost" />
     <template #content="">
       <ul class="w-25 text-center">
         <li

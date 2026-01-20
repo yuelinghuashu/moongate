@@ -4,7 +4,7 @@
       <!-- 搜索组件 -->
       <UInput
         v-model="articleSearchValue"
-        icon="i-custom-search"
+        icon="i-lucide-search"
         :placeholder="$t('search.placeholder')"
         size="lg"
         @update:model-value="searchArticles()"

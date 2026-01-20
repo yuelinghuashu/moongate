@@ -21,7 +21,7 @@
             color="neutral"
             class="cursor-pointer"
             :icon="
-              colorMode.value === 'dark' ? 'i-custom-moon' : 'i-custom-sun'
+              colorMode.value === 'dark' ? 'tabler:moon' : 'tabler:sun'
             "
             @click="
               setTheme(

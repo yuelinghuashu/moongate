@@ -33,6 +33,7 @@
     "zod": "^4.2.1"
   },
   "devDependencies": {
+    "@iconify-json/tabler": "^1.2.26",
     "eslint": "^9.39.2",
     "nuxt": "^4.2.2",
     "typescript": "^5.9.3",
