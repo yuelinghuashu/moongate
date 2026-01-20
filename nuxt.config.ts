@@ -36,7 +36,7 @@ export default defineNuxtConfig({
   icon: {
     customCollections: [{
       prefix: 'custom',
-      dir: '/public/icons'
+      dir: './public/icons'
     }]
   },
   i18n: {
