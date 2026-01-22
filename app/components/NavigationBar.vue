@@ -1,20 +1,18 @@
 <template>
   <nav class="text-center">
-    <ul>
+    <ul class="flex flex-col">
       <li
         v-for="item in tm('navigationBar')"
         :key="item.id"
-        class="py-4 nav-link"
         :class="{
           active: route.fullPath.includes(
             isDev ? item.link.loc.source : item.link,
           ),
         }"
-        @click="navigateTo(isDev ? item.link.loc.source : item.link)"
       >
         <NuxtLink
           :to="isDev ? item.link.loc.source : item.link"
-          class="text-xl cursor-pointer"
+          class="text-xl cursor-pointer w-full h-full block p-4"
         >
           {{ isDev ? item.name.loc.source : item.name }}
         </NuxtLink>

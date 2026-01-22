@@ -1,15 +1,15 @@
 ---
 date: 2025-12-28
-title: 08-@nuxt/content 配置实战：从入门到优雅渲染
-description: 记录了我从零开始配置 @nuxt/content 模块，并集成 Tailwind CSS v4 和 Typography 插件来优雅渲染 Markdown 内容的完整过程。
-tags: Nuxt
+title: 解决Nuxt Content渲染问题：从基础配置到优雅显示完整指南
+description: 记录了我从零开始配置 @nuxt/content 模块，并集成 Tailwind CSS v4 插件来优雅渲染 Markdown 内容的完整过程。
+tags: [Nuxt, Content, Tailwind CSS]
 ---
 
-# Nuxt Content 配置实战：从入门到优雅渲染
+# 解决Nuxt Content渲染问题：从基础配置到优雅显示完整指南
 
 ## 概述
 
-这篇文章记录了我从零开始配置 Nuxt Content 模块，并集成 Tailwind CSS v4 和 Typography 插件来优雅渲染 Markdown 内容的完整过程。如果你也厌倦了在配置上耗费数小时却一行业务代码都没写的挫败感，这篇实战指南或许能帮你少走弯路。
+这篇文章记录了我从零开始配置 Nuxt Content 模块，并集成 Tailwind CSS v4 来优雅渲染 Markdown 内容的完整过程。如果你也厌倦了在配置上耗费数小时却一行业务代码都没写的挫败感，这篇实战指南或许能帮你少走弯路。
 
 > **核心收获**：现代前端配置虽复杂，但每一次“踩坑”都是对底层原理和问题解决能力的深度投资。
 
@@ -37,9 +37,6 @@ pnpm add better-sqlite3
 
 # 安装 Tailwind CSS模块
 pnpm add tailwindcss @tailwindcss/vite
-
-# 安装 @tailwindcss/typography模块
-pnpm add -D @tailwindcss/typography
 ```
 
 ### 1.3 处理可能存在的better-sqlite3模块的兼容问题
@@ -74,7 +71,6 @@ pnpm run dev
 ```css
 /* 在项目根目录创建一个 `./app/assets/css/main.css` 文件 */
 @import "tailwindcss";
-@plugin "@tailwindcss/typography";
 ```
 
 ### 2.2 配置 `nuxt.config.ts`

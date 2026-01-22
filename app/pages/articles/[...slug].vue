@@ -1,9 +1,11 @@
 <template>
   <div v-if="page" class="flex">
     <!-- 文档内容 -->
-    <div>
-      <ContentRenderer v-if="page" :value="page" />
-    </div>
+    <ContentRenderer
+      v-if="page"
+      :value="page"
+      class="w-full max-w-(--ui-container)"
+    />
 
     <!-- 大纲目录 -->
     <Outline :outline="page?.body.toc?.links" class="sticky top-25" />
@@ -53,12 +55,4 @@ if (page.value?.title !== "" && page.value?.description != "") {
 }
 </script>
 
-<style>
-.empty-page {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  border: 1px solid;
-}
-</style>
+<style scoped></style>

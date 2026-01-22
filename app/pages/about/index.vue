@@ -26,7 +26,7 @@ const aboutList = ref();
 // 获取关于文章列表
 const getAboutList = async () => {
   // 获取文章列表
-  aboutList.value = await queryCollection("about").all();
+  aboutList.value = await queryCollection("about").order("meta", "ASC").all();
   console.log("aboutList", aboutList.value);
 };
 </script>

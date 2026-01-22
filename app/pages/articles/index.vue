@@ -85,7 +85,7 @@ onMounted(() => {
 });
 
 // 文章列表
-const articleList = ref();
+const articleList = ref([]);
 
 // 文章搜索框
 const articleSearchValue = ref<string>("");
@@ -97,7 +97,7 @@ const articlePageination = ref({
   // 每页文章数
   size: 3,
   // 每页文章数选项
-  sizeOptions: [1, 2, 3],
+  sizeOptions: [3, 5, 8],
   // 文章总数
   total: 0,
 });
@@ -115,6 +115,7 @@ const getArticleList = async () => {
 
   // 获取文章列表
   articleList.value = await queryCollection("articles")
+    .order("meta", "DESC")
     .skip((articlePageination.value.page - 1) * articlePageination.value.size)
     .limit(articlePageination.value.size)
     .all();

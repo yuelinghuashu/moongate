@@ -1,11 +1,11 @@
 ---
-title: 10-单一内容，多语言路由：Nuxt Content 与 i18n 的无缝集成方案
+title: Nuxt Content + i18n终极集成方案：一套内容支持多语言的完整实现
 description: 本文介绍一种创新方案：只维护一套核心文档（如英文或中文），利用 @nuxtjs/i18n 的路由前缀功能，为用户提供完整的多语言界面体验。访问 /en/article 与 /zh_cn/article 将显示相同的文章内容，但界面语言、导航菜单等将根据URL前缀自动切换。
 date: 2025-12-29
-tags: Nuxt
+tags: [Nuxt, i18n, Nuxt Content]
 ---
 
-# 10-单一内容，多语言路由：Nuxt Content 与 i18n 的无缝集成方案
+# Nuxt Content + i18n终极集成方案：一套内容支持多语言的完整实现
 
 **英文标题**: Single Source, Multilingual Routes: A Seamless Integration of Nuxt Content and i18n
 
@@ -58,7 +58,11 @@ graph LR
     G --> H[用户看到日文界面<br>英文内容];
 ```
 
-> 路由层：由 @nuxtjs/i18n 处理
+3. 实现细节：稳定查询路径
+
+以下是基于 Vue 3 与 Nuxt 3 的完整实现示例：
+
+> 路由层处理
 
 ```vue
 <UBlogPost
@@ -75,22 +79,35 @@ graph LR
 > 内容层：由 @nuxt/content 处理（移除语言前缀）
 
 ```typescript
-const { locale, defaultLocale } = useI18n();
+<script lang="ts" setup>
+import { withLeadingSlash } from "ufo";
+const { locale } = useI18n();
 const route = useRoute();
 
-// 计算应该查询的 Content 路径
-const contentPath = computed(() => {
-  if (locale.value === defaultLocale) {
-    return route.path;
-  }
-
-  // 移除语言前缀
-  return route.path.replace(`/${locale.value}`, "") || "/";
+// 核心：移除语言前缀，得到原始路径
+// 例如：/en/articles/welcome -> /articles/welcome
+const slug = computed(() => {
+  const path = withLeadingSlash(String(route.params.slug || "/"));
+  // 移除语言前缀部分
+  return path.replace(new RegExp(`^/(${locale.value})`), "") || "/";
 });
 
-const { data: page } = await useAsyncData(route.path, () => {
-  return queryCollection("content").path(contentPath.value).first();
-});
+// 稳定查询：永远只查询 'articles' 这个集合
+const { data: page } = await useAsyncData(
+  route.path,
+  () => {
+    return queryCollection("articles").path(`/articles${slug.value}`).first();
+    // 注意：查询路径需要加上 '/articles' 前缀，以匹配 content/articles/ 下的文件
+  },
+  {
+    // 设置 transform 确保数据一致性
+    transform: (data) => {
+      if (!data) return null;
+      return data;
+    },
+  },
+);
+</script>
 ```
 
 ## 📁 推荐的目录结构
@@ -122,6 +139,7 @@ content/
 
 1. **维护成本最小化** - 单一内容源
 2. **用户体验最大化** - 完整的多语言界面支持
+3. **查询稳定性** - 使用固定的内容集合查询，避免路径解析问题
 
 这种模式特别适合：
 

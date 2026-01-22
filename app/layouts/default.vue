@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-useless-template-attributes -->
 <template>
   <div>
     <!-- 头部 -->
@@ -20,9 +21,7 @@
             variant="ghost"
             color="neutral"
             class="cursor-pointer"
-            :icon="
-              colorMode.value === 'dark' ? 'tabler:moon' : 'tabler:sun'
-            "
+            :icon="colorMode.value === 'dark' ? 'tabler:moon' : 'tabler:sun'"
             @click="
               setTheme(
                 colorMode.value === 'dark' || colorMode.value === 'system'
@@ -42,7 +41,7 @@
     </UHeader>
 
     <!-- 主体 -->
-    <UPage class="flex mt-8">
+    <UPage class="mt-8" :ui="{ left: 'border-r', center: 'mx-0 px-4' }">
       <!-- 左侧导航栏 -->
       <template #left>
         <NavigationBar class="page-left h-fit sticky top-25" />
@@ -54,11 +53,6 @@
           <slot />
         </div>
       </template>
-
-      <template
-        v-if="route.path === '/' || route.path === `/${locale}/`"
-        #right
-      />
     </UPage>
   </div>
 </template>
@@ -67,12 +61,14 @@
 import useGlobalStore from "~/stores/global";
 
 const { setTheme } = useGlobalStore();
-const route = useRoute();
 const { locale } = useI18n();
 const colorMode = useColorMode();
 </script>
 
 <style scoped>
+.page-right {
+  border: 1px solid #ccc;
+}
 @media (max-width: 768px) {
   .page-left {
     display: none;
