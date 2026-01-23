@@ -1,13 +1,11 @@
 # caddy/Caddyfile
 # 替换 yourdomain.com 为你的真实域名
 moongate.top, www.moongate.top {
-    # 静态资源
+    # 静态资源（所有都从 public 目录提供）
     @static {
-        path /_nuxt/*
-        path /*.js
-        path /*.css
-        path /*.ico
-        path /*.svg
+        file /var/www/my-site/public{path}
+        file /var/www/my-site/public{path}/index.html
+        path_regexp \.(js|css|ico|svg|png|jpg|jpeg|gif|woff|woff2|ttf|eot)$
     }
 
     handle @static {
@@ -36,6 +34,6 @@ moongate.top, www.moongate.top {
 }
 
 # 可选：HTTP 自动跳转到 HTTPS
-http://moongate.top, http://www.moongate.top {
-    redir https://{host}{uri} permanent
-}
+# http://moongate.top, http://www.moongate.top {
+#    redir https://{host}{uri} permanent
+# }
