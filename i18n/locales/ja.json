@@ -9,8 +9,8 @@
   "search": {
     "placeholder": "記事を検索",
     "options": [
-      { "id": 1, "name": "タイトルのみ" },
-      { "id": 2, "name": "説明を含む" }
+      { "id": 1, "name": "タイトルと内容を検索" },
+      { "id": 2, "name": "タイトルのみ検索" }
     ],
     "findCount": "{count} 件の文書が見つかりました"
   },
