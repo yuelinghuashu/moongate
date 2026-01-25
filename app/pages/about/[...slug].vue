@@ -27,7 +27,7 @@ const slug = computed(() => {
 });
 
 const { data: page } = await useAsyncData(
-  'about',
+  `articles-${locale.value}-${slug.value}`,
   () => {
     return queryCollection("about").path(`/about${slug.value}`).first();
   },
