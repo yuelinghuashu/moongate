@@ -30,7 +30,7 @@ const slug = computed(() => {
 
 // 稳定查询：永远只查询 'articles' 这个集合
 const { data: page } = await useAsyncData(
-  `article-${locale.value}-${slug.value}`,
+  `articles`,
   () => {
     return queryCollection("articles").path(`/articles${slug.value}`).first();
   },
