@@ -1,17 +1,7 @@
 # 替换 yourdomain.com 为你的真实域名
 moongate.top, www.moongate.top {
-    # Nuxt 静态文件在 public/_nuxt/ 目录下
-    handle /_nuxt/* {
-        root * /var/www/my-site/public
-        file_server
-        header Cache-Control "public, max-age=31536000"
-    }
-    
     # 所有其他请求代理到 Node.js
-    reverse_proxy http://localhost:3000 {
-        header_up X-Forwarded-Proto {scheme}
-        header_up X-Forwarded-Host {host}
-    }
+    reverse_proxy http://localhost:3000
 
     # 启用 gzip 压缩
     encode gzip zstd
