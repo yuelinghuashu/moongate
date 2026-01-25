@@ -40,10 +40,8 @@ const { data: page } = await useAsyncData(
       if (!data) return null;
       return data;
     },
-    lazy: false,
   },
 );
-console.log("page", page.value);
 
 // 设置 SEO 元信息
 if (page.value?.title !== "" && page.value?.description != "") {
