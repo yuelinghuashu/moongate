@@ -30,10 +30,9 @@ const slug = computed(() => {
 
 // 稳定查询：永远只查询 'articles' 这个集合
 const { data: page } = await useAsyncData(
-  `articles-${slug.value}`,
+  `article-${locale.value}-${slug.value}`,
   () => {
     return queryCollection("articles").path(`/articles${slug.value}`).first();
-    // 注意：查询路径需要加上 '/articles' 前缀，以匹配 content/articles/ 下的文件
   },
   {
     // 设置 transform 确保数据一致性
@@ -43,14 +42,15 @@ const { data: page } = await useAsyncData(
     },
   },
 );
-
-console.log(page.value?.body.toc);
+console.log(page.value);
 
 // 设置 SEO 元信息
 if (page.value?.title !== "" && page.value?.description != "") {
   useSeoMeta({
     title: page.value?.title,
     description: page.value?.description,
+    ogTitle: page.value?.title,
+    ogDescription: page.value?.description,
   });
 }
 </script>
