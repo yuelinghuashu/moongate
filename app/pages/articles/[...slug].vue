@@ -30,7 +30,7 @@ const slug = computed(() => {
 
 // 稳定查询：永远只查询 'articles' 这个集合
 const { data: page } = await useAsyncData(
-  route.path,
+  `articles-${slug.value}`,
   () => {
     return queryCollection("articles").path(`/articles${slug.value}`).first();
     // 注意：查询路径需要加上 '/articles' 前缀，以匹配 content/articles/ 下的文件

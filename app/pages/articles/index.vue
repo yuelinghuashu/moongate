@@ -75,7 +75,7 @@
         @update:model-value="handlePageChange()"
       />
       <span class="ml-4">
-        {{ $t("search.findCount", { count: articlePageination.total }) }}
+        {{ t("search.findCount", { count: articlePageination.total }) }}
       </span>
     </div>
   </div>
@@ -92,7 +92,7 @@ import {
 } from "@vueuse/core";
 
 const { settings } = useGlobalStore();
-const { locale, tm } = useI18n();
+const { locale, tm, t } = useI18n();
 const breakpoints = useBreakpoints(breakpointsTailwind, { ssrWidth: 768 });
 const isMobile = breakpoints.smaller("md");
 const isDesktop = breakpoints.greaterOrEqual("md");
