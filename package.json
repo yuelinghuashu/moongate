@@ -40,6 +40,5 @@
     "typescript": "^5.9.3",
     "vite-plugin-remove-console": "^2.2.0",
     "vue-tsc": "^3.2.1"
-  },
-  "packageManager": "pnpm@10.26.1"
+  }
 }
