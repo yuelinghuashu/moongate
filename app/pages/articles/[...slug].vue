@@ -40,8 +40,29 @@ const { data: page } = await useAsyncData(
       if (!data) return null;
       return data;
     },
+    // 确保数据可序列化
+    getCachedData: (key, nuxtApp) => {
+      console.log(
+        "获取缓存数据，key:",
+        key,
+        "isHydrating:",
+        nuxtApp.isHydrating,
+      );
+
+      if (nuxtApp.isHydrating && nuxtApp.payload.data[key]) {
+        console.log("从 payload 获取数据");
+        return nuxtApp.payload.data[key];
+      }
+
+      return undefined;
+    },
   },
 );
+
+// 添加这个来检查数据
+if (import.meta.server) {
+  console.log('服务器端 page 数据:', page.value);
+}
 
 // 设置 SEO 元信息
 if (page.value?.title !== "" && page.value?.description != "") {
