@@ -10,9 +10,9 @@
     <!-- 大纲目录 -->
     <Outline :outline="page?.body.toc?.links" class="sticky top-25" />
   </div>
-  <!-- <div v-else>
+  <div v-else>
     <ErrorPage />
-  </div> -->
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -40,9 +40,10 @@ const { data: page } = await useAsyncData(
       if (!data) return null;
       return data;
     },
+    server: false,
   },
 );
-console.log(page.value);
+console.log("page", page.value);
 
 // 设置 SEO 元信息
 if (page.value?.title !== "" && page.value?.description != "") {
