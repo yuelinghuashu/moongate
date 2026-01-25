@@ -40,7 +40,7 @@ const { data: page } = await useAsyncData(
       if (!data) return null;
       return data;
     },
-    server: false,
+    lazy: false,
   },
 );
 console.log("page", page.value);
