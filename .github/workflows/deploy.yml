@@ -14,9 +14,6 @@ jobs:
 
       - name: Setup PNPM
         uses: pnpm/action-setup@v4
-        with:
-          version: 9
-          run_install: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -27,7 +24,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build Nuxt 4
+      - name: Build project
         run: pnpm run build
 
       - name: Upload to server
@@ -37,7 +34,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: ".output/"
-          target: "/var/www/nuxt4/"
+          target: "/var/www/my-site/"
           overwrite: true
 
       - name: Start application
@@ -47,5 +44,5 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /var/www/nuxt4
+            cd /var/www/my-site
             pm2 restart server/index.mjs --name nuxt4 || pm2 start server/index.mjs --name nuxt4
