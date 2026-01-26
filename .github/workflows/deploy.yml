@@ -24,38 +24,41 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: pnpm
 
-      - name: Install dependencies
+      - name: Install system dependencies for SQLite
         run: |
-          pnpm install
-          pnpm add -D better-sqlite3 @types/better-sqlite3
+          sudo apt-get update
+          sudo apt-get install -y sqlite3 libsqlite3-dev
 
+      - name: Install dependencies
+        run: pnpm install
+        
       - name: Lint
         run: pnpm run lint
 
-      - name: Build
-        run: | 
-          pnpm run build
-          
-          # 关键：设置强制生成 SQLite 的环境变量
-          export NITRO_PRESET=node-server
-          export NODE_ENV=production
-          export NUXT_CONTENT_DB_FORMAT=sqlite
-          export NUXT_CONTENT_NO_SERIALIZATION=true
-          
-          echo "🚀 开始构建..."
-          echo "环境变量:"
-          echo "NITRO_PRESET=$NITRO_PRESET"
-          echo "NUXT_CONTENT_DB_FORMAT=$NUXT_CONTENT_DB_FORMAT"
+      - name: Build with custom env
+        env:
+          # 👇 关键：覆盖 CI 环境变量
+          CI: false
+          NODE_ENV: production
+          # 👇 确保 Nitro 使用正确预设
+          NITRO_PRESET: node-server
+        run: pnpm run build
+
+      - name: Check build output
+        run: |
+          echo "检查构建输出..."
+          find .output -name "*.sqlite" -o -name "*.db" | head -5
+          ls -la .output/server/node_modules/.cache/nitro/ 2>/dev/null || true
 
       - name: Deploy to Server via Rsync
         uses: burnett01/rsync-deployments@7.0.1
         with:
-          switches: -avz --delete # 递归、压缩、同步删除
-          path: .output/ # 👈 Nuxt 的文件输出目录
-          remote_path: /var/www/my-site/ # 👈 服务器上的目标目录
-          remote_host: ${{ secrets.SERVER_HOST }} # 服务器 IP
-          remote_user: ${{ secrets.SERVER_USER }} # 登录用户名
-          remote_key: ${{ secrets.SSH_PRIVATE_KEY }} # SSH 私钥
+          switches: -avz --delete
+          path: .output/
+          remote_path: /var/www/my-site/
+          remote_host: ${{ secrets.SERVER_HOST }}
+          remote_user: ${{ secrets.SERVER_USER }}
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Start/Reload Node.js service
         uses: appleboy/ssh-action@v1.0.0
@@ -67,19 +70,22 @@ jobs:
             echo "🚀 启动 Node.js SSR 服务..."
             cd /var/www/my-site
 
+            # 确保有正确的文件权限
+            chown -R www-data:www-data .output 2>/dev/null || true
+            chmod -R 755 .output 2>/dev/null || true
+
             # 启动或重启 Nuxt 应用
             if pm2 describe nuxt-app > /dev/null 2>&1; then
               echo "🔄 重启现有应用..."
-              pm2 reload nuxt-app
+              pm2 reload nuxt-app --update-env
             else
               echo "🚀 启动新应用..."
-              pm2 start server/index.mjs --name "nuxt-app" \
+              pm2 start .output/server/index.mjs --name "nuxt-app" \
                 --log /var/log/nuxt-app.log \
                 --error /var/log/nuxt-app-error.log \
                 --output /var/log/nuxt-app-out.log \
                 --time
               
-              # 保存 PM2 配置以便开机自启
               pm2 save
             fi
 
