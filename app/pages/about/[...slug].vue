@@ -20,7 +20,7 @@ const slug = computed(() => {
   return path.replace(new RegExp(`^/(${locale.value})`), "") || "/";
 });
 
-const { data: page } = await useAsyncData(
+const { data: page, error, refresh } = await useAsyncData(
   `about-${locale.value}-${slug.value}`,
   () => {
     return queryCollection("about").path(`/about${slug.value}`).first();
@@ -32,8 +32,20 @@ const { data: page } = await useAsyncData(
       return data;
     },
     watch: [slug],
+    // 设置默认值，避免undefined
+    default: () => null,
+    // 可选：添加获取缓存数据的逻辑
+    getCachedData(key) {
+      const cached = useNuxtData(key);
+      return cached.data.value;
+    },
   },
 );
+
+// 监控错误
+if (error.value) {
+  console.error('页面数据获取错误:', error.value);
+}
 
 console.log("route.path", route.path);
 console.log("slug.value", slug.value);
