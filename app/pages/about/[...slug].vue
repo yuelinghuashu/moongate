@@ -10,9 +10,7 @@
     <!-- 大纲目录 -->
     <Outline :outline="page?.body.toc?.links" class="sticky top-25" />
   </div>
-  <div v-else>
-    <ErrorPage />
-  </div>
+  <div v-else>123</div>
 </template>
 
 <script lang="ts" setup>
