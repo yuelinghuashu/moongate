@@ -6,6 +6,12 @@ jobs:
   ci:
     runs-on: ${{ matrix.os }}
 
+    env:
+      # 👇 关键：覆盖 GitHub Actions 的默认设置
+      CI: false
+      NODE_ENV: production
+      NITRO_PRESET: node-server
+
     strategy:
       matrix:
         os: [ubuntu-latest]
