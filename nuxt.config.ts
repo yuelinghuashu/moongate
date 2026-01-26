@@ -30,6 +30,11 @@ export default defineNuxtConfig({
           searchDepth: 3
         }
       },
+    },
+    database:{
+      type:'sqlite',
+      filename:'./.output/server/content.sqlite'
+
     }
   },
   css: ['~/assets/css/main.css'],
