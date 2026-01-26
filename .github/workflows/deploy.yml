@@ -1,6 +1,8 @@
-name: Deploy to Aliyun
+name: Deploy Nuxt 4 with PNPM
 
-on: push
+on:
+  push:
+    branches: [main]
 
 jobs:
   deploy:
@@ -10,111 +12,40 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy and Build on Server
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build Nuxt 4
+        run: pnpm run build
+
+      - name: Upload to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: ".output/"
+          target: "/var/www/nuxt4/"
+          overwrite: true
+
+      - name: Start application
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            echo "=========================================="
-            echo "🚀 开始在服务器上构建和部署"
-            echo "=========================================="
-            
-            # 进入项目目录
-            cd /var/www/my-site
-            
-            # 1. 停止当前应用（防止文件锁定）
-            echo "停止当前应用..."
-            pm2 stop nuxt-app 2>/dev/null || true
-            
-            # 2. 备份当前版本（以防万一）
-            echo "备份当前版本..."
-            BACKUP_DIR="/tmp/nuxt-backup-$(date +%Y%m%d-%H%M%S)"
-            mkdir -p $BACKUP_DIR
-            cp -r .output $BACKUP_DIR/ 2>/dev/null || true
-            
-            # 3. 拉取最新代码
-            echo "拉取最新代码..."
-            git fetch origin
-            git reset --hard origin/main
-            
-            # 4. 确保目录权限正确
-            echo "设置目录权限..."
-            chown -R ${{ secrets.SERVER_USER }}:${{ secrets.SERVER_USER }} /var/www/my-site
-            chmod -R 755 /var/www/my-site
-            
-            # 5. 安装依赖（使用 pnpm）
-            echo "安装依赖..."
-            pnpm install --frozen-lockfile
-            
-            # 6. 清理缓存
-            echo "清理缓存..."
-            rm -rf .nuxt .output node_modules/.cache .nitro 2>/dev/null || true
-            
-            # 7. 🎯 关键步骤：在服务器本地构建
-            echo "开始构建应用..."
-            echo "当前环境变量:"
-            echo "  CI=$CI"
-            echo "  NODE_ENV=$NODE_ENV"
-            echo "  NITRO_PRESET=$NITRO_PRESET"
-            
-            # 使用服务器环境构建
-            pnpm run build 2>&1 | tee /tmp/build.log
-            
-            # 8. 检查构建结果
-            echo "检查构建结果..."
-            if [ -d ".output" ]; then
-                echo "✅ .output 目录创建成功"
-                
-                # 查找 SQLite 文件
-                SQLITE_FILES=$(find .output -name "*.sqlite" 2>/dev/null)
-                if [ -n "$SQLITE_FILES" ]; then
-                    echo "✅ 找到 SQLite 文件:"
-                    echo "$SQLITE_FILES"
-                else
-                    echo "⚠️  未找到 SQLite 文件，检查其他内容文件..."
-                    find .output -name "*.json" -o -name "*.db" 2>/dev/null | head -10
-                fi
-                
-                # 检查关键文件
-                echo "检查关键文件..."
-                ls -la .output/server/index.mjs 2>/dev/null && echo "✅ index.mjs 存在"
-                ls -la .output/server/chunks/ 2>/dev/null && echo "✅ chunks 目录存在"
-                
-            else
-                echo "❌ .output 目录创建失败！"
-                echo "构建日志:"
-                tail -50 /tmp/build.log
-                exit 1
-            fi
-            
-            # 9. 重启应用
-            echo "重启应用..."
-            pm2 start .output/server/index.mjs --name "nuxt-app" \
-              --log /var/log/nuxt-app.log \
-              --error /var/log/nuxt-app-error.log \
-              --output /var/log/nuxt-app-out.log \
-              --time \
-              --update-env
-            
-            # 10. 保存 PM2 配置
-            pm2 save
-            
-            # 11. 验证应用状态
-            echo "等待应用启动..."
-            sleep 5
-            
-            echo "检查应用状态:"
-            pm2 status nuxt-app
-            
-            echo "检查进程:"
-            ps aux | grep -E "(node|nuxt)" | grep -v grep
-            
-            # 12. 测试应用
-            echo "测试应用..."
-            curl -f http://localhost:3000/__nuxt/healthz 2>/dev/null && echo "✅ 健康检查通过"
-            
-            echo "=========================================="
-            echo "✅ 部署完成！"
-            echo "=========================================="
+            cd /var/www/nuxt4
+            pm2 restart server/index.mjs --name nuxt4 || pm2 start server/index.mjs --name nuxt4
