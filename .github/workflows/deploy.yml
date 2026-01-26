@@ -3,77 +3,118 @@ name: Deploy to Aliyun
 on: push
 
 jobs:
-  ci:
-    runs-on: ${{ matrix.os }}
-
-    env:
-      # 👇 关键：覆盖 GitHub Actions 的默认设置
-      CI: false
-      NODE_ENV: production
-      NITRO_PRESET: node-server
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        node: [22]
-
+  deploy:
+    runs-on: ubuntu-latest
+    
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Install node
-        uses: actions/setup-node@v6
-        with:
-          node-version: ${{ matrix.node }}
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install
-        
-      - name: Lint
-        run: pnpm run lint
-
-      - name: Build
-        run: pnpm run build
-
-      - name: Deploy to Server via Rsync
-        uses: burnett01/rsync-deployments@7.0.1
-        with:
-          switches: -avz --delete # 递归、压缩、同步删除
-          path: .output/ # 👈 Nuxt 的文件输出目录
-          remote_path: /var/www/my-site/ # 👈 服务器上的目标目录
-          remote_host: ${{ secrets.SERVER_HOST }} # 服务器 IP
-          remote_user: ${{ secrets.SERVER_USER }} # 登录用户名
-          remote_key: ${{ secrets.SSH_PRIVATE_KEY }} # SSH 私钥
-
-      - name: Start/Reload Node.js service
+      - name: Deploy and Build on Server
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            echo "🚀 启动 Node.js SSR 服务..."
+            echo "=========================================="
+            echo "🚀 开始在服务器上构建和部署"
+            echo "=========================================="
+            
+            # 进入项目目录
             cd /var/www/my-site
-
-            # 启动或重启 Nuxt 应用
-            if pm2 describe nuxt-app > /dev/null 2>&1; then
-              echo "🔄 重启现有应用..."
-              pm2 reload nuxt-app
+            
+            # 1. 停止当前应用（防止文件锁定）
+            echo "停止当前应用..."
+            pm2 stop nuxt-app 2>/dev/null || true
+            
+            # 2. 备份当前版本（以防万一）
+            echo "备份当前版本..."
+            BACKUP_DIR="/tmp/nuxt-backup-$(date +%Y%m%d-%H%M%S)"
+            mkdir -p $BACKUP_DIR
+            cp -r .output $BACKUP_DIR/ 2>/dev/null || true
+            
+            # 3. 拉取最新代码
+            echo "拉取最新代码..."
+            git fetch origin
+            git reset --hard origin/main
+            
+            # 4. 确保目录权限正确
+            echo "设置目录权限..."
+            chown -R ${{ secrets.SERVER_USER }}:${{ secrets.SERVER_USER }} /var/www/my-site
+            chmod -R 755 /var/www/my-site
+            
+            # 5. 安装依赖（使用 pnpm）
+            echo "安装依赖..."
+            pnpm install --frozen-lockfile
+            
+            # 6. 清理缓存
+            echo "清理缓存..."
+            rm -rf .nuxt .output node_modules/.cache .nitro 2>/dev/null || true
+            
+            # 7. 🎯 关键步骤：在服务器本地构建
+            echo "开始构建应用..."
+            echo "当前环境变量:"
+            echo "  CI=$CI"
+            echo "  NODE_ENV=$NODE_ENV"
+            echo "  NITRO_PRESET=$NITRO_PRESET"
+            
+            # 使用服务器环境构建
+            pnpm run build 2>&1 | tee /tmp/build.log
+            
+            # 8. 检查构建结果
+            echo "检查构建结果..."
+            if [ -d ".output" ]; then
+                echo "✅ .output 目录创建成功"
+                
+                # 查找 SQLite 文件
+                SQLITE_FILES=$(find .output -name "*.sqlite" 2>/dev/null)
+                if [ -n "$SQLITE_FILES" ]; then
+                    echo "✅ 找到 SQLite 文件:"
+                    echo "$SQLITE_FILES"
+                else
+                    echo "⚠️  未找到 SQLite 文件，检查其他内容文件..."
+                    find .output -name "*.json" -o -name "*.db" 2>/dev/null | head -10
+                fi
+                
+                # 检查关键文件
+                echo "检查关键文件..."
+                ls -la .output/server/index.mjs 2>/dev/null && echo "✅ index.mjs 存在"
+                ls -la .output/server/chunks/ 2>/dev/null && echo "✅ chunks 目录存在"
+                
             else
-              echo "🚀 启动新应用..."
-              pm2 start server/index.mjs --name "nuxt-app" \
-                --log /var/log/nuxt-app.log \
-                --error /var/log/nuxt-app-error.log \
-                --output /var/log/nuxt-app-out.log \
-                --time
-              
-              # 保存 PM2 配置以便开机自启
-              pm2 save
+                echo "❌ .output 目录创建失败！"
+                echo "构建日志:"
+                tail -50 /tmp/build.log
+                exit 1
             fi
-
-            echo "✅ 服务启动完成"
+            
+            # 9. 重启应用
+            echo "重启应用..."
+            pm2 start .output/server/index.mjs --name "nuxt-app" \
+              --log /var/log/nuxt-app.log \
+              --error /var/log/nuxt-app-error.log \
+              --output /var/log/nuxt-app-out.log \
+              --time \
+              --update-env
+            
+            # 10. 保存 PM2 配置
+            pm2 save
+            
+            # 11. 验证应用状态
+            echo "等待应用启动..."
+            sleep 5
+            
+            echo "检查应用状态:"
             pm2 status nuxt-app
+            
+            echo "检查进程:"
+            ps aux | grep -E "(node|nuxt)" | grep -v grep
+            
+            # 12. 测试应用
+            echo "测试应用..."
+            curl -f http://localhost:3000/__nuxt/healthz 2>/dev/null && echo "✅ 健康检查通过"
+            
+            echo "=========================================="
+            echo "✅ 部署完成！"
+            echo "=========================================="
