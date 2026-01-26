@@ -1,7 +1,17 @@
 # 替换 yourdomain.com 为你的真实域名
 moongate.top, www.moongate.top {
     # 所有其他请求代理到 Node.js
-    reverse_proxy http://localhost:3000
+    reverse_proxy http://localhost:3000 {
+        header_up Host {http.request.host}
+        header_up X-Real-IP {http.request.remote.host}
+        header_up X-Forwarded-For {http.request.remote.host}
+        header_up X-Forwarded-Proto {http.request.scheme}
+        header_up X-Forwarded-Host {http.request.host}
+        
+        # 如果您的useAsyncData调用内部API，可能需要传递更多头
+        header_up Connection {http.request.header.Connection}
+        header_up Accept-Encoding {http.request.header.Accept-Encoding}
+    }
 
     # 启用 gzip 压缩
     encode gzip zstd
