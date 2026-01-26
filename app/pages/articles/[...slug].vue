@@ -17,7 +17,7 @@
 
 <script lang="ts" setup>
 import { withLeadingSlash } from "ufo";
-const { locale } = useI18n();
+const { locale, t } = useI18n();
 const route = useRoute();
 
 // 核心：移除语言前缀，得到原始路径
@@ -45,16 +45,23 @@ const { data: page } = await useAsyncData(
 
 // 添加这个来检查数据
 if (import.meta.server) {
-  console.log('服务器端 page 数据:', page.value);
+  console.log("服务器端 page 数据:", page.value);
 }
 
 // 设置 SEO 元信息
-if (page.value?.title !== "" && page.value?.description != "") {
+if (page.value?.title && page.value?.description) {
   useSeoMeta({
     title: page.value?.title,
     description: page.value?.description,
     ogTitle: page.value?.title,
     ogDescription: page.value?.description,
+  });
+} else {
+  useSeoMeta({
+    title: t("title"),
+    description: t("description"),
+    ogTitle: t("title"),
+    ogDescription: t("description"),
   });
 }
 </script>

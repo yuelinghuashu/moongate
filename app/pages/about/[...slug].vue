@@ -16,20 +16,18 @@
 <script lang="ts" setup>
 import { withLeadingSlash } from "ufo";
 const route = useRoute();
-const { locale } = useI18n();
+const { locale, t } = useI18n();
 
-const getSlug = () => {
+const slug = computed(() => {
   const path = withLeadingSlash(String(route.params.slug || "/"));
   // 移除语言前缀部分
   return path.replace(new RegExp(`^/(${locale.value})`), "") || "/";
-};
-
-const slug = getSlug();
+});
 
 const { data: page } = await useAsyncData(
-  `about-${locale.value}-${slug}`,
+  `about-${locale.value}-${slug.value}`,
   () => {
-    return queryCollection("about").path(`/about${slug}`).first();
+    return queryCollection("about").path(`/about${slug.value}`).first();
   },
   {
     // 设置 transform 确保数据一致性about
@@ -40,15 +38,22 @@ const { data: page } = await useAsyncData(
   },
 );
 console.log("route.path", route.path);
-console.log("slug.value", slug);
+console.log("slug.value", slug.value);
 
 // 设置 SEO 元信息
-if (page.value?.title !== "" && page.value?.description != "") {
+if (page.value?.title && page.value?.description) {
   useSeoMeta({
     title: page.value?.title,
     description: page.value?.description,
     ogTitle: page.value?.title,
     ogDescription: page.value?.description,
+  });
+} else {
+  useSeoMeta({
+    title: t("title"),
+    description: t("description"),
+    ogTitle: t("title"),
+    ogDescription: t("description"),
   });
 }
 </script>
