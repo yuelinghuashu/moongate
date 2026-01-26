@@ -18,26 +18,29 @@ import { withLeadingSlash } from "ufo";
 const route = useRoute();
 const { locale } = useI18n();
 
-const slug = computed(() => {
+const getSlug = () => {
   const path = withLeadingSlash(String(route.params.slug || "/"));
   // 移除语言前缀部分
   return path.replace(new RegExp(`^/(${locale.value})`), "") || "/";
-});
+};
+
+const slug = getSlug();
 
 const { data: page } = await useAsyncData(
-  `articles-${locale.value}-${slug.value}`,
+  `about-${locale.value}-${slug}`,
   () => {
-    return queryCollection("about").path(`/about${slug.value}`).first();
+    return queryCollection("about").path(`/about${slug}`).first();
   },
   {
-    // 设置 transform 确保数据一致性
+    // 设置 transform 确保数据一致性about
     transform: (data) => {
       if (!data) return null;
       return data;
     },
   },
 );
-console.log(page.value);
+console.log("route.path", route.path);
+console.log("slug.value", slug);
 
 // 设置 SEO 元信息
 if (page.value?.title !== "" && page.value?.description != "") {
