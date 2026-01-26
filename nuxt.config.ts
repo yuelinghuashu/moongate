@@ -31,11 +31,6 @@ export default defineNuxtConfig({
         }
       },
     },
-    database:{
-      type:'sqlite',
-      filename:'./.output/server/content.sqlite'
-
-    }
   },
   css: ['~/assets/css/main.css'],
   i18n: {
