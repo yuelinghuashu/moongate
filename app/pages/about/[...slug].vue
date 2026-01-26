@@ -20,7 +20,7 @@ const slug = computed(() => {
   return path.replace(new RegExp(`^/(${locale.value})`), "") || "/";
 });
 
-const { data: page, error, refresh } = await useAsyncData(
+const { data: page, error } = await useAsyncData(
   `about-${locale.value}-${slug.value}`,
   () => {
     return queryCollection("about").path(`/about${slug.value}`).first();

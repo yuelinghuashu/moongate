@@ -1,5 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import removeConsole from 'vite-plugin-remove-console'
+// import removeConsole from 'vite-plugin-remove-console'
 
 export default defineNuxtConfig({
   modules: [
