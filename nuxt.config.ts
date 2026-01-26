@@ -19,7 +19,7 @@ export default defineNuxtConfig({
   },
   vite: {
     plugins: [
-      removeConsole({ includes: ['log', 'warn', 'error'] }) // 移除所有console
+      removeConsole({ includes: ['log'] }) // 移除所有console
     ]
   },
   content: {

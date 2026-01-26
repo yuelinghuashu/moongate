@@ -1,11 +1,7 @@
 <template>
   <div v-if="page" class="flex">
     <!-- 文档内容 -->
-    <ContentRenderer
-      v-if="page"
-      :value="page"
-      class="w-full max-w-(--ui-container)"
-    />
+    <ContentRenderer :value="page" class="w-full max-w-(--ui-container)" />
 
     <!-- 大纲目录 -->
     <Outline :outline="page?.body.toc?.links" class="sticky top-25" />
@@ -35,8 +31,10 @@ const { data: page } = await useAsyncData(
       if (!data) return null;
       return data;
     },
+    watch: [slug],
   },
 );
+
 console.log("route.path", route.path);
 console.log("slug.value", slug.value);
 

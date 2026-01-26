@@ -3,14 +3,7 @@ moongate.top, www.moongate.top {
     reverse_proxy localhost:3000 {
         # 关键：更完整地传递原始请求信息
         header_up Host {host}
-        header_up X-Real-IP {remote}
-        header_up X-Forwarded-For {remote}
         header_up X-Forwarded-Proto {scheme}
-        # 确保 Nuxt 能感知到正确的上游协议
-        header_up X-Forwarded-Host {host}
-        # 传递连接和Cookie信息，对会话和API调用很重要
-        header_up Connection {>Connection}
-        header_up Cookie {>Cookie}
     }
 
     # 启用 gzip 压缩
