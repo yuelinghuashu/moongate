@@ -1,20 +1,36 @@
-name: Simple Nuxt 4 Deploy
+name: Deploy Nuxt 4 with PNPM
 
-on: [push]
+on:
+  push:
+    branches: [main]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Build
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install PNPM via corepack
         run: |
-          pnpm install
-          pnpm run build
+          # 使用 corepack（Node.js 内置）
+          corepack enable
+          corepack prepare pnpm@latest --activate
           
-      - name: Deploy
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build project
+        run: pnpm run build
+
+      - name: Deploy to server
         uses: easingthemes/ssh-deploy@v4
         with:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -24,7 +40,7 @@ jobs:
           TARGET: "/var/www/my-site/"
           ARGS: "-avz --delete"
           
-      - name: Start with PM2
+      - name: Start server
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -32,8 +48,4 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /var/www/my-site
-            
-            # 直接使用 PM2 启动
-            pm2 describe NuxtApp > /dev/null 2>&1 && pm2 reload NuxtApp || pm2 start .output/server/index.mjs --name NuxtApp
-            
-            pm2 save
+            pm2 restart server/index.mjs --name nuxt-app || pm2 start server/index.mjs --name nuxt-app
