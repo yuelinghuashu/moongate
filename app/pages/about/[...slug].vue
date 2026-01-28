@@ -11,8 +11,11 @@
 
 <script lang="ts" setup>
 import { withLeadingSlash } from "ufo";
+import useGlobalStore from "~/stores/global";
 const route = useRoute();
 const { locale, t } = useI18n();
+const { cacheItems, getCacheItem, setCacheItem } =
+  useGlobalStore();
 
 const slug = computed(() => {
   const path = withLeadingSlash(String(route.params.slug || "/"));
@@ -21,9 +24,11 @@ const slug = computed(() => {
 });
 
 const { data: page, error } = await useAsyncData(
-  `about-${locale.value}-${slug.value}`,
+  `about-${slug.value}`,
   () => {
-    return queryCollection("about").path(`/about${slug.value}`).first();
+    const result = queryCollection("about").path(`/about${slug.value}`).first();
+    if (result) setCacheItem(`about-${slug.value}`, result);
+    return result;
   },
   {
     // 设置 transform 确保数据一致性about
@@ -31,6 +36,11 @@ const { data: page, error } = await useAsyncData(
       if (!data) return null;
       return data;
     },
+    getCachedData(key) {
+      console.log("缓存", key);
+      return getCacheItem(key); // 返回 null 或 undefined 都会触发重新获取
+    },
+    watch: [cacheItems],
   },
 );
 console.log("page", page.value);
