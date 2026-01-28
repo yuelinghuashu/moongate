@@ -23,7 +23,7 @@ const slug = computed(() => {
 const { data: page, error } = await useAsyncData(
   `about-${slug.value}`,
   () => {
-    return queryCollection("about").path(`/about${slug.value}`).first();
+    return queryCollection("about").path(route.path).first();
   },
   {
     // 设置 transform 确保数据一致性about
@@ -31,7 +31,6 @@ const { data: page, error } = await useAsyncData(
       if (!data) return null;
       return data;
     },
-    watch: [slug],
   },
 );
 
