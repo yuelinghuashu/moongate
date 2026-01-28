@@ -52,7 +52,6 @@ const useGlobalStore = defineStore('global', () => {
   persist: {
     storage: piniaPluginPersistedstate.localStorage(),
     pick: ['settings']
-
   }
 })
 

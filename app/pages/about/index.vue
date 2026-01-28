@@ -18,11 +18,10 @@
 const { locale } = useI18n();
 
 // 获取关于页面列表
-const { data: page } = await useAsyncData("aboutList", () => {
+const { data: page } = await useAsyncData("about-list", () => {
   return queryCollection("about").order("meta", "ASC").all();
 });
-
-console.log(page.value);
+console.log(page.value)
 </script>
 
 <style></style>
