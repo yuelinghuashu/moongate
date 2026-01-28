@@ -2,7 +2,7 @@ name: Deploy To Aliyun Server
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   ci:
@@ -39,8 +39,8 @@ jobs:
         uses: burnett01/rsync-deployments@7.0.1
         with:
           switches: -avz --delete # 递归、压缩、同步删除
-          path: .output/ # 👈 Nuxt 的文件输出目录
-          remote_path: /var/www/my-site/ # 👈 服务器上的目标目录
+          path: .output/ # Nuxt 的文件输出目录
+          remote_path: /var/www/my-site/ # 服务器上的目标目录
           remote_host: ${{ secrets.SERVER_HOST }} # 服务器 IP
           remote_user: ${{ secrets.SERVER_USER }} # 登录用户名
           remote_key: ${{ secrets.SSH_PRIVATE_KEY }} # SSH 私钥
@@ -54,7 +54,7 @@ jobs:
           script: |
             echo "🚀 启动 Node.js SSR 服务..."
             cd /var/www/my-site
-            
+
             # 启动或重启 Nuxt 应用
             if pm2 describe nuxt-app > /dev/null 2>&1; then
               echo "🔄 重启现有应用..."
@@ -70,6 +70,6 @@ jobs:
               # 保存 PM2 配置以便开机自启
               pm2 save
             fi
-            
+
             echo "✅ 服务启动完成"
             pm2 status nuxt-app
