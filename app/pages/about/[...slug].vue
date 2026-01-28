@@ -20,19 +20,9 @@ const slug = computed(() => {
   return path.replace(new RegExp(`^/(${locale.value})`), "") || "/";
 });
 
-const { data: page, error } = await useAsyncData(
-  `about-${slug.value}`,
-  () => {
-    return queryCollection("about").path(route.path).first();
-  },
-  {
-    // 设置 transform 确保数据一致性about
-    transform: (data) => {
-      if (!data) return null;
-      return data;
-    },
-  },
-);
+const { data: page, error } = await useAsyncData(`about-${slug.value}`, () => {
+  return queryCollection("about").path(route.path).first();
+});
 
 console.log("page", page.value);
 
