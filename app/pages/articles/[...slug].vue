@@ -41,11 +41,6 @@ const { data: page } = await useAsyncData(
   },
 );
 
-// 添加这个来检查数据
-if (import.meta.server) {
-  console.log("服务器端 page 数据:", page.value);
-}
-
 // 设置 SEO 元信息
 if (page.value?.title && page.value?.description) {
   useSeoMeta({

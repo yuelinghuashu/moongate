@@ -31,20 +31,13 @@ const { data: page, error } = await useAsyncData(
       if (!data) return null;
       return data;
     },
-    watch: [slug],
-    // 设置默认值，避免undefined
-    default: () => null,
-    // 可选：添加获取缓存数据的逻辑
-    getCachedData(key) {
-      const cached = useNuxtData(key);
-      return cached.data.value;
-    },
   },
 );
+console.log("page", page.value);
 
 // 监控错误
 if (error.value) {
-  console.error('页面数据获取错误:', error.value);
+  console.error("页面数据获取错误:", error.value);
 }
 
 console.log("route.path", route.path);
