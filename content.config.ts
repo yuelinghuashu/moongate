@@ -5,11 +5,11 @@ export default defineContentConfig({
     articles: defineCollection({
       // 指定此集合内内容的类型
       type: 'page',
-      source: 'articles/*.md',
+      source: 'articles/*',
     }),
     about: defineCollection({
       type: 'page',
-      source: 'about/*.md',
+      source: 'about/*',
     })
   }
 })
