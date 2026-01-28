@@ -1,9 +1,3 @@
-import { nanoid } from 'nanoid'
-interface CacheItem {
-  data: object
-  expires: string
-}
-
 const useGlobalStore = defineStore('global', () => {
 
   const { setLocale, locales, locale } = useI18n()
@@ -22,23 +16,6 @@ const useGlobalStore = defineStore('global', () => {
 
   // 侧边栏开关
   const isSideBarOpen = ref<boolean>(false)
-
-  const cacheItems = new Map<string, CacheItem>()
-
-  const setCacheItem = (key: string, data: object) => {
-    cacheItems.set(key, { data, expires: nanoid() })
-  }
-
-  const getCacheItem = (key: string) => {
-    const item = cacheItems.get(key)
-    if (item && item.expires > nanoid()) {
-      return item.data
-    }
-  }
-
-  const deleteCacheItem = (key: string) => {
-    cacheItems.delete(key)
-  }
 
   // 用户设置
   const settings = ref({
@@ -66,11 +43,7 @@ const useGlobalStore = defineStore('global', () => {
     buttonType,
     buttonColor,
     isSideBarOpen,
-    cacheItems,
-
-    setCacheItem,
-    getCacheItem,
-    deleteCacheItem,
+    
     setLanguage,
     setTheme,
     settings
