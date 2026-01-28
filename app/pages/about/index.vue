@@ -1,7 +1,7 @@
 <template>
   <div class="max-w-(--ui-container)">
     <UBlogPost
-      v-for="item in aboutList"
+      v-for="item in page"
       :key="item.id"
       :title="item.title"
       :description="item.description"
@@ -17,18 +17,12 @@
 <script lang="ts" setup>
 const { locale } = useI18n();
 
-onMounted(() => {
-  getAboutList();
+// 获取关于页面列表
+const { data: page } = await useAsyncData("aboutList", () => {
+  return queryCollection("about").order("meta", "ASC").all();
 });
 
-// 关于列表
-const aboutList = ref();
-// 获取关于文章列表
-const getAboutList = async () => {
-  // 获取文章列表
-  aboutList.value = await queryCollection("about").order("meta", "ASC").all();
-  console.log("aboutList", aboutList.value);
-};
+console.log(page.value);
 </script>
 
 <style></style>
