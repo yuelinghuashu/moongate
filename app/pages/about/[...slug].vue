@@ -31,7 +31,7 @@ const { data: page, error } = await useAsyncData(
       if (!data) return null;
       return data;
     },
-    watch: [slug.value],
+    watch: [slug],
   },
 );
 
