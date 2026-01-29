@@ -60,17 +60,13 @@ GitHub Actions (CI/CD 管道)
 sudo apt update && sudo apt upgrade -y
 
 # 安装 Node.js（示例使用 Node 20）
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
 sudo apt install -y nodejs
 
 # 安装 PM2（进程管理，用于保持应用运行）
 sudo npm install -g pm2
 
 # 安装 Caddy（作为反向代理和 HTTPS 终端）
-sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https curl
-curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
-curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
-sudo apt update
 sudo apt install caddy
 ```
 
@@ -79,7 +75,8 @@ sudo apt install caddy
 ```bash
 # 创建应用目录
 sudo mkdir -p /var/www/my-dynamic-app
-sudo chown -R $USER:$USER /var/www/my-dynamic-app
+# 注意：请务必将 `caddy` 用户替换为你的实际用户名
+sudo chown -R caddy:caddy /var/www/my-site
 sudo chmod -R 755 /var/www/my-dynamic-app
 ```
 
@@ -99,11 +96,6 @@ example.com, www.example.com {
     reverse_proxy 127.0.0.1:3000
     # 启用压缩
     encode gzip zstd
-}
-
-# HTTP 自动跳转 HTTPS
-http://example.com, http://www.example.com {
-    redir https://{host}{uri} permanent
 }
 ```
 
@@ -169,7 +161,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [22]
+        node: [24]
 
     steps:
       - name: Checkout

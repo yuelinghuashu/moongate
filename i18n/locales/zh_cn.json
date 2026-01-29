@@ -9,7 +9,7 @@
   "search": {
     "placeholder": "搜索文章",
     "options": [
-      { "id": 1, "name": "搜索标题和内容" },
+      { "id": 1, "name": "搜索标题和描述" },
       { "id": 2, "name": "仅搜索标题" }
     ],
     "findCount": "已查询到 {count} 条文档"

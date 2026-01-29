@@ -51,14 +51,15 @@ GitHub Actions (CI/CD 管道)
 sudo apt update && sudo apt upgrade -y
 
 # 安装 Caddy（现代化的 Web 服务器，自动 HTTPS）
-sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https curl
-curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
-curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
-sudo apt update
 sudo apt install caddy
+
+# 安装 Node.js 环境
+curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
+sudo apt install -y nodejs
 
 # 创建网站根目录并授权
 sudo mkdir -p /var/www/my-site
+# 注意：请务必将 `caddy` 用户替换为你的实际用户名
 sudo chown -R caddy:caddy /var/www/my-site
 sudo chmod -R 755 /var/www/my-site
 ```
@@ -84,11 +85,6 @@ example.com, www.example.com {
     try_files {path} /index.html
     # 启用压缩
     encode gzip zstd
-}
-
-# 可选：HTTP 自动跳转至 HTTPS（Caddy 会自动处理 SSL 证书）
-http://example.com, http://www.example.com {
-    redir https://{host}{uri} permanent
 }
 ```
 
@@ -187,7 +183,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # 使用你项目所需的 Node 版本
+          node-version: '24' # 使用你项目所需的 Node 版本
           cache: 'pnpm' # 如果用 npm 则改为 'npm'
 
       # 3. 安装依赖

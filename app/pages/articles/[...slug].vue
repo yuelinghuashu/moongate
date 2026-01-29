@@ -10,7 +10,9 @@
     <!-- 大纲目录 -->
     <Outline :outline="page?.body.toc?.links" class="sticky top-25" />
   </div>
-  <div v-else>123</div>
+  <div v-else>
+    <ErrorPage />
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -27,19 +29,9 @@ const slug = computed(() => {
 });
 
 // 稳定查询：永远只查询 'articles' 这个集合
-const { data: page } = await useAsyncData(
-  `articles-${locale.value}-${slug.value}`,
-  () => {
-    return queryCollection("articles").path(`/articles${slug.value}`).first();
-  },
-  {
-    // 设置 transform 确保数据一致性
-    transform: (data) => {
-      if (!data) return null;
-      return data;
-    },
-  },
-);
+const { data: page } = await useAsyncData(`articles-${slug.value}`, () => {
+  return queryCollection("articles").path(`/articles${slug.value}`).first();
+});
 
 // 设置 SEO 元信息
 if (page.value?.title && page.value?.description) {

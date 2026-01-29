@@ -9,7 +9,7 @@
   "search": {
     "placeholder": "Search articles",
     "options": [
-      { "id": 1, "name": "Search title and content" },
+      { "id": 1, "name": "Search title and description" },
       { "id": 2, "name": "Search title only" }
     ],
     "findCount": "Found {count} documents"

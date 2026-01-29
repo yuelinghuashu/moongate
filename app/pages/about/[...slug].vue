@@ -6,7 +6,9 @@
     <!-- 大纲目录 -->
     <Outline :outline="page?.body.toc?.links" class="sticky top-25" />
   </div>
-  <div v-else>123</div>
+  <div v-else>
+    <ErrorPage />
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -30,9 +32,6 @@ console.log("page", page.value);
 if (error.value) {
   console.error("页面数据获取错误:", error.value);
 }
-
-console.log("route.path", route.path);
-console.log("slug.value", slug.value);
 
 // 设置 SEO 元信息
 if (page.value?.title && page.value?.description) {
