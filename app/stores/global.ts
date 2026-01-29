@@ -43,7 +43,7 @@ const useGlobalStore = defineStore('global', () => {
     buttonType,
     buttonColor,
     isSideBarOpen,
-    
+
     setLanguage,
     setTheme,
     settings
