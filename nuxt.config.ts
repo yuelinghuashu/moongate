@@ -23,9 +23,9 @@ export default defineNuxtConfig({
     ]
   },
   content: {
-    database: {
-      type: 'sqlite',
-      filename: ':memory:'
+    database:{
+      type:'sqlite',
+      filename: 'content.db',
     },
     build: {
       markdown: {
@@ -35,6 +35,9 @@ export default defineNuxtConfig({
         }
       },
     },
+    experimental:{
+      nativeSqlite: true
+    }
   },
   css: ['~/assets/css/main.css'],
   i18n: {
