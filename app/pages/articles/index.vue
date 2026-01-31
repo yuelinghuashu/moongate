@@ -50,7 +50,7 @@
         :class="
           articleData.articleList.length % 2 !== 0 &&
           index === articleData.articleList.length - 1 &&
-          isMobile
+          isDesktop
             ? 'col-span-2'
             : ''
         "
