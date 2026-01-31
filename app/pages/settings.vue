@@ -1,6 +1,6 @@
 <template>
   <ClientOnly>
-    <UForm class="space-y-6 w-100">
+    <UForm class="space-y-6">
       <UFormField :label="t('settings.theme.name')" class="text-xl">
         <URadioGroup
           v-model="settings.appearance.theme"
