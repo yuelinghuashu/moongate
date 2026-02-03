@@ -65,14 +65,6 @@ defineShortcuts({
 // 评论内容
 const discussion = ref<string>("");
 
-// 评论操作按钮
-const actions = ref([
-  {
-    label: "Copy to clipboard",
-    icon: "i-lucide-copy",
-  },
-]);
-
 // 监听快捷键，发送评论
 const handleKeydown = (e: KeyboardEvent) => {
   if (e.shiftKey && e.key === "Enter") {
