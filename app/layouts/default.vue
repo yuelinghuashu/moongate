@@ -22,13 +22,7 @@
             color="neutral"
             class="cursor-pointer"
             :icon="colorMode.value === 'dark' ? 'tabler:moon' : 'tabler:sun'"
-            @click="
-              setTheme(
-                colorMode.value === 'dark' || colorMode.value === 'system'
-                  ? 'light'
-                  : 'dark',
-              )
-            "
+            @click="setTheme(colorMode.value === 'dark' ? 'light' : 'dark')"
           />
           <LanguagePopover />
         </ClientOnly>

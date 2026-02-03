@@ -9,7 +9,7 @@ const useGlobalStore = defineStore('global', () => {
   );
 
   // 按钮类型
-  const buttonType = ref<string>('solid')
+  const buttonType = ref<string>('ghost')
 
   // 按钮颜色
   const buttonColor = ref<string>('primary')
@@ -30,6 +30,7 @@ const useGlobalStore = defineStore('global', () => {
   // 设置主题
   const setTheme = (theme: string) => {
     colorMode.preference = theme
+    settings.value.appearance.theme = theme
   }
 
   // 设置语言

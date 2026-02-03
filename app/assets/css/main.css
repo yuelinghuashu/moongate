@@ -45,10 +45,6 @@
 
   --color-gate-dark-text: #e2e8f0;
   --color-gate-dark-muted-text: #94a3b8;
-
-  /* === 删除紫色系变量，改为蓝色系 === */
-  --sidebar-active-bg-opacity: 0.1; /* 背景透明度 */
-  --sidebar-hover-opacity: 0.05; /* 悬停透明度 */
 }
 
 :root {
@@ -69,9 +65,7 @@
   --sidebar-active-color: var(
     --color-brand-light-600
   ); /* 0284c7 - 与主色一致 */
-  --sidebar-active-color-secondary: var(
-    --color-brand-light-400
-  ); /* 38bdf8 - 浅一点的蓝色用于渐变 */
+
 
   --ui-text: var(--color-gate-light-text);
   --ui-text-muted: var(--color-gate-light-muted-text);
@@ -102,7 +96,6 @@
   --ui-success: #10b981;
   --ui-warning: #f59e0b;
   --ui-error: #ef4444;
-  --ui-info: var(--color-brand-light-500);
 }
 
 .dark {
@@ -116,9 +109,6 @@
 
   /* === 深色模式侧边栏高亮颜色 (使用主题蓝色) === */
   --sidebar-active-color: var(--color-brand-dark-500); /* 3b82f6 - 与主色一致 */
-  --sidebar-active-color-secondary: var(
-    --color-brand-dark-300
-  ); /* 93c5fd - 浅一点的蓝色用于渐变 */
 
   --ui-text: var(--color-gate-dark-text);
   --ui-text-muted: var(--color-gate-dark-muted-text);
@@ -145,10 +135,6 @@
   --ui-success: #34d399;
   --ui-warning: #fbbf24;
   --ui-error: #f87171;
-  --ui-info: var(--color-brand-dark-400);
-
-  /* 深色模式下的柔和光效 */
-  --ui-glow: 0 0 10px color-mix(in srgb, var(--ui-primary), transparent 75%);
 }
 
 /* ====== 左侧侧边栏样式 (组件特定样式，保留透明度效果) ====== */
@@ -222,11 +208,6 @@ a[href]:not(.button):hover {
   margin-left: -0.5rem;
 }
 
-.dark [class*="nav-"]:not(.nav-link):hover,
-.dark a[href]:not(.button):hover {
-  box-shadow: var(--ui-glow);
-}
-
 /* 按钮悬停效果 */
 .button,
 button,
@@ -246,13 +227,6 @@ button:hover,
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.dark .button:hover,
-.dark button:hover,
-.dark [type="button"]:hover,
-.dark [type="submit"]:hover {
-  box-shadow: var(--ui-glow);
-}
-
 /* 卡片悬停效果 */
 .card,
 [class*="card-"],
@@ -270,12 +244,6 @@ button:hover,
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.dark .card:hover,
-.dark [class*="card-"]:hover,
-.dark .article-card:hover {
-  box-shadow: var(--ui-glow);
-}
-
 /* 输入框聚焦效果 */
 input:focus,
 textarea:focus,
@@ -284,11 +252,3 @@ select:focus {
   border-color: var(--ui-primary);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--ui-primary), transparent 70%);
 }
-
-.dark input:focus,
-.dark textarea:focus,
-.dark select:focus {
-  box-shadow: var(--ui-glow);
-}
-
-/* ====== 响应式调整 ====== */

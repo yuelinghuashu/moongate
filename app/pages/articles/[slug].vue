@@ -1,14 +1,31 @@
 <template>
-  <div v-if="page" class="flex">
-    <!-- 文档内容 -->
-    <ContentRenderer
-      v-if="page"
-      :value="page"
-      class="w-full max-w-(--ui-container)"
-    />
+  <div v-if="page">
+    <!-- 文章区 -->
+    <main class="flex">
+      <div>
+        <UBadge
+          class="mb-4"
+          variant="outline"
+          :label="`// Update At ${page.meta.date}`"
+        />
 
-    <!-- 大纲目录 -->
-    <Outline :outline="page?.body.toc?.links" class="sticky top-25" />
+        <!-- 文档内容 -->
+        <ContentRenderer :value="page" class="max-w-(--ui-container)" />
+      </div>
+      <!-- 大纲目录 -->
+      <Outline :outline="page.body.toc?.links" class="sticky top-25" />
+    </main>
+
+    <!-- 评论区 -->
+    <footer class="h-100 text-center max-w-(--ui-container)">
+      <UButton
+        v-if="!isDiscussionVisible"
+        class="text-center"
+        label="打开评论区"
+        @click="isDiscussionVisible = !isDiscussionVisible"
+      />
+      <Discussion v-if="isDiscussionVisible" />
+    </footer>
   </div>
   <div v-else>
     <ErrorPage />
@@ -19,6 +36,9 @@
 import { withLeadingSlash } from "ufo";
 const { locale, t } = useI18n();
 const route = useRoute();
+
+// 评论区显示状态
+const isDiscussionVisible = ref(false);
 
 // 核心：移除语言前缀，得到原始路径
 // 例如：/en/articles/welcome -> /articles/welcome

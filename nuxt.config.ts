@@ -11,7 +11,7 @@ export default defineNuxtConfig({
     "@nuxt/eslint",
     '@nuxt/icon',
     '@pinia/nuxt',
-    'pinia-plugin-persistedstate/nuxt',
+    'pinia-plugin-persistedstate/nuxt'
   ],
   ssr: true,
   devtools: {
