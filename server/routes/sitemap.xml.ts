@@ -1,6 +1,7 @@
 // server/routes/sitemap.xml.ts
 export default defineEventHandler(async (event) => {
   const siteUrl = useRuntimeConfig().public.siteUrl
+  console.log(siteUrl)
 
   try {
     // 1. 获取文章数据
