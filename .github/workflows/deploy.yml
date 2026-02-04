@@ -81,8 +81,7 @@ jobs:
             if pm2 describe moongate > /dev/null 2>&1; then
               echo "🔄 重启现有应用（使用最新配置）..."
               # 关键：先删除旧进程，用新配置启动
-              pm2 delete moongate
-              pm2 start ecosystem.config.js
+              pm2 reload ecosystem.config.js --update-env
             else
               echo "🚀 启动新应用..."
               pm2 start ecosystem.config.js

@@ -15,27 +15,20 @@ export default defineEventHandler((event) => {
   const robotsTxtContent = `User-agent: *
 Allow: /
 
-# 静态资源 - 有助于SEO页面渲染评估
 Allow: /*.css$
 Allow: /*.js$
 Allow: /*.json$
 Allow: /*.xml$
 
-# 如果你的博客有这些路径，确保允许访问
 Allow: /articles/
 Allow: /about/
 
-Allow: /api/sitemap.xml  # 如果sitemap也是动态生成的
+Allow: /api/sitemap.xml
 
-# 可选的：禁止无关或可能浪费资源的路径
-Disallow: /api/auth/      # 如果存在认证接口
+Disallow: /api/auth/
 
 # 最重要的：sitemap位置
 Sitemap: ${baseUrl}/sitemap.xml
-
-# 额外的搜索引擎指令（可选）
-# Bing, Yandex等也支持Sitemap指令
-Sitemap: ${baseUrl}/sitemap-index.xml
 `.trim()
 
   return robotsTxtContent
