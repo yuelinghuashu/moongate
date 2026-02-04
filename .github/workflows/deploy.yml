@@ -33,7 +33,9 @@ jobs:
         run: pnpm run lint
 
       - name: Build
-        run: pnpm run build
+        run: |
+          NUXT_PUBLIC_SITE_URL=https://www.moongate.top \
+          pnpm run build
 
       - name: Deploy to Server via Rsync
         uses: burnett01/rsync-deployments@7.0.1
@@ -55,21 +57,39 @@ jobs:
             echo "🚀 启动 Node.js SSR 服务..."
             cd /var/www/my-site
 
-            # 启动或重启 Nuxt 应用
+            # 创建或更新 PM2 配置文件
+            cat > ecosystem.config.js << 'EOF'
+            module.exports = {
+              apps: [{
+                name: "moongate",
+                script: "./server/index.mjs",
+                instances: 1,
+                exec_mode: "fork",
+                env: {
+                  NODE_ENV: "production",
+                  NUXT_PUBLIC_SITE_URL: "https://www.moongate.top",
+                  PORT: 3000,
+                  HOST: "0.0.0.0"
+                }
+              }]
+            }
+            EOF
+
+            echo "📁 PM2 配置文件已生成"
+
+            # 使用配置文件管理应用
             if pm2 describe moongate > /dev/null 2>&1; then
-              echo "🔄 重启现有应用..."
-              pm2 reload moongate
+              echo "🔄 重启现有应用（使用最新配置）..."
+              # 关键：先删除旧进程，用新配置启动
+              pm2 delete moongate
+              pm2 start ecosystem.config.js
             else
               echo "🚀 启动新应用..."
-              pm2 start server/index.mjs --name "moongate" \
-                --log /var/log/moongate.log \
-                --error /var/log/moongate-error.log \
-                --output /var/log/moongate-out.log \
-                --time
-              
-              # 保存 PM2 配置以便开机自启
-              pm2 save
+              pm2 start ecosystem.config.js
             fi
 
+            # 保存 PM2 配置以便开机自启
+            pm2 save
+            
             echo "✅ 服务启动完成"
             pm2 status moongate
