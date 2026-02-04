@@ -5,13 +5,15 @@ export default defineEventHandler(async (event) => {
 
   try {
     // 1. 获取文章数据
-    const data = await queryCollection(event, 'articles').select('title').all()
+    const articles = await queryCollection(event, 'articles').select('title').all()
+    const about = await queryCollection(event, 'about').select('title').all()
 
     // 2. 构建URL数组
     const urls = [
       `${siteUrl}/`,
-      `${siteUrl}/about`,
-      ...data.map(article => `${siteUrl}/articles/${article.title}`),
+      `${siteUrl}/`,
+      ...articles.map(article => `${siteUrl}/articles/${article.title}`),
+      ...about.map(about => `${siteUrl}/about/${about.title}`),
     ]
 
     // 3. 生成XML（关键修改：添加换行和缩进）

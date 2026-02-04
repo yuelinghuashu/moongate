@@ -56,15 +56,15 @@ jobs:
             cd /var/www/my-site
 
             # 启动或重启 Nuxt 应用
-            if pm2 describe nuxt-app > /dev/null 2>&1; then
+            if pm2 describe moongate > /dev/null 2>&1; then
               echo "🔄 重启现有应用..."
-              pm2 reload nuxt-app
+              pm2 reload moongate
             else
               echo "🚀 启动新应用..."
-              pm2 start server/index.mjs --name "nuxt-app" \
-                --log /var/log/nuxt-app.log \
-                --error /var/log/nuxt-app-error.log \
-                --output /var/log/nuxt-app-out.log \
+              pm2 start server/index.mjs --name "moongate" \
+                --log /var/log/moongate.log \
+                --error /var/log/moongate-error.log \
+                --output /var/log/moongate-out.log \
                 --time
               
               # 保存 PM2 配置以便开机自启
@@ -72,4 +72,4 @@ jobs:
             fi
 
             echo "✅ 服务启动完成"
-            pm2 status nuxt-app
+            pm2 status moongate
