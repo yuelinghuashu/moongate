@@ -95,16 +95,18 @@ const { locale, tm, t } = useI18n();
 const breakpoints = useBreakpoints(breakpointsTailwind, { ssrWidth: 768 });
 const isMobile = breakpoints.smaller("md");
 const isDesktop = breakpoints.greaterOrEqual("md");
-
+const route = useRoute();
 const isDev = import.meta.env.DEV;
 
+console.log(route.query);
+
 // 文章搜索框
-const articleSearchValue = ref<string>("");
+const articleSearchValue = ref<string>(route.query.search?.toString() || "");
 
 // 文章分页
 const articlePagination = ref({
-  page: 1, // 当前页
-  size: 5, // 每页文章数
+  page: Number(route.query.page) || 1, // 当前页
+  size: Number(route.query.size) || 5, // 每页文章数
   sizeOptions: [5, 10, 15, 20], // 每页文章数选项
 });
 

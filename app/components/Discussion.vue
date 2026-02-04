@@ -1,36 +1,24 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
+  <!-- 分隔线 -->
   <USeparator :label="t('discussionSection')" />
+
+  <!-- 评论输入框 -->
   <UTextarea
     ref="discussionInput"
     v-model="discussion"
     autoresize
     :maxrows="6"
     variant="outline"
-    class="w-full"
-    placeholder="请输入你的评论 (Enter 发送，Shift+Enter 换行)"
-    @keydown.enter.prevent="handleKeydown($event)"
+    class="w-full mt-4 mb-2"
+    placeholder="请输入你的评论"
   />
-
-  <div class="flex justify-between items-center mt-3">
-    <div class="text-sm text-gray-500 flex items-center gap-1">
-      <span class="mr-2">{{ t("shortcut") }}</span>
-      <UKbd value="Enter" class="text-xs" />
-      <span class="mr-2">{{ t("send") }}</span>
-      <UKbd value="Shift" class="text-xs" />
-      <span>+</span>
-      <UKbd value="Enter" class="text-xs" />
-      <span>{{ t("newLine") }}</span>
-    </div>
-    <UButton
-      :disabled="!discussion"
-      variant="solid"
-      class="cursor-pointer"
-      @click="sendDiscussion()"
-      >{{ t("sendDiscussion") }}</UButton
-    >
+  <!-- 评论按钮 -->
+  <div class="text-right">
+    <UButton :label="t('sendDiscussion')" />
   </div>
 
+  <!-- 评论列表 -->
   <div class="mt-4">
     <div v-if="0" class="text-center">暂无评论</div>
     <div v-else class="flex items-center gap-4">
@@ -64,20 +52,4 @@ defineShortcuts({
 
 // 评论内容
 const discussion = ref<string>("");
-
-// 监听快捷键，发送评论
-const handleKeydown = (e: KeyboardEvent) => {
-  if (e.shiftKey && e.key === "Enter") {
-    discussion.value += "\n";
-  } else if (e.key === "Enter") {
-    sendDiscussion();
-  }
-};
-
-// 点击按钮，发送评论事件
-const sendDiscussion = () => {
-  if (!discussion.value) return;
-  console.log(discussion.value);
-  discussion.value = "";
-};
 </script>

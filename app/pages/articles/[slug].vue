@@ -20,8 +20,9 @@
     <footer class="h-100 text-center max-w-(--ui-container)">
       <UButton
         v-if="!isDiscussionVisible"
-        class="text-center"
+        class="text-center cursor-pointer"
         label="打开评论区"
+        variant="ghost"
         @click="isDiscussionVisible = !isDiscussionVisible"
       />
       <Discussion v-if="isDiscussionVisible" />

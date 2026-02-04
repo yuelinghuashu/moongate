@@ -17,6 +17,11 @@ export default defineNuxtConfig({
   devtools: {
     enabled: true
   },
+  runtimeConfig: {
+    public:{
+      siteUrl: process.env.SITE_URL,
+    }
+  },
   vite: {
     plugins: [
       removeConsole({ includes: ['log'] }) // 移除console.log

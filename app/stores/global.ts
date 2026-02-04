@@ -8,12 +8,6 @@ const useGlobalStore = defineStore('global', () => {
     (item) => item.code === locale.value,
   );
 
-  // 按钮类型
-  const buttonType = ref<string>('ghost')
-
-  // 按钮颜色
-  const buttonColor = ref<string>('primary')
-
   // 侧边栏开关
   const isSideBarOpen = ref<boolean>(false)
 
@@ -34,15 +28,13 @@ const useGlobalStore = defineStore('global', () => {
   }
 
   // 设置语言
-  const setLanguage = (lang: string) => {
+  const setLanguage = (lang) => {
     setLocale(lang)
     settings.value.appearance.language = lang
   }
 
 
   return {
-    buttonType,
-    buttonColor,
     isSideBarOpen,
 
     setLanguage,

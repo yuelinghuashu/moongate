@@ -12,17 +12,14 @@
         target: '_self',
         trailingIcon: 'i-lucide-arrow-right',
         size: 'xl',
-        variant: buttonType,
-        color: buttonColor,
+        variant: 'solid',
+        color: 'primary',
       },
     ]"
   />
 </template>
 
 <script lang="ts" setup>
-import useGlobalStore from "~/stores/global";
-
-const { buttonType, buttonColor } = useGlobalStore();
 const { t, locale } = useI18n();
 
 const title = "Where Moon Meets Code";

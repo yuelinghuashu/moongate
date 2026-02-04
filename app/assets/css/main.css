@@ -2,33 +2,33 @@
 @import "@nuxt/ui";
 
 @theme static {
-  /* ====== 浅色模式品牌色系 (保持不变) ====== */
+  /* ====== 浅色模式品牌色系 ====== */
   --color-brand-light-50: #f0fbff;
   --color-brand-light-100: #e0f7fe;
   --color-brand-light-200: #baeefd;
   --color-brand-light-300: #7dddfc;
   --color-brand-light-400: #38bdf8;
   --color-brand-light-500: #0ea5e9;
-  --color-brand-light-600: #0284c7; /* 浅色模式主色 */
+  --color-brand-light-600: #0284c7;
   --color-brand-light-700: #0369a1;
   --color-brand-light-800: #075985;
   --color-brand-light-900: #0c4a6e;
   --color-brand-light-950: #082f49;
 
-  /* ====== 深色模式品牌色系 (保持不变) ====== */
+  /* ====== 深色模式品牌色系 ====== */
   --color-brand-dark-50: #eff6ff;
   --color-brand-dark-100: #dbeafe;
   --color-brand-dark-200: #bfdbfe;
   --color-brand-dark-300: #93c5fd;
-  --color-brand-dark-400: #60a5fa; /* 深色模式主色 - 柔和蓝色 */
-  --color-brand-dark-500: #3b82f6; /* 深色模式核心色 */
+  --color-brand-dark-400: #60a5fa;
+  --color-brand-dark-500: #3b82f6;
   --color-brand-dark-600: #2563eb;
   --color-brand-dark-700: #1d4ed8;
   --color-brand-dark-800: #1e40af;
   --color-brand-dark-900: #1e3a8a;
   --color-brand-dark-950: #172554;
 
-  /* 中性色阶 (保持不变) */
+  /* 中性色阶 */
   --color-gate-light-bg: #e6edf2;
   --color-gate-light-muted: #d1dbe3;
   --color-gate-light-card: #ffffff;
@@ -53,24 +53,20 @@
   --ui-container: 80rem;
   --ui-header-height: --spacing(16);
 
-  /* ====== 浅色模式：使用明亮品牌色 ====== */
-  --ui-primary: var(--color-brand-light-600); /* 0284c7 */
+  /* ====== 浅色模式 ====== */
+  --ui-primary: var(--color-brand-light-600);
   --ui-bg: var(--color-gate-light-bg);
   --ui-bg-muted: var(--color-gate-light-muted);
   --ui-bg-elevated: var(--color-gate-light-card);
   --ui-bg-hover: #c8d3dd;
   --ui-bg-active: var(--color-brand-light-100);
 
-  /* === 浅色模式侧边栏高亮颜色 (使用主题蓝色) === */
-  --sidebar-active-color: var(
-    --color-brand-light-600
-  ); /* 0284c7 - 与主色一致 */
-
+  /* === 浅色模式侧边栏高亮颜色 === */
+  --sidebar-active-color: var(--color-brand-light-600);
 
   --ui-text: var(--color-gate-light-text);
   --ui-text-muted: var(--color-gate-light-muted-text);
   --ui-text-hover: var(--color-brand-light-700);
-  --ui-text-active: var(--color-brand-light-800);
 
   --ui-border: var(--color-gate-light-border);
   --ui-border-hover: var(--color-brand-light-400);
@@ -99,24 +95,23 @@
 }
 
 .dark {
-  /* ====== 深色模式：使用柔和品牌色 ====== */
-  --ui-primary: var(--color-brand-dark-500); /* 3b82f6 */
+  /* ====== 深色模式 ====== */
+  --ui-primary: var(--color-brand-dark-500);
   --ui-bg: var(--color-gate-dark-bg);
   --ui-bg-muted: var(--color-gate-dark-muted);
   --ui-bg-elevated: var(--color-gate-dark-card);
   --ui-bg-hover: #252e40;
   --ui-bg-active: var(--color-brand-dark-900);
 
-  /* === 深色模式侧边栏高亮颜色 (使用主题蓝色) === */
-  --sidebar-active-color: var(--color-brand-dark-500); /* 3b82f6 - 与主色一致 */
+  /* === 深色模式侧边栏高亮颜色 === */
+  --sidebar-active-color: var(--color-brand-dark-500);
 
   --ui-text: var(--color-gate-dark-text);
   --ui-text-muted: var(--color-gate-dark-muted-text);
-  --ui-text-hover: var(--color-brand-dark-400); /* 60a5fa */
-  --ui-text-active: var(--color-brand-dark-300); /* 93c5fd */
+  --ui-text-hover: var(--color-brand-dark-400);
 
   --ui-border: var(--color-gate-dark-border);
-  --ui-border-hover: var(--color-brand-dark-600); /* 2563eb */
+  --ui-border-hover: var(--color-brand-dark-600);
 
   /* 深色模式主色阶映射 */
   --ui-primary-50: var(--color-brand-dark-50);
@@ -137,9 +132,9 @@
   --ui-error: #f87171;
 }
 
-/* ====== 左侧侧边栏样式 (组件特定样式，保留透明度效果) ====== */
+/* ====== 左侧侧边栏样式 ====== */
 
-/* 侧边栏基础样式 - 保持您原来的半透明效果 */
+/* 侧边栏基础样式 */
 .layout-sidebar {
   background-color: rgba(255, 255, 255, 0.02);
   border-color: rgba(255, 255, 255, 0.1);
@@ -162,19 +157,19 @@
 
 /* 悬停效果 */
 .nav-link:hover {
-  background-color: rgba(0, 0, 0, var(--sidebar-hover-opacity));
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .dark .nav-link:hover {
-  background-color: rgba(255, 255, 255, var(--sidebar-hover-opacity));
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
-/* 活跃状态样式 - 使用主题蓝色 */
+/* 活跃状态样式 */
 .nav-link.active {
   background-color: color-mix(
     in srgb,
     var(--sidebar-active-color),
-    transparent calc(100% - var(--sidebar-active-bg-opacity) * 100%)
+    transparent 90%
   );
 }
 
@@ -189,49 +184,77 @@
   transition: color 0.2s ease;
 }
 
-/* ====== 其他通用样式保持不变 ====== */
+/* ====== 按钮样式 (极简修改) ====== */
 
-/* 导航链接悬停效果 */
-[class*="nav-"]:not(.nav-link),
-a[href]:not(.button) {
-  transition: all 0.2s ease;
-  text-decoration: none;
-  color: var(--ui-text);
-}
-
-[class*="nav-"]:not(.nav-link):hover,
-a[href]:not(.button):hover {
-  color: var(--ui-text-hover);
-  background-color: var(--ui-bg-hover);
-  border-left: 2px solid var(--ui-primary);
-  padding-left: 0.5rem;
-  margin-left: -0.5rem;
-}
-
-/* 按钮悬停效果 */
+/* 按钮基础样式 - 增加对比度 */
 .button,
 button,
 [type="button"],
 [type="submit"] {
-  transition: all 0.2s ease;
-  border: 1px solid var(--ui-border);
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+  border: 1px solid var(--ui-text-muted); /* 使用文本颜色获得更好对比度 */
+  color: var(--ui-text);
 }
 
+/* 按钮悬停效果 - 只改变边框颜色 */
 .button:hover,
 button:hover,
 [type="button"]:hover,
 [type="submit"]:hover {
-  background-color: var(--ui-bg-hover);
-  border-color: var(--ui-border-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-color: var(--ui-primary);
 }
 
-/* 卡片悬停效果 */
+/* 按钮激活效果 */
+.button:active,
+button:active,
+[type="button"]:active,
+[type="submit"]:active {
+  background-color: color-mix(in srgb, var(--ui-primary), transparent 85%);
+}
+
+/* 按钮焦点效果 */
+.button:focus-visible,
+button:focus-visible,
+[type="button"]:focus-visible,
+[type="submit"]:focus-visible {
+  outline: 2px solid var(--ui-primary);
+  outline-offset: 2px;
+}
+
+/* 按钮禁用状态 */
+.button:disabled,
+button:disabled,
+[type="button"]:disabled,
+[type="submit"]:disabled {
+  opacity: var(--ui-opacity-disabled);
+  cursor: not-allowed;
+  border-color: var(--ui-border);
+}
+
+/* ====== 链接样式 - 修正版 ====== */
+
+/* 默认链接样式 - 只针对没有特定类的纯链接 */
+a[href]:not(.button):not(.nav-link) {
+  transition: color 0.15s ease;
+  text-decoration: none;
+}
+
+a[href]:not(.button):not(.nav-link):hover {
+  color: var(--ui-text-hover);
+  text-decoration: underline; /* 悬停时显示下划线 */
+  /* 移除左侧边框和背景色变化 */
+}
+
+/* ====== 卡片样式 ====== */
+
+/* 卡片基础样式 */
 .card,
 [class*="card-"],
 .article-card {
-  transition: all 0.2s ease;
+  transition: border-color 0.2s ease;
   border: 1px solid var(--ui-border);
   background-color: var(--ui-bg-elevated);
 }
@@ -240,9 +263,9 @@ button:hover,
 [class*="card-"]:hover,
 .article-card:hover {
   border-color: var(--ui-border-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
+
+/* ====== 输入框样式 ====== */
 
 /* 输入框聚焦效果 */
 input:focus,
