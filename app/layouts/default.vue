@@ -14,6 +14,10 @@
         </ClientOnly>
       </template>
 
+      <template #default>
+        <NavigationBar orientation="horizontal"  />
+      </template>
+
       <!-- 辅助图标栏 -->
       <template #right>
         <ClientOnly>
@@ -30,22 +34,19 @@
 
       <!-- 移动抽屉，只在移动端显示 -->
       <template #body>
-        <NavigationBar />
+        <NavigationBar orientation="vertical" />
       </template>
     </UHeader>
 
     <!-- 主体 -->
-    <UPage class="mt-8" :ui="{ left: 'border-r', center: 'mx-0 px-4' }">
-      <!-- 左侧导航栏 -->
-      <template #left>
-        <NavigationBar class="page-left h-fit sticky top-25" />
-      </template>
-
+    <UPage
+      :ui="{
+        center: 'flex justify-center w-full mt-8 max-w-(--ui-container) mx-auto px-4 sm:px-6 lg:px-8',
+      }"
+    >
       <!-- 内容区域 -->
       <template #default>
-        <div>
-          <slot />
-        </div>
+        <slot />
       </template>
     </UPage>
   </div>
@@ -59,13 +60,4 @@ const { locale } = useI18n();
 const colorMode = useColorMode();
 </script>
 
-<style scoped>
-.page-right {
-  border: 1px solid #ccc;
-}
-@media (max-width: 768px) {
-  .page-left {
-    display: none;
-  }
-}
-</style>
+<style scoped></style>

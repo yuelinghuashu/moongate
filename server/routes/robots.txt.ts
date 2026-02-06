@@ -27,7 +27,6 @@ Allow: /api/sitemap.xml
 
 Disallow: /api/auth/
 
-# 最重要的：sitemap位置
 Sitemap: ${baseUrl}/sitemap.xml
 `.trim()
 

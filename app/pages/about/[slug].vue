@@ -1,10 +1,10 @@
 <template>
   <div v-if="page" class="flex">
     <!-- 文档内容 -->
-    <ContentRenderer :value="page" class="w-full max-w-(--ui-container)" />
+    <ContentRenderer :value="page" />
 
     <!-- 大纲目录 -->
-    <Outline :outline="page?.body.toc?.links" class="sticky top-25" />
+    <!-- <Outline :outline="page?.body.toc?.links" class="sticky top-25" /> -->
   </div>
   <div v-else>
     <ErrorPage />

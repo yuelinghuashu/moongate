@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-(--ui-container)">
+  <div>
     <UBlogPost
       v-for="item in page"
       :key="item.id"

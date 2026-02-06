@@ -1,12 +1,10 @@
 <template>
   <!-- 页面英雄区 -->
   <UPageHero
-    :ui="{ container: 'mx-0' }"
     :title="t('title')"
     :description="t('description')"
     :links="[
       {
-        // label: 'Get started',
         label: 'Accessing the gate',
         to: locale === 'zh_cn' ? '/articles' : `/${locale}/articles`,
         target: '_self',

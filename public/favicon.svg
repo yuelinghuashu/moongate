@@ -1,3 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 24 24">
-	<path fill="none" stroke="#51a2ff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <path 
+    fill="#60a5fa" 
+    d="M40,10 C17.9,10 0,27.9 0,50 C0,72.1 17.9,90 40,90 C30,80 25,65 25,50 C25,35 30,20 40,10 Z" 
+  />
+  
+  <path 
+    fill="#60a5fa" 
+    d="M55,10 H90 V90 H55 V75 H75 V25 H55 Z" 
+  />
+  
+  <rect x="42" y="44" width="12" height="12" fill="#60a5fa" />
 </svg>

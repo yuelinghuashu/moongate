@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/no-multiple-template-root -->
 <template>
-  <div class="max-w-(--ui-container)">
+  <div>
     <form class="flex items-center justify-between search">
       <!-- 搜索组件 -->
       <UInput
@@ -36,12 +36,12 @@
       </ClientOnly>
     </form>
 
-    <!-- 文章预览组件 -->
+    <!-- 文章总览组件 -->
     <div class="mt-4 mb-8 grid grid-cols-2 grid-rows-2 gap-2 articles-grid">
       <UBlogPost
         v-for="(item, index) in articleData?.articleList"
         :key="item.id"
-        :ui="{ description: 'line-clamp-3' }"
+        :ui="{ description: 'line-clamp-2' }"
         :title="item.title"
         :description="item.description"
         :date="item.meta.date"
@@ -77,9 +77,9 @@
         {{ t("search.findCount", { count: articleData?.total }) }}
       </span>
     </div>
-  </div>
 
-  <div v-if="isMobile" class="text-center cursor-pointer">加载更多</div>
+    <div v-if="isMobile" class="text-center cursor-pointer">加载更多</div>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -154,7 +154,7 @@ const { data: articleData, refresh } = await useAsyncData(
     return { total, articleList };
   },
   {
-    watch: [articlePagination],
+    watch: [articlePagination.value],
   },
 );
 

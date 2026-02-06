@@ -1,6 +1,6 @@
 <template>
   <nav class="text-center">
-    <ul class="flex flex-col">
+    <ul :class="props.orientation === 'horizontal' ? 'flex' : ''">
       <li
         v-for="item in tm('navigationBar')"
         :key="item.id"
@@ -12,7 +12,8 @@
       >
         <NuxtLink
           :to="isDev ? item.link.loc.source : item.link"
-          class="text-xl cursor-pointer w-full h-full block p-4"
+          class="block"
+          :class="props.orientation === 'horizontal' ? 'mx-4':'my-4'"
         >
           {{ isDev ? item.name.loc.source : item.name }}
         </NuxtLink>
@@ -25,4 +26,11 @@
 const { tm } = useI18n();
 const route = useRoute();
 const isDev = import.meta.env.DEV;
+
+const props = defineProps({
+  orientation: {
+    type: String,
+    default: "horizontal",
+  },
+});
 </script>

@@ -10,10 +10,10 @@
         />
 
         <!-- 文档内容 -->
-        <ContentRenderer :value="page" class="max-w-(--ui-container)" />
+        <ContentRenderer :value="page" />
       </div>
       <!-- 大纲目录 -->
-      <Outline :outline="page.body.toc?.links" class="sticky top-25" />
+      <!-- <Outline :outline="page.body.toc?.links" class="sticky top-25" /> -->
     </main>
 
     <!-- 评论区 -->
