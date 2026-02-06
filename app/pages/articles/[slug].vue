@@ -13,7 +13,7 @@
         <ContentRenderer :value="page" />
       </div>
       <!-- 大纲目录 -->
-      <!-- <Outline :outline="page.body.toc?.links" class="sticky top-25" /> -->
+      <Outline :outline="page.body.toc?.links" class="sticky top-25" />
     </main>
 
     <!-- 评论区 -->
@@ -53,6 +53,7 @@ const slug = computed(() => {
 const { data: page } = await useAsyncData(`articles-${slug.value}`, () => {
   return queryCollection("articles").path(`/articles${slug.value}`).first();
 });
+
 
 // 设置 SEO 元信息
 if (page.value?.title && page.value?.description) {

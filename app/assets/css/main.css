@@ -150,7 +150,6 @@
   transition: all 0.2s ease;
   margin-bottom: 4px;
   cursor: pointer;
-  border-radius: 6px;
   color: var(--ui-text);
   text-decoration: none;
 }

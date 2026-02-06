@@ -1,10 +1,12 @@
 <template>
-  <div v-if="page" class="flex">
-    <!-- 文档内容 -->
-    <ContentRenderer :value="page" />
+  <div v-if="page">
+    <main class="flex">
+      <!-- 文档内容 -->
+      <ContentRenderer :value="page" />
 
-    <!-- 大纲目录 -->
-    <!-- <Outline :outline="page?.body.toc?.links" class="sticky top-25" /> -->
+      <!-- 大纲目录 -->
+      <Outline :outline="page?.body.toc?.links" class="sticky top-25" />
+    </main>
   </div>
   <div v-else>
     <ErrorPage />
