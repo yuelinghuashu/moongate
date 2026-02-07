@@ -2,7 +2,7 @@
   <div v-if="page">
     <!-- 文章区 -->
     <main class="flex">
-      <div>
+      <div class="flex-1 min-w-0">
         <UBadge
           class="mb-4"
           variant="outline"
@@ -53,7 +53,6 @@ const slug = computed(() => {
 const { data: page } = await useAsyncData(`articles-${slug.value}`, () => {
   return queryCollection("articles").path(`/articles${slug.value}`).first();
 });
-
 
 // 设置 SEO 元信息
 if (page.value?.title && page.value?.description) {

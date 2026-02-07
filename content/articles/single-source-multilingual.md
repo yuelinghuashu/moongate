@@ -7,15 +7,13 @@ tags: [Nuxt, i18n, Content]
 
 # Nuxt Content + i18n终极集成方案：一套内容支持多语言的完整实现
 
-**英文标题**: Single Source, Multilingual Routes: A Seamless Integration of Nuxt Content and i18n
-
-### 概述
+## 概述
 
 在构建多语言技术文档站点时，我们常面临一个矛盾：**内容维护成本**与**多语言用户体验**如何兼得？官方方案往往建议为每种语言维护独立的文档集合，但这对于独立开发者或小团队来说负担沉重。
 
 本文介绍一种创新方案：**只维护一套核心文档（如英文或中文），利用 `@nuxtjs/i18n` 的路由前缀功能，为用户提供完整的多语言界面体验**。访问 `/en/article` 与 `/zh_cn/article` 将显示相同的文章内容，但界面语言、导航菜单等将根据URL前缀自动切换。
 
-### 核心优势
+## 核心优势
 
 - **维护极简**：只需维护单一语言的内容源
 - **体验完整**：用户仍能获得地址栏、导航、界面完全本地化的体验
@@ -24,7 +22,7 @@ tags: [Nuxt, i18n, Content]
 
 ---
 
-### 1. 问题背景：当 Content 遇上 i18n
+## 问题背景：当 Content 遇上 i18n
 
 `@nuxt/content` 模块本身提供了基础的国际化支持，但其设计初衷是**内容与语言强绑定**：
 
@@ -43,7 +41,7 @@ tags: [Nuxt, i18n, Content]
 
 ---
 
-### 2. 解决方案：路径转换中间层
+## 解决方案：路径转换中间层
 
 核心思路是建立一个**路径转换层**，在用户访问时动态处理 URL：
 
@@ -128,12 +126,14 @@ content/
 ## 🔄 路由映射关系
 
 | 访问 URL                     | i18n 处理  | Content 查询           | 实际文件                         |
-| ---------------------------- | ---------- | ---------------------- | -------------------------------- |
+| ---------------------------- | ---------- | --------------------- | -------------------------------- |
 | `/zh_cn/articles/nuxt-guide` | 识别为中文 | `/articles/nuxt-guide` | `content/articles/nuxt-guide.md` |
 | `/en/articles/nuxt-guide`    | 识别为英文 | `/articles/nuxt-guide` | `content/articles/nuxt-guide.md` |
 | `/ja/articles/nuxt-guide`    | 识别为日文 | `/articles/nuxt-guide` | `content/articles/nuxt-guide.md` |
 
-### 总结
+
+
+## 总结
 
 通过 `@nuxtjs/i18n` 的路由前缀与 `@nuxt/content` 的路径转换相结合，我们实现了：
 

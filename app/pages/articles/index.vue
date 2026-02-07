@@ -39,7 +39,7 @@
     <!-- 文章总览组件 -->
     <div class="mt-4 mb-8 grid grid-cols-2 grid-rows-2 gap-2 articles-grid">
       <UBlogPost
-        v-for="(item, index) in articleData?.articleList"
+        v-for="(item, index) in allArticles"
         :key="item.id"
         :ui="{ description: 'line-clamp-2' }"
         :title="item.title"
@@ -88,17 +88,18 @@ import {
   useEventListener,
   breakpointsTailwind,
   useBreakpoints,
+  useScroll,
 } from "@vueuse/core";
+import { useSwipeUp } from "~/composables/useSwipeUp";
 
 const { settings } = useGlobalStore();
 const { locale, tm, t } = useI18n();
 const breakpoints = useBreakpoints(breakpointsTailwind, { ssrWidth: 768 });
 const isMobile = breakpoints.smaller("md");
 const isDesktop = breakpoints.greaterOrEqual("md");
+const { y } = useScroll(window);
 const route = useRoute();
 const isDev = import.meta.env.DEV;
-
-console.log(route.query);
 
 // 文章搜索框
 const articleSearchValue = ref<string>(route.query.search?.toString() || "");
@@ -110,10 +111,20 @@ const articlePagination = ref({
   sizeOptions: [5, 10, 15, 20], // 每页文章数选项
 });
 
+const isLoading = ref(false);
+
 // 判断是否焦点在某个组件中
 const isInputFocused = computed(() => {
   const activeElement = document.activeElement?.tagName;
   return activeElement === "INPUT" || activeElement === "TEXTAREA";
+});
+
+// 监听窗口滚动，并计算是否接近底部
+const isNearBottom = computed(() => {
+  const scrollHeight = document.documentElement.scrollHeight;
+  const viewportHeight = window.innerHeight;
+  // 当滚动到距离页面底部 200 像素以内时，认为接近底部
+  return scrollHeight - y.value - viewportHeight < 200;
 });
 
 // 获取文章列表
@@ -158,6 +169,12 @@ const { data: articleData, refresh } = await useAsyncData(
   },
 );
 
+const allArticles = ref(articleData.value.articleList || []);
+// 监听路由变化，更新分页参数
+watch(()=>articleData.value?.articleList, ()=>{
+  allArticles.value.push(...articleData.value.articleList);
+})
+
 // 计算总页数
 const totalPages = computed(() => {
   const { size } = articlePagination.value;
@@ -169,6 +186,30 @@ const hasPrevPage = computed(() => articlePagination.value.page > 1);
 const hasNextPage = computed(
   () => articlePagination.value.page < totalPages.value,
 );
+
+// 监听滑动事件，上滑加载更多文章
+const loadMoreArticles = () => {
+  // 增加条件：不在加载中、接近底部、是移动端、还有下一页
+  if (
+    isLoading.value ||
+    !isNearBottom.value ||
+    !isMobile.value ||
+    !hasNextPage.value
+  )
+    return;
+
+  isLoading.value = true;
+  try {
+    articlePagination.value.page += 1;
+    refresh();
+  } catch (error) {
+    console.error("加载失败", error);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+useSwipeUp(loadMoreArticles, { threshold: 60 }); // 阈值可调
 
 // 监听键盘事件，左右方向键翻页
 useEventListener("keydown", (e) => {

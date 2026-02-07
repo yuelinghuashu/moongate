@@ -15,7 +15,7 @@
       </template>
 
       <template #default>
-        <NavigationBar orientation="horizontal"  />
+        <NavigationBar orientation="horizontal" />
       </template>
 
       <!-- 辅助图标栏 -->
@@ -41,7 +41,8 @@
     <!-- 主体 -->
     <UPage
       :ui="{
-        center: 'flex justify-center w-full mt-8 max-w-(--ui-container) mx-auto px-4 sm:px-6 lg:px-8',
+        center:
+          'flex justify-center w-full max-w-(--ui-container) mx-auto mt-8 px-4 sm:px-6 lg:px-8',
       }"
     >
       <!-- 内容区域 -->
