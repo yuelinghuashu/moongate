@@ -43,7 +43,7 @@
 import { withLeadingSlash } from "ufo";
 const { locale, t } = useI18n();
 const route = useRoute();
-const { isDesktop, isMobile } = useResponsive();
+const { isDesktop } = useResponsive();
 
 // 评论区显示状态
 const isDiscussionVisible = ref(false);
