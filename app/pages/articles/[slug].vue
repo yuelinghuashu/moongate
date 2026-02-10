@@ -13,7 +13,13 @@
         <ContentRenderer :value="page" />
       </div>
       <!-- 大纲目录 -->
-      <Outline :outline="page.body.toc?.links" class="sticky top-25" />
+      <ClientOnly>
+        <Outline
+          v-if="isDesktop"
+          :outline="page.body.toc?.links"
+          class="sticky top-25"
+        />
+      </ClientOnly>
     </main>
 
     <!-- 评论区 -->
@@ -37,6 +43,7 @@
 import { withLeadingSlash } from "ufo";
 const { locale, t } = useI18n();
 const route = useRoute();
+const { isDesktop, isMobile } = useResponsive();
 
 // 评论区显示状态
 const isDiscussionVisible = ref(false);

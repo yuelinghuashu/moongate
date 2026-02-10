@@ -42,7 +42,7 @@
     <UPage
       :ui="{
         center:
-          'flex justify-center w-full max-w-(--ui-container) mx-auto mt-8 px-4 sm:px-6 lg:px-8',
+          'w-full max-w-(--ui-container) mx-auto mt-8 px-4 sm:px-6 lg:px-8',
       }"
     >
       <!-- 内容区域 -->

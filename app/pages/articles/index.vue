@@ -84,19 +84,13 @@
 
 <script lang="ts" setup>
 import useGlobalStore from "~/stores/global";
-import {
-  useEventListener,
-  breakpointsTailwind,
-  useBreakpoints,
-  useScroll,
-} from "@vueuse/core";
+import { useEventListener, useScroll } from "@vueuse/core";
 import { useSwipeUp } from "~/composables/useSwipeUp";
+const { isMobile, isDesktop } = useResponsive();
 
 const { settings } = useGlobalStore();
 const { locale, tm, t } = useI18n();
-const breakpoints = useBreakpoints(breakpointsTailwind, { ssrWidth: 768 });
-const isMobile = breakpoints.smaller("md");
-const isDesktop = breakpoints.greaterOrEqual("md");
+
 const { y } = useScroll(window);
 const route = useRoute();
 const isDev = import.meta.env.DEV;
@@ -171,9 +165,12 @@ const { data: articleData, refresh } = await useAsyncData(
 
 const allArticles = ref(articleData.value.articleList || []);
 // 监听路由变化，更新分页参数
-watch(()=>articleData.value?.articleList, ()=>{
-  allArticles.value.push(...articleData.value.articleList);
-})
+watch(
+  () => articleData.value?.articleList,
+  () => {
+    allArticles.value.push(...articleData.value.articleList);
+  },
+);
 
 // 计算总页数
 const totalPages = computed(() => {
