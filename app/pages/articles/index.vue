@@ -39,7 +39,7 @@
     <!-- 文章总览组件 -->
     <div class="mt-4 mb-8 grid grid-cols-2 grid-rows-2 gap-2 articles-grid">
       <UBlogPost
-        v-for="(item, index) in allArticles"
+        v-for="(item, index) in articleList"
         :key="item.id"
         :ui="{ description: 'line-clamp-2' }"
         :title="item.title"
@@ -64,13 +64,13 @@
           v-model:page="articlePagination.page"
           :total="articleData?.total"
           :items-per-page="articlePagination.size"
-          @update:page="refresh()"
         />
       </ClientOnly>
       <USelect
         v-model="articlePagination.size"
         :items="articlePagination.sizeOptions"
         class="ml-4"
+        @update:model-value="articlePagination.page = 1"
       />
 
       <span class="ml-4">
@@ -162,13 +162,16 @@ const { data: articleData, refresh } = await useAsyncData(
     watch: [articlePagination.value],
   },
 );
+// 文章列表
+const articleList = ref<[]>(articleData.value?.articleList || []);
 
-const allArticles = ref(articleData.value.articleList || []);
 // 监听路由变化，更新分页参数
 watch(
   () => articleData.value?.articleList,
-  () => {
-    allArticles.value.push(...articleData.value.articleList);
+  (newValue, oldValue) => {
+    if (isMobile.value && articlePagination.value.page !== 1)
+      articleList.value = [...oldValue, ...newValue];
+    else articleList.value = newValue;
   },
 );
 
@@ -184,7 +187,7 @@ const hasNextPage = computed(
   () => articlePagination.value.page < totalPages.value,
 );
 
-// 监听滑动事件，上滑加载更多文章
+// 滑动事件，上滑加载更多文章
 const loadMoreArticles = () => {
   // 增加条件：不在加载中、接近底部、是移动端、还有下一页
   if (
@@ -206,6 +209,7 @@ const loadMoreArticles = () => {
   }
 };
 
+// 监听滑动事件
 useSwipeUp(loadMoreArticles, { threshold: 60 }); // 阈值可调
 
 // 监听键盘事件，左右方向键翻页
