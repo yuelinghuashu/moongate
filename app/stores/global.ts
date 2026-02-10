@@ -11,9 +11,6 @@ const useGlobalStore = defineStore('global', () => {
   // 侧边栏开关
   const isSideBarOpen = ref<boolean>(false)
 
-  // 大纲目录开关
-  const isOutlineVisible = ref<boolean>(true);
-
   // 用户设置
   const settings = ref({
     appearance: {
@@ -39,7 +36,6 @@ const useGlobalStore = defineStore('global', () => {
 
   return {
     isSideBarOpen,
-    isOutlineVisible,
 
     setLanguage,
     setTheme,
@@ -48,7 +44,7 @@ const useGlobalStore = defineStore('global', () => {
 }, {
   persist: {
     storage: piniaPluginPersistedstate.localStorage(),
-    pick: ['settings', 'isOutlineVisible']
+    pick: ['settings']
   }
 })
 

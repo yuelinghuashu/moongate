@@ -1,18 +1,8 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <UCard
-    class="ml-4 leading-7.5 min-w-60 min-h-100 h-full relative"
-    :ui="{ root: isOutlineVisible ? '' : 'min-w-0! min-h-0!' }"
-  >
-    <!-- 控制大纲目录的显示和隐藏图标 -->
-    <UIcon
-      :name="isOutlineVisible ? 'i-tabler:eye' : 'i-tabler:eye-off'"
-      class="cursor-pointer absolute right-4 top-2"
-      @click="isOutlineVisible = !isOutlineVisible"
-    />
-
+  <UCard class="ml-4 leading-7.5 h-full min-w-60 min-h-100">
     <!-- 二级标题 -->
-    <ul v-show="isOutlineVisible">
+    <ul>
       <li v-for="item in prop.outline" :key="item.id" class="indent-2">
         <NuxtLink
           :href="`#${item.id}`"
@@ -58,8 +48,6 @@
 </template>
 
 <script lang="ts" setup>
-import useGlobalStore from "~/stores/global";
-const { isOutlineVisible } = useGlobalStore();
 const route = useRoute();
 
 const prop = defineProps({

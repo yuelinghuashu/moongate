@@ -12,14 +12,13 @@
         <!-- 文档内容 -->
         <ContentRenderer :value="page" />
       </div>
+
       <!-- 大纲目录 -->
-      <ClientOnly>
-        <Outline
-          v-if="isDesktop"
-          :outline="page.body.toc?.links"
-          class="sticky top-25"
-        />
-      </ClientOnly>
+      <Outline
+        v-if="isDesktop"
+        :outline="page.body.toc?.links"
+        class="sticky top-25"
+      />
     </main>
 
     <!-- 评论区 -->
