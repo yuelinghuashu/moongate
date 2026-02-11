@@ -42,7 +42,7 @@
     <UPage
       :ui="{
         center:
-          'w-full max-w-(--ui-container) mx-auto mt-8 px-4 sm:px-6 lg:px-8',
+          'h-screen max-w-(--ui-container) mx-auto mt-8 px-4 sm:px-6 lg:px-8',
       }"
     >
       <!-- 内容区域 -->
@@ -50,11 +50,26 @@
         <slot />
       </template>
     </UPage>
+
+    <UFooter>
+      <template #left>
+        <div>© {{ dayjs().format("YYYY") }} MOONGATE</div>
+      </template>
+      <template #right>
+        <NuxtLink
+          to="https://github.com/yuelinghuashu/moongate"
+          target="_blank"
+        >
+          <UIcon name="i-tabler-brand-github" />
+        </NuxtLink>
+      </template>
+    </UFooter>
   </div>
 </template>
 
 <script lang="ts" setup>
 import useSettingStore from "~/stores/setting";
+import dayjs from "dayjs";
 
 const { setTheme } = useSettingStore();
 const { locale } = useI18n();

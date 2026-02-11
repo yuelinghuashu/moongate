@@ -15,7 +15,7 @@
   />
   <!-- 评论按钮 -->
   <div class="text-right">
-    <UButton :label="t('sendDiscussion')" />
+    <UButton :disabled="discussion.trim().length === 0" :label="t('sendDiscussion')" />
   </div>
 
   <!-- 评论列表 -->
