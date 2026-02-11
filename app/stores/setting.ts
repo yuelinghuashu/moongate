@@ -39,7 +39,7 @@ const useSettingStore = defineStore('setting', () => {
 }, {
   persist: {
     storage: piniaPluginPersistedstate.localStorage(),
-    pick: ['settings']
+    pick: ['settings'],
   }
 })
 

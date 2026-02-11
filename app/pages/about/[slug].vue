@@ -1,6 +1,6 @@
 <template>
   <div v-if="page">
-    <main class="flex">
+    <main class="flex min-w-0">
       <!-- 文档内容 -->
       <ContentRenderer :value="page" />
 
@@ -25,7 +25,7 @@ const slug = computed(() => {
 });
 
 const { data: page, error } = await useAsyncData(`about-${slug.value}`, () => {
-  return queryCollection("about").path(route.path).first();
+  return queryCollection("about").path(`/about${slug.value}`).first();
 });
 
 console.log("page", page.value);

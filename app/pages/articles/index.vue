@@ -44,7 +44,7 @@
         :ui="{ description: 'line-clamp-2' }"
         :title="item.title"
         :description="item.description"
-        :date="item.meta.date"
+        :date="item.date"
         :to="locale === 'zh_cn' ? item.path : `/${locale}${item.path}`"
         class="card"
         :class="
@@ -128,7 +128,7 @@ const { data: articleData, refresh } = await useAsyncData(
     const { page, size } = articlePagination.value;
     const keyword = articleSearchValue.value.trim();
     // 1. 构建基础查询
-    let query = queryCollection("articles").order("meta", "DESC");
+    let query = queryCollection("articles").order("date", "DESC");
 
     // 2. 增加搜索条件(搜索标题/描述)
     // settings.searchOption === 1 仅搜索标题

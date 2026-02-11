@@ -6,7 +6,7 @@
         <UBadge
           class="mb-4"
           variant="outline"
-          :label="`// Update At ${page.meta.date}`"
+          :label="`// Update At ${dayjs(page.date).format('YYYY-MM-DD')}`"
         />
 
         <!-- 文档内容 -->
@@ -14,9 +14,7 @@
       </div>
 
       <!-- 目录区 -->
-      <ClientOnly>
-        <Outline v-if="isDesktop" :outline="page.body.toc?.links" />
-      </ClientOnly>
+      <Outline v-if="isDesktop" :outline="page.body.toc?.links" />
     </main>
 
     <!-- 评论区 -->
@@ -38,6 +36,7 @@
 
 <script lang="ts" setup>
 import { withLeadingSlash } from "ufo";
+import dayjs from "dayjs";
 const { locale, t } = useI18n();
 const route = useRoute();
 const { isDesktop } = useResponsive();

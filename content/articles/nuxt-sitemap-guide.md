@@ -4,6 +4,7 @@ description: 介绍了 Nuxt 4 博客 Sitemap 配置的基础知识、静态 Site
 date: 2026-02-04
 tags: ['Nuxt, sitemap']
 ---
+
 # Nuxt 4 博客 Sitemap 配置完整指南
 
 ## 为什么需要 Sitemap？
