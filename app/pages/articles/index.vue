@@ -48,8 +48,8 @@
         :to="locale === 'zh_cn' ? item.path : `/${locale}${item.path}`"
         class="card"
         :class="
-          articleData.articleList.length % 2 !== 0 &&
-          index === articleData.articleList.length - 1 &&
+          articleList.length % 2 !== 0 &&
+          index === articleList.length - 1 &&
           isDesktop
             ? 'col-span-2'
             : ''
@@ -148,7 +148,7 @@ const { data: articleData, refresh } = await useAsyncData(
     }
 
     // 3. 获取总数和列表
-    const [total, articleList] = await Promise.all([
+    const [total, list] = await Promise.all([
       query.count(),
       query
         .skip((page - 1) * size)
@@ -156,18 +156,19 @@ const { data: articleData, refresh } = await useAsyncData(
         .all(),
     ]);
 
-    return { total, articleList };
+    return { total, list };
   },
   {
     watch: [articlePagination.value],
   },
 );
+
 // 文章列表
-const articleList = ref<[]>(articleData.value?.articleList || []);
+const articleList = ref<[]>(articleData.value?.list || []);
 
 // 监听路由变化，更新分页参数
 watch(
-  () => articleData.value?.articleList,
+  () => articleData.value?.list,
   (newValue, oldValue) => {
     if (isMobile.value && articlePagination.value.page !== 1)
       articleList.value = [...oldValue, ...newValue];
