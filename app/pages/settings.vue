@@ -40,10 +40,10 @@
 </template>
 
 <script lang="ts" setup>
-import useGlobalStore from "~/stores/global";
+import useSettingStore from "~/stores/setting";
 const { tm, t } = useI18n();
 
-const { settings, setTheme, setLanguage } = useGlobalStore();
+const { settings, setTheme, setLanguage } = useSettingStore();
 const isDev = import.meta.env.DEV;
 </script>
 

@@ -21,8 +21,8 @@
 </template>
 
 <script lang="ts" setup>
-import useGlobalStore from "~/stores/global";
+import useSettingStore from "~/stores/setting";
 
 const { locales, locale } = useI18n();
-const { setLanguage } = useGlobalStore();
+const { setLanguage } = useSettingStore();
 </script>

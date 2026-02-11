@@ -15,7 +15,7 @@ export default defineNuxtRouteMiddleware((to) => {
   if (import.meta.client) {
     const nuxtApp = useNuxtApp()
     const locale = nuxtApp.$i18n.locale
-    const { homepageBehavior } = nuxtApp.$pinia.state.value.global.settings
+    const { homepageBehavior } = nuxtApp.$pinia.state.value.setting.settings
 
     if (to.path === '/' || to.path === `/${locale.value}/`) {
       try {

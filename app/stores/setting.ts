@@ -1,4 +1,4 @@
-const useGlobalStore = defineStore('global', () => {
+const useSettingStore = defineStore('setting', () => {
 
   const { setLocale, locales, locale } = useI18n()
   const colorMode = useColorMode()
@@ -7,9 +7,6 @@ const useGlobalStore = defineStore('global', () => {
   const defaultLocale = locales.value.findIndex(
     (item) => item.code === locale.value,
   );
-
-  // 侧边栏开关
-  const isSideBarOpen = ref<boolean>(false)
 
   // 用户设置
   const settings = ref({
@@ -35,8 +32,6 @@ const useGlobalStore = defineStore('global', () => {
 
 
   return {
-    isSideBarOpen,
-
     setLanguage,
     setTheme,
     settings
@@ -48,4 +43,4 @@ const useGlobalStore = defineStore('global', () => {
   }
 })
 
-export default useGlobalStore
+export default useSettingStore

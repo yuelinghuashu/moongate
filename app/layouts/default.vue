@@ -54,9 +54,9 @@
 </template>
 
 <script lang="ts" setup>
-import useGlobalStore from "~/stores/global";
+import useSettingStore from "~/stores/setting";
 
-const { setTheme } = useGlobalStore();
+const { setTheme } = useSettingStore();
 const { locale } = useI18n();
 const colorMode = useColorMode();
 </script>

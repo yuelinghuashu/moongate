@@ -83,12 +83,12 @@
 </template>
 
 <script lang="ts" setup>
-import useGlobalStore from "~/stores/global";
+import useSettingStore from "~/stores/setting";
 import { useEventListener, useScroll } from "@vueuse/core";
 import { useSwipeUp } from "~/composables/useSwipeUp";
 const { isMobile, isDesktop } = useResponsive();
 
-const { settings } = useGlobalStore();
+const { settings } = useSettingStore();
 const { locale, tm, t } = useI18n();
 
 const { y } = useScroll(window);

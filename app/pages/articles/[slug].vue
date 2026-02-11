@@ -13,12 +13,10 @@
         <ContentRenderer :value="page" />
       </div>
 
-      <!-- 大纲目录 -->
-      <Outline
-        v-if="isDesktop"
-        :outline="page.body.toc?.links"
-        class="sticky top-25"
-      />
+      <!-- 目录区 -->
+      <ClientOnly>
+        <Outline v-if="isDesktop" :outline="page.body.toc?.links" />
+      </ClientOnly>
     </main>
 
     <!-- 评论区 -->
