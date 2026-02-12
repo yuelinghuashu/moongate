@@ -30,12 +30,12 @@ Sitemap（站点地图）是一个 XML 文件，它告诉搜索引擎你的网�
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://www.moongate.top/</loc>
+    <loc>https://moongate.top/</loc>
     <priority>1.0</priority>
     <changefreq>daily</changefreq>
   </url>
   <url>
-    <loc>https://www.moongate.top/about</loc>
+    <loc>https://moongate.top/about</loc>
     <priority>0.5</priority>
     <changefreq>monthly</changefreq>
   </url>
@@ -46,7 +46,7 @@ Sitemap（站点地图）是一个 XML 文件，它告诉搜索引擎你的网�
 2. 在 `robots.txt` 中声明：
 
 ```text
-Sitemap: https://www.moongate.top/sitemap.xml
+Sitemap: https://moongate.top/sitemap.xml
 ```
 
 ### 方案二：动态 Sitemap（推荐）
@@ -63,45 +63,57 @@ export default defineEventHandler(async (event) => {
   const siteUrl = useRuntimeConfig().public.siteUrl
 
   try {
-    // 1. 获取文章数据（根据你的数据源调整）
-    const data = await queryCollection(event, 'articles').select('title').all()
+    // 1. 获取文章数据
+    const articles = await queryCollection(event, 'articles').select('path').all()
+    const about = await queryCollection(event, 'about').select('path').all()
 
-    // 2. 构建所有需要索引的 URL
+    // 2. 构建URL数组
     const urls = [
-      `${siteUrl}/`,
+      `${siteUrl}`,
+      `${siteUrl}/articles`,
       `${siteUrl}/about`,
-      `${siteUrl}/archives`,
-      ...data.map(article => `${siteUrl}/articles/${article.slug || encodeURIComponent(article.title)}`)
+      `${siteUrl}/404`,
+      ...articles.map(article => `${siteUrl}${article.path}`),
+      ...about.map(about => `${siteUrl}${about.path}`),
     ]
 
-    // 3. 生成格式化的 XML
+    // 3. 生成XML（关键修改：添加换行和缩进）
     const xmlLines = [
       '<?xml version="1.0" encoding="UTF-8"?>',
       '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
     ]
 
+    // 添加每个URL条目
     urls.forEach(url => {
       xmlLines.push('  <url>')
       xmlLines.push(`    <loc>${url}</loc>`)
-      // 可选：添加 lastmod、changefreq、priority
       xmlLines.push('  </url>')
     })
 
+    // 闭合标签
     xmlLines.push('</urlset>')
+
+    // 组合成最终字符串（用换行符连接）
+    const sitemap = xmlLines.join('\n')
 
     // 4. 设置响应头
     setResponseHeader(event, 'content-type', 'application/xml')
-    setResponseHeader(event, 'Cache-Control', 'public, max-age=3600') // 缓存1小时
+    setResponseHeader(event, 'Cache-Control', 'public, max-age=3600')
 
-    return xmlLines.join('\n')
+    return sitemap
   } catch (error) {
-    console.error('生成 Sitemap 失败:', error)
-    
-    // 优雅降级
-    return `<?xml version="1.0" encoding="UTF-8"?>
+    console.error('生成Sitemap失败:', error)
+
+    // 失败时返回最小化版本（同样格式化）
+    const fallbackSitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>${siteUrl}</loc></url>
+  <url>
+    <loc>${siteUrl}</loc>
+  </url>
 </urlset>`
+
+    setResponseHeader(event, 'content-type', 'application/xml')
+    return fallbackSitemap
   }
 })
 ```
@@ -114,7 +126,7 @@ export default defineEventHandler(async (event) => {
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
-      siteUrl: process.env.NUXT_PUBLIC_SITE_URL
+      siteUrl: process.env.SITE_URL
     }
   }
 })
@@ -123,7 +135,7 @@ export default defineNuxtConfig({
 在 `.env` 文件中：
 
 ```bash
-NUXT_PUBLIC_SITE_URL=https://www.moongate.top
+NUXT_PUBLIC_SITE_URL=https://moongate.top
 ```
 
 ### 3. 配置 robots.txt
@@ -151,7 +163,7 @@ Sitemap: ${siteUrl}/sitemap.xml`
 ```yaml
 - name: Build
   run: |
-    NUXT_PUBLIC_SITE_URL=https://www.moongate.top \
+    NUXT_PUBLIC_SITE_URL=https://moongate.top \
     pnpm run build
 ```
 
@@ -164,7 +176,7 @@ module.exports = {
     name: "moongate",
     script: "./server/index.mjs",
     env: {
-      NUXT_PUBLIC_SITE_URL: "https://www.moongate.top", // 关键！
+      NUXT_PUBLIC_SITE_URL: "https://moongate.top", // 关键！
       NODE_ENV: "production"
     }
   }]
@@ -224,7 +236,7 @@ curl -I http://localhost:3000/sitemap.xml
 ```yaml
 - name: Build
   run: |
-    NUXT_PUBLIC_SITE_URL=https://www.moongate.top \
+    NUXT_PUBLIC_SITE_URL=https://moongate.top \
     pnpm run build
 ```
 >这确保了 Nuxt 在构建时将 `public.siteUrl` 正确内嵌到客户端和服务端包中。
@@ -245,7 +257,7 @@ module.exports = {
 	exec_mode: "fork",
 	env: {
 	  NODE_ENV: "production",
-	  NUXT_PUBLIC_SITE_URL: "https://www.moongate.top",
+	  NUXT_PUBLIC_SITE_URL: "https://moongate.top",
 	  PORT: 3000,
 	  HOST: "0.0.0.0"
 	}

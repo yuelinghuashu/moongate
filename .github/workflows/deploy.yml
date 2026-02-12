@@ -34,7 +34,7 @@ jobs:
 
       - name: Build
         run: |
-          NUXT_PUBLIC_SITE_URL=https://www.moongate.top \
+          NUXT_PUBLIC_SITE_URL=https://moongate.top \
           pnpm run build
 
       - name: Deploy to Server via Rsync
@@ -67,7 +67,7 @@ jobs:
                 exec_mode: "fork",
                 env: {
                   NODE_ENV: "production",
-                  NUXT_PUBLIC_SITE_URL: "https://www.moongate.top",
+                  NUXT_PUBLIC_SITE_URL: "https://moongate.top",
                   PORT: 3000,
                   HOST: "0.0.0.0"
                 }
