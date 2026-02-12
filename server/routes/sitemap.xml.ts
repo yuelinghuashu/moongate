@@ -5,16 +5,19 @@ export default defineEventHandler(async (event) => {
 
   try {
     // 1. 获取文章数据
-    const articles = await queryCollection(event, 'articles').select('title').all()
-    const about = await queryCollection(event, 'about').select('title').all()
+    const articles = await queryCollection(event, 'articles').all()
+    const about = await queryCollection(event, 'about').all()
 
     // 2. 构建URL数组
     const urls = [
-      `${siteUrl}/`,
-      `${siteUrl}/`,
-      ...articles.map(article => `${siteUrl}/articles/${article.title}`),
-      ...about.map(about => `${siteUrl}/about/${about.title}`),
+      `${siteUrl}`,
+      `${siteUrl}/articles`,
+      `${siteUrl}/about`,
+      `${siteUrl}/404`,
+      ...articles.map(article => `${siteUrl}${article.path}`),
+      ...about.map(about => `${siteUrl}${about.path}`),
     ]
+    console.log(articles)
 
     // 3. 生成XML（关键修改：添加换行和缩进）
     const xmlLines = [

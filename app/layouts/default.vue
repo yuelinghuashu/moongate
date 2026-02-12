@@ -41,8 +41,9 @@
     <!-- 主体 -->
     <UPage
       :ui="{
-        root:
-          'flex-1 w-full max-w-(--ui-container) mx-auto mt-8 px-4 sm:px-6 lg:px-8',
+        root: 'flex-1',
+        center:
+          'w-full max-w-(--ui-container) mx-auto mt-8 px-4 sm:px-6 lg:px-8',
       }"
     >
       <!-- 内容区域 -->
