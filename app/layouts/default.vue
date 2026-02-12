@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/no-useless-template-attributes -->
 <template>
-  <div>
+  <div class="min-h-screen flex flex-col">
     <!-- 头部 -->
     <UHeader mode="drawer" :menu="{ direction: 'left' }" toggle-side="left">
       <!-- 网站标题 -->
@@ -41,8 +41,8 @@
     <!-- 主体 -->
     <UPage
       :ui="{
-        center:
-          'h-screen w-full max-w-(--ui-container) mx-auto mt-8 px-4 sm:px-6 lg:px-8',
+        root:
+          'flex-1 w-full max-w-(--ui-container) mx-auto mt-8 px-4 sm:px-6 lg:px-8',
       }"
     >
       <!-- 内容区域 -->

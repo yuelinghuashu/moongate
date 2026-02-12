@@ -5,7 +5,11 @@
       <ContentRenderer :value="page" />
 
       <!-- 大纲目录 -->
-      <Outline :outline="page?.body.toc?.links" class="sticky top-25" />
+      <Outline
+        v-if="isDesktop"
+        :outline="page?.body.toc?.links"
+        class="sticky top-25"
+      />
     </main>
   </div>
   <div v-else>
@@ -17,6 +21,7 @@
 import { withLeadingSlash } from "ufo";
 const route = useRoute();
 const { locale, t } = useI18n();
+const { isDesktop } = useResponsive();
 
 const slug = computed(() => {
   const path = withLeadingSlash(String(route.params.slug || "/"));

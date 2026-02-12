@@ -77,8 +77,6 @@
         {{ t("search.findCount", { count: articleData?.total }) }}
       </span>
     </div>
-
-    <div v-if="isMobile" class="text-center cursor-pointer">加载更多</div>
   </div>
 </template>
 
