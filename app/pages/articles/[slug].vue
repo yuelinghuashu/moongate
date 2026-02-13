@@ -14,20 +14,8 @@
       </div>
 
       <!-- 目录区 -->
-      <Outline v-if="isDesktop" :outline="page.body.toc?.links" />
+      <ArticleTableOfContents v-if="isDesktop" :outline="page.body.toc?.links" />
     </main>
-
-    <!-- 评论区 -->
-    <footer class="h-100 text-center max-w-(--ui-container)">
-      <UButton
-        v-if="!isDiscussionVisible"
-        class="text-center cursor-pointer"
-        label="打开评论区"
-        variant="ghost"
-        @click="isDiscussionVisible = !isDiscussionVisible"
-      />
-      <Discussion v-if="isDiscussionVisible" />
-    </footer>
   </div>
   <div v-else>
     <ErrorPage />
@@ -41,9 +29,6 @@ const { locale, t } = useI18n();
 const route = useRoute();
 const { isDesktop } = useResponsive();
 
-// 评论区显示状态
-const isDiscussionVisible = ref(false);
-
 // 核心：移除语言前缀，得到原始路径
 // 例如：/en/articles/welcome -> /articles/welcome
 const slug = computed(() => {
@@ -56,6 +41,8 @@ const slug = computed(() => {
 const { data: page } = await useAsyncData(`articles-${slug.value}`, () => {
   return queryCollection("articles").path(`/articles${slug.value}`).first();
 });
+
+console.log(page.value);
 
 // 设置 SEO 元信息
 if (page.value?.title && page.value?.description) {

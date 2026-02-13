@@ -1,7 +1,9 @@
 <!-- eslint-disable vue/multi-word-component-names -->
+<!-- 目录组件 -->
 <template>
   <ClientOnly>
     <div class="ml-4 sticky top-25 h-full">
+      
       <!-- 目录开关 -->
       <UTooltip
         :text="isOutlineVisible ? '隐藏大纲' : '显示大纲'"
@@ -13,8 +15,12 @@
           @click="isOutlineVisible = !isOutlineVisible"
         />
       </UTooltip>
+
       <!-- 目录卡片 -->
-      <UCard v-if="isOutlineVisible" class="leading-7.5 min-h-100 min-w-60 max-w-80">
+      <UCard
+        v-if="isOutlineVisible"
+        class="leading-7.5 min-h-100 min-w-60 max-w-80"
+      >
         <!-- 二级标题 -->
         <ul>
           <li v-for="item in prop.outline" :key="item.id" class="indent-2">

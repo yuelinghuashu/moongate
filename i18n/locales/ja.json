@@ -44,10 +44,11 @@
     "message": "お探しのページは存在しません。",
     "backToHome": "ホームに戻る"
   },
-  "discussion": "コメント",
-  "discussionSection": "コメント欄",
-  "send": "送信",
-  "newLine": "改行",
-  "sendDiscussion": "コメントを送信",
-  "shortcut": "ショートカット"
+  "comment": {
+    "label": "コメント",
+    "section": "コメント欄",
+    "send": "送信",
+    "sendLabel": "コメントを投稿",
+    "placeholder": "コメントを入力してください"
+  }
 }

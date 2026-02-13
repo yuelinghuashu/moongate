@@ -1,14 +1,21 @@
-moongate.top, www.moongate.top {
-    # 所有其他请求代理到 Node.js
-    reverse_proxy localhost:3000 
+# 1. 首先处理 www 版本，重定向到无 www
+www.moongate.top {
+    redir https://moongate.top{uri} permanent
+}
 
-    # 启用 gzip 压缩
+# 2. 主站点配置（无 www）
+moongate.top {
+    # 代理到 Node.js
+    reverse_proxy localhost:3000
+
+    # 启用压缩
     encode gzip zstd
 
-    # 设置安全相关的 HTTP 头
+    # 安全头
     header {
         X-Content-Type-Options "nosniff"
         X-Frame-Options "DENY"
         X-XSS-Protection "1; mode=block"
+        Referrer-Policy "strict-origin-when-cross-origin"
     }
 }

@@ -6,7 +6,7 @@
     :links="[
       {
         label: 'Accessing the gate',
-        to: locale === 'zh_cn' ? '/articles' : `/${locale}/articles`,
+        to: localePath('/articles'),
         target: '_self',
         trailingIcon: 'i-lucide-arrow-right',
         size: 'xl',
@@ -18,7 +18,8 @@
 </template>
 
 <script lang="ts" setup>
-const { t, locale } = useI18n();
+const { t } = useI18n();
+const localePath = useLocalePath();
 
 const title = "Where Moon Meets Code";
 const description =

@@ -1,0 +1,24 @@
+<template>
+  <svg
+    v-if="
+      route.path === '/' ||
+      route.path === `/${locale}` ||
+      route.path === `/${locale}/`
+    "
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 100 100"
+    fill="currentColor"
+    class="w-5 h-5"
+  >
+    <path
+      d="M40,10 C17.9,10 0,27.9 0,50 C0,72.1 17.9,90 40,90 C30,80 25,65 25,50 C25,35 30,20 40,10 Z"
+    />
+    <path d="M55,10 H90 V90 H55 V75 H75 V25 H55 Z" />
+    <rect x="42" y="44" width="12" height="12" />
+  </svg>
+</template>
+
+<script lang="ts" setup>
+const { locale } = useI18n();
+const route = useRoute();
+</script>

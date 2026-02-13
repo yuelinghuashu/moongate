@@ -7,15 +7,13 @@
       :description="item.description"
       :date="item.date"
       class="card cursor-pointer mb-4 last-of-type:mb-0"
-      @click="
-        navigateTo(locale === 'zh_cn' ? item.path : `/${locale}${item.path}`)
-      "
+      :to="localePath(item.path)"
     />
   </div>
 </template>
 
 <script lang="ts" setup>
-const { locale } = useI18n();
+const localePath = useLocalePath();
 
 // 获取关于页面列表
 const { data: page } = await useAsyncData("about-list", () => {

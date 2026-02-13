@@ -1,3 +1,4 @@
+<!-- 导航栏组件 -->
 <template>
   <nav class="text-center">
     <ul :class="props.orientation === 'horizontal' ? 'flex' : ''">

@@ -45,7 +45,7 @@
         :title="item.title"
         :description="item.description"
         :date="item.date"
-        :to="locale === 'zh_cn' ? item.path : `/${locale}${item.path}`"
+        :to="localePath(item.path)"
         class="card"
         :class="
           articleList.length % 2 !== 0 &&
@@ -87,10 +87,12 @@ import { useSwipeUp } from "~/composables/useSwipeUp";
 const { isMobile, isDesktop } = useResponsive();
 
 const { settings } = useSettingStore();
-const { locale, tm, t } = useI18n();
+const {  tm, t } = useI18n();
+const route = useRoute();
+const localePath = useLocalePath();
 
 const { y } = useScroll(window);
-const route = useRoute();
+
 const isDev = import.meta.env.DEV;
 
 // 文章搜索框

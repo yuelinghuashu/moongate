@@ -1,9 +1,9 @@
+<!-- 语言栏选项框组件 -->
 <template>
-  <!-- 语言栏选项框组件 -->
   <UPopover mode="hover" arrow>
     <!-- 语言选项按钮 -->
     <UButton icon="i-tabler:language" color="neutral" variant="ghost" />
-    <template #content="">
+    <template #content>
       <ul class="w-25 text-center">
         <li
           v-for="item in locales"

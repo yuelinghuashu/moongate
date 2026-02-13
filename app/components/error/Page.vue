@@ -1,3 +1,4 @@
+<!-- 错误页面组件 -->
 <template>
   <UError
     :error="{
@@ -10,8 +11,9 @@
       <UButton
         :label="t('errorPage.backToHome')"
         size="xl"
+        variant="ghost"
         class="cursor-pointer"
-        @click="navigateTo('/')"
+        @click="navigateTo(localePath('/'))"
       />
     </template>
   </UError>
@@ -19,4 +21,5 @@
 
 <script lang="ts" setup>
 const { t } = useI18n();
+const localePath = useLocalePath();
 </script>

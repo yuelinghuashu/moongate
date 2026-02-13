@@ -15,18 +15,6 @@ export default defineEventHandler((event) => {
   const robotsTxtContent = `User-agent: *
 Allow: /
 
-Allow: /*.css$
-Allow: /*.js$
-Allow: /*.json$
-Allow: /*.xml$
-
-Allow: /articles/
-Allow: /about/
-
-Allow: /api/sitemap.xml
-
-Disallow: /api/auth/
-
 Sitemap: ${baseUrl}/sitemap.xml
 `.trim()
 

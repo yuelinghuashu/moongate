@@ -5,7 +5,7 @@
       <ContentRenderer :value="page" />
 
       <!-- 大纲目录 -->
-      <Outline
+      <ArticleTableOfContents
         v-if="isDesktop"
         :outline="page?.body.toc?.links"
         class="sticky top-25"
