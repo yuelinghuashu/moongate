@@ -15,6 +15,7 @@ export default defineNuxtRouteMiddleware((to) => {
   if (import.meta.client) {
     const nuxtApp = useNuxtApp()
     const locale = nuxtApp.$i18n.locale
+    const localePath = useLocalePath()
     const { homepageBehavior } = nuxtApp.$pinia.state.value.setting.settings
 
     if (to.path === '/' || to.path === `/${locale.value}/`) {
@@ -23,9 +24,7 @@ export default defineNuxtRouteMiddleware((to) => {
         // 设置值说明：
         // - 31: "显示入口页" (Show landing page)
         // - 32: "跳过入口页" (Skip landing page)
-        if (homepageBehavior === 32) {
-          return navigateTo(locale.value === 'zh_cn' ? '/articles' : `/${locale.value}/articles`)
-        }
+        if (homepageBehavior === 32) return navigateTo(localePath('/articles'))
       } catch (error) {
         // ⚠️ 错误处理：如果访问状态失败，记录警告但不中断流程
         // 用户仍然可以正常访问首页

@@ -3,6 +3,9 @@ const useSettingStore = defineStore('setting', () => {
   const { setLocale, locales, locale } = useI18n()
   const colorMode = useColorMode()
 
+  // 是否显示目录图标
+  const isOutlineIconVisible = ref(false)
+
   // 默认语言
   const defaultLocale = locales.value.findIndex(
     (item) => item.code === locale.value,
@@ -32,6 +35,8 @@ const useSettingStore = defineStore('setting', () => {
 
 
   return {
+    isOutlineIconVisible,
+
     setLanguage,
     setTheme,
     settings

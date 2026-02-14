@@ -12,20 +12,33 @@
     </template>
 
     <template #default>
-      <NavigationBar orientation="horizontal" />
+      <NavigationBar v-if="isDesktop" orientation="horizontal" />
     </template>
 
     <!-- 辅助图标栏 -->
     <template #right>
       <ClientOnly>
+        <!-- 目录图标 -->
+        <UButton
+          v-if="settingStore.isOutlineIconVisible"
+          icon="i-tabler:list"
+          variant="ghost"
+          class="cursor-pointer"
+          @click="isOutlineVisible = !isOutlineVisible"
+        />
+        
+        <!-- 主题图标 -->
         <UButton
           variant="ghost"
-          color="neutral"
           class="cursor-pointer"
           :icon="colorMode.value === 'dark' ? 'tabler:moon' : 'tabler:sun'"
-          @click="setTheme(colorMode.value === 'dark' ? 'light' : 'dark')"
+          @click="
+            settingStore.setTheme(colorMode.value === 'dark' ? 'light' : 'dark')
+          "
         />
       </ClientOnly>
+
+      <!-- 语言栏选项框 -->
       <SharedLanguagePopover />
     </template>
 
@@ -37,9 +50,14 @@
 </template>
 
 <script lang="ts" setup>
+import { useLocalStorage } from "@vueuse/core";
 import useSettingStore from "~/stores/setting";
 
-const { setTheme } = useSettingStore();
+const settingStore = useSettingStore();
 const colorMode = useColorMode();
 const localePath = useLocalePath();
+const { isDesktop } = useResponsive();
+
+// 目录是否可见
+const isOutlineVisible = useLocalStorage("isOutlineVisible", true);
 </script>

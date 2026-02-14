@@ -21,41 +21,36 @@
 - 📱 响应式设计
 
 - 📝 Nuxt Content 驱动
-    
+
 ---
 
 ## 🛠️ 技术栈
 
 - **框架**: Nuxt4
-    
+
 - **语言**: TypeScript
-    
+
 - **样式**: Tailwind CSS
-    
+
 - **内容**: Nuxt Content
-    
+
 - **国际化**: Nuxt i18n
-    
+
 - **状态管理**: Pinia
-    
 
 ---
 
 ## 🚀 自动化部署
 
 - **CI/CD**: GitHub Actions（推送即构建）
-    
 - **服务器**: Caddy（自动 HTTPS + www 301 重定向）
-    
 
 ---
 
 ## 📄 SEO
 
 - robots.txt
-    
 - sitemap.xml（已提交 Google Search Console）
-    
 
 ---
 

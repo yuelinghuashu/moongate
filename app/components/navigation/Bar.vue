@@ -28,6 +28,7 @@ const { tm } = useI18n();
 const route = useRoute();
 const isDev = import.meta.env.DEV;
 
+
 const props = defineProps({
   orientation: {
     type: String,

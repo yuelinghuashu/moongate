@@ -4,12 +4,20 @@
       <!-- 文档内容 -->
       <ContentRenderer :value="page" />
 
-      <!-- 大纲目录 -->
-      <ArticleTableOfContents
-        v-if="isDesktop"
-        :outline="page?.body.toc?.links"
-        class="sticky top-25"
-      />
+      <UDrawer
+        v-model:open="isOutlineVisible"
+        :direction="isDesktop ? 'right' : 'bottom'"
+        title="文章目录"
+        description="点击章节快速跳转"
+      >
+        <template #content>
+          <!-- 大纲目录 -->
+          <ArticleTableOfContents
+            v-if="isDesktop"
+            :outline="page?.body.toc?.links"
+          />
+        </template>
+      </UDrawer>
     </main>
   </div>
   <div v-else>
@@ -19,9 +27,12 @@
 
 <script lang="ts" setup>
 import { withLeadingSlash } from "ufo";
+import { useLocalStorage } from "@vueuse/core";
+import useSettingStore from "~/stores/setting";
 const route = useRoute();
 const { locale, t } = useI18n();
 const { isDesktop } = useResponsive();
+const settingStore = useSettingStore();
 
 const slug = computed(() => {
   const path = withLeadingSlash(String(route.params.slug || "/"));
@@ -29,16 +40,19 @@ const slug = computed(() => {
   return path.replace(new RegExp(`^/(${locale.value})`), "") || "/";
 });
 
-const { data: page, error } = await useAsyncData(`about-${slug.value}`, () => {
+const { data: page } = await useAsyncData(`about-${slug.value}`, () => {
   return queryCollection("about").path(`/about${slug.value}`).first();
 });
 
 console.log("page", page.value);
 
-// 监控错误
-if (error.value) {
-  console.error("页面数据获取错误:", error.value);
-}
+const isOutlineVisible = useLocalStorage("isOutlineVisible", true);
+
+// 是否显示目录图标
+watchEffect(() => {
+  settingStore.isOutlineIconVisible =
+    page.value?.body.toc?.links && route.path.match(/^\/(articles|about)\/.+/);
+});
 
 // 设置 SEO 元信息
 if (page.value?.title && page.value?.description) {

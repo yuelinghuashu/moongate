@@ -1,7 +1,8 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 
-@theme static {
+/* 自定义变量 */
+@theme {
   /* ====== 浅色模式品牌色系 ====== */
   --color-brand-light-50: #f0fbff;
   --color-brand-light-100: #e0f7fe;

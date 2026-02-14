@@ -28,15 +28,19 @@ date: 2025-12-29
 
 ```css
 :root {
-  --mg-bg: #05070a; /* 极深蓝黑：太空背景 */
-  --mg-surface: #0d111a; /* 卡片表面 */
-  --mg-text-main: #e2e8f0; /* 主文字：珍珠白 */
-  --mg-accent: #60a5fa; /* 强调色：科技蓝 */
-  --mg-glow: rgba(96, 165, 250, 0.4); /* 发光 */
+  --mg-bg: #e6edf2; /* 浅灰蓝：科技感背景 */
+  --mg-surface: #ffffff; /* 卡片表面：纯白 */
+  --mg-text-main: #1e293b; /* 主文字：深靛蓝 */
+  --mg-accent: #0ea5e9; /* 强调色：天空蓝 */
+  --mg-glow: rgba(14, 165, 233, 0.2); /* 发光：淡蓝光晕 */
 }
-.light {
-  --mg-bg: #f8fafc; /* 极浅灰蓝：冷色实验室感 */
-  --mg-text-main: #0f172a; /* 主文字：深靛蓝 */
+
+.dark {
+  --mg-bg: #0f172a; /* 深靛蓝：太空背景 */
+  --mg-surface: #1e293b; /* 卡片表面：深灰蓝 */
+  --mg-text-main: #e2e8f0; /* 主文字：珍珠白 */
+  --mg-accent: #3b82f6; /* 强调色：钴蓝 */
+  --mg-glow: rgba(59, 130, 246, 0.3); /* 发光：科技蓝光晕 */
 }
 ```
 
