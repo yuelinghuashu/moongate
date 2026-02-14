@@ -17,16 +17,19 @@
 
     <!-- 辅助图标栏 -->
     <template #right>
+      <!-- 目录图标 -->
+      <UButton
+        v-if="
+          settingStore.isOutlineIconVisible &&
+          route.path.match(/^\/(articles|about)\/.+/)
+        "
+        icon="i-tabler:list"
+        variant="ghost"
+        class="cursor-pointer"
+        @click="isOutlineVisible = !isOutlineVisible"
+      />
+
       <ClientOnly>
-        <!-- 目录图标 -->
-        <UButton
-          v-if="settingStore.isOutlineIconVisible"
-          icon="i-tabler:list"
-          variant="ghost"
-          class="cursor-pointer"
-          @click="isOutlineVisible = !isOutlineVisible"
-        />
-        
         <!-- 主题图标 -->
         <UButton
           variant="ghost"
@@ -57,6 +60,7 @@ const settingStore = useSettingStore();
 const colorMode = useColorMode();
 const localePath = useLocalePath();
 const { isDesktop } = useResponsive();
+const route = useRoute();
 
 // 目录是否可见
 const isOutlineVisible = useLocalStorage("isOutlineVisible", false);

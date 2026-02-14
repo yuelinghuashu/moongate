@@ -12,10 +12,7 @@
       >
         <template #content>
           <!-- 大纲目录 -->
-          <ArticleTableOfContents
-            v-if="isDesktop"
-            :outline="page?.body.toc?.links"
-          />
+          <ArticleTableOfContents :outline="page?.body.toc?.links" />
         </template>
       </UDrawer>
     </main>
@@ -50,8 +47,9 @@ const isOutlineVisible = useLocalStorage("isOutlineVisible", false);
 
 // 是否显示目录图标
 watchEffect(() => {
-  settingStore.isOutlineIconVisible =
-    page.value?.body.toc?.links && route.path.match(/^\/(articles|about)\/.+/);
+  settingStore.isOutlineIconVisible = Boolean(
+    page.value && page.value?.body.toc?.links,
+  );
 });
 
 // 设置 SEO 元信息

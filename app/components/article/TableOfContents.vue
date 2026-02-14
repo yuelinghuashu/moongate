@@ -54,7 +54,7 @@
 import { useLocalStorage } from "@vueuse/core";
 const route = useRoute();
 
-const isOutlineVisible = useLocalStorage("isOutlineVisible", true);
+const isOutlineVisible = useLocalStorage("isOutlineVisible", false);
 
 const prop = defineProps({
   outline: {
