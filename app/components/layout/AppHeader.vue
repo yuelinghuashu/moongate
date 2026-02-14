@@ -59,5 +59,5 @@ const localePath = useLocalePath();
 const { isDesktop } = useResponsive();
 
 // 目录是否可见
-const isOutlineVisible = useLocalStorage("isOutlineVisible", true);
+const isOutlineVisible = useLocalStorage("isOutlineVisible", false);
 </script>
