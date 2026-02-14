@@ -17,19 +17,19 @@
 
     <!-- 辅助图标栏 -->
     <template #right>
-      <!-- 目录图标 -->
-      <UButton
-        v-if="
-          settingStore.isOutlineIconVisible &&
-          route.path.match(/^\/(articles|about)\/.+/)
-        "
-        icon="i-tabler:list"
-        variant="ghost"
-        class="cursor-pointer"
-        @click="isOutlineVisible = !isOutlineVisible"
-      />
-
       <ClientOnly>
+        <!-- 目录图标 -->
+        <UButton
+          v-if="
+            settingStore.isOutlineIconVisible &&
+            route.path.match(/^\/(articles|about)\/.+/)
+          "
+          icon="i-tabler:list"
+          variant="ghost"
+          class="cursor-pointer"
+          @click="isOutlineVisible = !isOutlineVisible"
+        />
+        
         <!-- 主题图标 -->
         <UButton
           variant="ghost"
