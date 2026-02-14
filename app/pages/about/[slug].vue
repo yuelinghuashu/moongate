@@ -46,7 +46,7 @@ const { data: page } = await useAsyncData(`about-${slug.value}`, () => {
 
 console.log("page", page.value);
 
-const isOutlineVisible = useLocalStorage("isOutlineVisible", true);
+const isOutlineVisible = useLocalStorage("isOutlineVisible", false);
 
 // 是否显示目录图标
 watchEffect(() => {

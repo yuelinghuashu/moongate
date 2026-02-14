@@ -52,7 +52,7 @@ const { data: page } = await useAsyncData(`articles-${slug.value}`, () => {
   return queryCollection("articles").path(`/articles${slug.value}`).first();
 });
 
-const isOutlineVisible = useLocalStorage("isOutlineVisible", true);
+const isOutlineVisible = useLocalStorage("isOutlineVisible", false);
 
 // 是否显示目录图标
 watchEffect(() => {
