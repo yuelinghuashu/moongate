@@ -41,13 +41,13 @@ jobs:
       - name: Deploy to Server via Rsync
         uses: burnett01/rsync-deployments@7.0.1
         with:
-          switches: -avz --delete
-          path: .output/
-          remote_path: /var/www/my-site/
-          remote_host: ${{ secrets.SERVER_HOST }}
-          remote_user: ${{ secrets.SERVER_USER }}
-          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
-
+          switches: -avz --delete # 递归、压缩、同步删除
+          path: .output/ # Nuxt 的文件输出目录
+          remote_path: /var/www/my-site/ # 服务器上的目标目录
+          remote_host: ${{ secrets.SERVER_HOST }} # 服务器 IP
+          remote_user: ${{ secrets.SERVER_USER }} # 登录用户名
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }} # SSH 私钥
+          
       - name: Start/Reload Node.js service
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -100,3 +100,7 @@ jobs:
             pm2 save
             echo "✅ 服务状态："
             pm2 status moongate
+        env:
+          NUXT_SESSION_PASSWORD: ${{ secrets.NUXT_SESSION_PASSWORD }}
+          NUXT_OAUTH_GITHUB_CLIENT_ID: ${{ secrets.NUXT_OAUTH_GITHUB_CLIENT_ID }}
+          NUXT_OAUTH_GITHUB_CLIENT_SECRET: ${{ secrets.NUXT_OAUTH_GITHUB_CLIENT_SECRET }}
