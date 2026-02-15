@@ -78,9 +78,9 @@ jobs:
                   NUXT_PUBLIC_SITE_URL: "https://moongate.top",
                   PORT: 3000,
                   HOST: "0.0.0.0",
-                  NUXT_SESSION_PASSWORD: "$NUXT_SESSION_PASSWORD",
-                  NUXT_OAUTH_GITHUB_CLIENT_ID: "$NUXT_OAUTH_GITHUB_CLIENT_ID",
-                  NUXT_OAUTH_GITHUB_CLIENT_SECRET: "$NUXT_OAUTH_GITHUB_CLIENT_SECRET"
+                  NUXT_SESSION_PASSWORD: "$(echo -n "$NUXT_SESSION_PASSWORD")",
+                  NUXT_OAUTH_GITHUB_CLIENT_ID: "$(echo -n "$NUXT_OAUTH_GITHUB_CLIENT_ID")",
+                  NUXT_OAUTH_GITHUB_CLIENT_SECRET: "$(echo -n "$NUXT_OAUTH_GITHUB_CLIENT_SECRET")"
                 }
               }]
             }
