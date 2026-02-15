@@ -29,7 +29,7 @@
           {
             type: 'text',
             id: '1',
-            text: 'Hello! Welcome To MOONGATE',
+            text: '评论功能暂无，请等待后续开发',
           },
         ]"
         role="user"

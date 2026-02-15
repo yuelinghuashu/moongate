@@ -11,16 +11,10 @@
 </template>
 
 <script lang="ts" setup>
-import useSettingStore from "~/stores/setting";
-
-const settingStore = useSettingStore();
-
 const { loggedIn } = useUserSession();
 
 // 登录 GitHub账号
 const loginWithGitHub = () => {
   navigateTo("/api/auth/github", { external: true });
 };
-
-if (loggedIn) settingStore.isLoginDialogVisible = false;
 </script>
