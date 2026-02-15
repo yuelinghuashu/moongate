@@ -7,8 +7,8 @@
       <UDrawer
         v-model:open="isOutlineVisible"
         :direction="isDesktop ? 'right' : 'bottom'"
-        title="文章目录"
-        description="点击章节快速跳转"
+        :title="t('article.tableOfContents')"
+        :description="t('article.tocTooltip')"
       >
         <template #content>
           <!-- 大纲目录 -->

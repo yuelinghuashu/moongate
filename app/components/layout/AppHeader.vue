@@ -22,14 +22,14 @@
         <UButton
           v-if="
             settingStore.isOutlineIconVisible &&
-            route.path.match(/^\/(articles|about)\/.+/)
+            route.path.match(/^\/(?:[a-z_-]+\/)?(articles|about)\/.+/)
           "
           icon="i-tabler:list"
           variant="ghost"
           class="cursor-pointer"
           @click="isOutlineVisible = !isOutlineVisible"
         />
-        
+
         <!-- 主题图标 -->
         <UButton
           variant="ghost"

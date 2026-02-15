@@ -44,6 +44,10 @@
     "message": "您正在查找的页面不存在。",
     "backToHome": "返回首页"
   },
+  "article":{
+    "tableOfContents": "目录",
+    "tocTooltip":"点击目录快速跳转"
+  },
   "comment": {
     "label": "评论",
     "section": "评论区",
