@@ -17,14 +17,15 @@
       <UDrawer
         v-model:open="isOutlineVisible"
         :direction="isDesktop ? 'right' : 'bottom'"
-        :title="t('article.tableOfContents')"
-        :description="t('article.tocTooltip')"
+        :title="t('article.title')"
+        :description="t('article.description')"
       >
         <template #body>
           <ArticleTableOfContents :outline="page.body.toc?.links" />
         </template>
       </UDrawer>
     </main>
+    <ArticleCommentSection />
   </div>
   <div v-else><ErrorPage /></div>
 </template>

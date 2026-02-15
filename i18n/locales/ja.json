@@ -6,6 +6,14 @@
     { "id": 2, "name": "概要", "link": "/ja/about" },
     { "id": 3, "name": "設定", "link": "/ja/settings" }
   ],
+  "user": {
+    "login": "ログイン",
+    "logout": "ログアウト",
+    "username": "ユーザー名",
+    "title": "端末に接続",
+    "profile": "プロフィール",
+    "description": "GitHubアカウントでワンクリックログインし、コメントやインタラクションを利用可能"
+  },
   "search": {
     "placeholder": "記事を検索",
     "options": [
@@ -45,8 +53,8 @@
     "backToHome": "ホームに戻る"
   },
   "article": {
-    "tableOfContents": "目次",
-    "tocTooltip": "セクションへジャンプ"
+    "title": "目次",
+    "description": "セクションへジャンプ"
   },
   "comment": {
     "label": "コメント",

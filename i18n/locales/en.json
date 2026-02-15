@@ -6,6 +6,14 @@
     { "id": 2, "name": "About", "link": "/en/about" },
     { "id": 3, "name": "Settings", "link": "/en/settings" }
   ],
+  "user": {
+    "login": "Login",
+    "logout": "Logout",
+    "username": "Username",
+      "profile": "Profile",
+    "title": "Access Terminal",
+    "description": "One-click login with GitHub account to unlock comments and interactions"
+  },
   "search": {
     "placeholder": "Search articles",
     "options": [
@@ -45,8 +53,8 @@
     "backToHome": "Back to Home"
   },
   "article": {
-    "tableOfContents": "Table of Contents",
-    "tocTooltip": "Jump to section"
+    "title": "Table of Contents",
+    "description": "Jump to section"
   },
   "comment": {
     "label": "Comment",

@@ -15,6 +15,15 @@
       <!-- 内容区域 -->
       <template #default>
         <slot />
+        <UModal
+          v-model:open="settingStore.isLoginDialogVisible"
+          :title="t('user.title')"
+          :description="t('user.description')"
+          :ui="{ body: 'text-center' }"
+        >
+          <template #body> <SharedLogin /></template>
+        </UModal>
+        
       </template>
     </UPage>
 
@@ -23,6 +32,11 @@
   </div>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import useSettingStore from "~/stores/setting";
+
+const settingStore = useSettingStore();
+const { t } = useI18n();
+</script>
 
 <style scoped></style>

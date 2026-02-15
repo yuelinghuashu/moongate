@@ -5,7 +5,7 @@
       <!-- 搜索组件 -->
       <UInput
         v-model="articleSearchValue"
-        icon="i-lucide-search"
+        icon="lucide-search"
         :placeholder="$t('search.placeholder')"
         size="lg"
         class="w-full"
@@ -15,7 +15,7 @@
           <UButton
             color="neutral"
             variant="link"
-            icon="i-lucide-circle-x"
+            icon="lucide-circle-x"
             aria-label="Clear input"
             @click="articleSearchValue = ''"
           />

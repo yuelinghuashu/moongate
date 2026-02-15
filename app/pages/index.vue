@@ -5,10 +5,10 @@
     :description="t('description')"
     :links="[
       {
-        label: 'Accessing the gate',
+        label: '// Accessing the gate',
         to: localePath('/articles'),
         target: '_self',
-        trailingIcon: 'i-lucide-arrow-right',
+        trailingIcon: 'lucide-arrow-right',
         size: 'xl',
         variant: 'solid',
         color: 'primary',

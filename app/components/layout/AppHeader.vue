@@ -43,6 +43,20 @@
 
       <!-- 语言栏选项框 -->
       <SharedLanguagePopover />
+
+      <!-- 用户图标按钮 -->
+      <SharedUserMenu v-if="loggedIn" />
+
+      <!-- 登录图标按钮 -->
+      <UButton
+        v-else
+        icon="lucide:log-in"
+        variant="ghost"
+        class="cursor-pointer"
+        @click="
+          settingStore.isLoginDialogVisible = !settingStore.isLoginDialogVisible
+        "
+      />
     </template>
 
     <!-- 移动抽屉，只在移动端显示 -->
@@ -61,6 +75,7 @@ const colorMode = useColorMode();
 const localePath = useLocalePath();
 const { isDesktop } = useResponsive();
 const route = useRoute();
+const { loggedIn } = useUserSession();
 
 // 目录是否可见
 const isOutlineVisible = useLocalStorage("isOutlineVisible", false);

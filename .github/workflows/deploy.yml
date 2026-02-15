@@ -1,4 +1,4 @@
-name: Deploy To Aliyun Server
+name: Deploy To Aliyun
 
 on:
   push:
@@ -6,11 +6,10 @@ on:
 
 jobs:
   ci:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        os: [ubuntu-latest]
         node: [24]
 
     steps:
@@ -36,16 +35,18 @@ jobs:
         run: |
           NUXT_PUBLIC_SITE_URL=https://moongate.top \
           pnpm run build
+        env:
+          NUXT_PUBLIC_SITE_URL: https://moongate.top
 
       - name: Deploy to Server via Rsync
         uses: burnett01/rsync-deployments@7.0.1
         with:
-          switches: -avz --delete # 递归、压缩、同步删除
-          path: .output/ # Nuxt 的文件输出目录
-          remote_path: /var/www/my-site/ # 服务器上的目标目录
-          remote_host: ${{ secrets.SERVER_HOST }} # 服务器 IP
-          remote_user: ${{ secrets.SERVER_USER }} # 登录用户名
-          remote_key: ${{ secrets.SSH_PRIVATE_KEY }} # SSH 私钥
+          switches: -avz --delete
+          path: .output/
+          remote_path: /var/www/my-site/
+          remote_host: ${{ secrets.SERVER_HOST }}
+          remote_user: ${{ secrets.SERVER_USER }}
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Start/Reload Node.js service
         uses: appleboy/ssh-action@v1.0.0
@@ -53,12 +54,19 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: NUXT_SESSION_PASSWORD, NUXT_OAUTH_GITHUB_CLIENT_ID, NUXT_OAUTH_GITHUB_CLIENT_SECRET
           script: |
             echo "🚀 启动 Node.js SSR 服务..."
             cd /var/www/my-site
 
-            # 创建或更新 PM2 配置文件
-            cat > ecosystem.config.js << 'EOF'
+            # 验证环境变量
+            if [ -z "$NUXT_SESSION_PASSWORD" ]; then
+              echo "❌ NUXT_SESSION_PASSWORD 未设置"
+              exit 1
+            fi
+
+            # 生成 PM2 配置文件
+            cat > ecosystem.config.js << EOF
             module.exports = {
               apps: [{
                 name: "moongate",
@@ -69,25 +77,26 @@ jobs:
                   NODE_ENV: "production",
                   NUXT_PUBLIC_SITE_URL: "https://moongate.top",
                   PORT: 3000,
-                  HOST: "0.0.0.0"
+                  HOST: "0.0.0.0",
+                  NUXT_SESSION_PASSWORD: "$NUXT_SESSION_PASSWORD",
+                  NUXT_OAUTH_GITHUB_CLIENT_ID: "$NUXT_OAUTH_GITHUB_CLIENT_ID",
+                  NUXT_OAUTH_GITHUB_CLIENT_SECRET: "$NUXT_OAUTH_GITHUB_CLIENT_SECRET"
                 }
               }]
             }
             EOF
 
-            echo "📁 PM2 配置文件已生成"
+            echo "✅ PM2 配置文件已生成"
 
-            # 使用配置文件管理应用
+            # 启动或重启应用
             if pm2 describe moongate > /dev/null 2>&1; then
-              echo "🔄 重启现有应用（使用最新配置）..."
+              echo "🔄 重启现有应用..."
               pm2 reload ecosystem.config.js --update-env
             else
               echo "🚀 启动新应用..."
               pm2 start ecosystem.config.js
             fi
 
-            # 保存 PM2 配置以便开机自启
             pm2 save
-            
-            echo "✅ 服务启动完成"
+            echo "✅ 服务状态："
             pm2 status moongate

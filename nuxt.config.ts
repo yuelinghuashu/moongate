@@ -11,13 +11,20 @@ export default defineNuxtConfig({
     "@nuxt/eslint",
     '@nuxt/icon',
     '@pinia/nuxt',
-    'pinia-plugin-persistedstate/nuxt'
+    'pinia-plugin-persistedstate/nuxt',
+    'nuxt-auth-utils',
   ],
   ssr: true,
   devtools: {
     enabled: false
   },
   runtimeConfig: {
+    oauth: {
+      github: {
+        clientId: '',
+        clientSecret: '',
+      }
+    },
     public: {
       siteUrl: process.env.SITE_URL,
     }

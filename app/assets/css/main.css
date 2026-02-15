@@ -62,9 +62,6 @@
   --ui-bg-hover: #c8d3dd;
   --ui-bg-active: var(--color-brand-light-100);
 
-  /* === 浅色模式侧边栏高亮颜色 === */
-  --sidebar-active-color: var(--color-brand-light-600);
-
   --ui-text: var(--color-gate-light-text);
   --ui-text-muted: var(--color-gate-light-muted-text);
   --ui-text-hover: var(--color-brand-light-700);
@@ -104,8 +101,8 @@
   --ui-bg-hover: #252e40;
   --ui-bg-active: var(--color-brand-dark-900);
 
-  /* === 深色模式侧边栏高亮颜色 === */
-  --sidebar-active-color: var(--color-brand-dark-500);
+  /* 深色模式下按钮背景色设为与卡片一致的深灰色 */
+  --ui-btn-bg: var(--ui-bg-muted);
 
   --ui-text: var(--color-gate-dark-text);
   --ui-text-muted: var(--color-gate-dark-muted-text);
@@ -131,18 +128,6 @@
   --ui-success: #34d399;
   --ui-warning: #fbbf24;
   --ui-error: #f87171;
-}
-
-/* ====== 左侧侧边栏样式 ====== */
-
-/* 侧边栏基础样式 */
-.layout-sidebar {
-  background-color: rgba(255, 255, 255, 0.02);
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-.dark .layout-sidebar {
-  background: rgba(0, 0, 0, 0.05);
 }
 
 /* 导航链接基础样式 */
@@ -195,7 +180,7 @@ button,
     background-color 0.15s ease,
     border-color 0.15s ease,
     color 0.15s ease;
-  border: 1px solid var(--ui-text-muted); /* 使用文本颜色获得更好对比度 */
+  /* border: 1px solid var(--ui-text-muted); */
   color: var(--ui-text);
 }
 
