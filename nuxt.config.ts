@@ -25,6 +25,7 @@ export default defineNuxtConfig({
         clientSecret: '',
       }
     },
+    databaseUrl: '',
     public: {
       siteUrl: process.env.SITE_URL,
     }

@@ -7,6 +7,8 @@ on:
 jobs:
   ci:
     runs-on: ubuntu-latest
+    env:
+      NUXT_PUBLIC_SITE_URL: https://moongate.top
 
     strategy:
       matrix:
@@ -32,11 +34,7 @@ jobs:
         run: pnpm run lint
 
       - name: Build
-        run: |
-          NUXT_PUBLIC_SITE_URL=https://moongate.top \
-          pnpm run build
-        env:
-          NUXT_PUBLIC_SITE_URL: https://moongate.top
+        run: pnpm run build
 
       - name: Deploy to Server via Rsync
         uses: burnett01/rsync-deployments@7.0.1
@@ -47,14 +45,19 @@ jobs:
           remote_host: ${{ secrets.SERVER_HOST }} # 服务器 IP
           remote_user: ${{ secrets.SERVER_USER }} # 登录用户名
           remote_key: ${{ secrets.SSH_PRIVATE_KEY }} # SSH 私钥
-          
+
       - name: Start/Reload Node.js service
         uses: appleboy/ssh-action@v1.0.0
+        env:
+          NUXT_SESSION_PASSWORD: ${{ secrets.NUXT_SESSION_PASSWORD }}
+          NUXT_OAUTH_GITHUB_CLIENT_ID: ${{ secrets.NUXT_OAUTH_GITHUB_CLIENT_ID }}
+          NUXT_OAUTH_GITHUB_CLIENT_SECRET: ${{ secrets.NUXT_OAUTH_GITHUB_CLIENT_SECRET }}
+          NUXT_DATABASE_URL: ${{ secrets.NUXT_DATABASE_URL }}
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: NUXT_SESSION_PASSWORD, NUXT_OAUTH_GITHUB_CLIENT_ID, NUXT_OAUTH_GITHUB_CLIENT_SECRET
+          envs: NUXT_PUBLIC_SITE_URL, NUXT_SESSION_PASSWORD, NUXT_OAUTH_GITHUB_CLIENT_ID, NUXT_OAUTH_GITHUB_CLIENT_SECRET
           script: |
             echo "🚀 启动 Node.js SSR 服务..."
             cd /var/www/my-site
@@ -71,16 +74,15 @@ jobs:
               apps: [{
                 name: "moongate",
                 script: "./server/index.mjs",
-                instances: 1,
-                exec_mode: "fork",
                 env: {
                   NODE_ENV: "production",
-                  NUXT_PUBLIC_SITE_URL: "https://moongate.top",
+                  NUXT_PUBLIC_SITE_URL: "$(echo -n "$NUXT_PUBLIC_SITE_URL")",
                   PORT: 3000,
                   HOST: "0.0.0.0",
+                  NUXT_DATABASE_URL: "$(echo -n "$NUXT_DATABASE_URL")",
                   NUXT_SESSION_PASSWORD: "$(echo -n "$NUXT_SESSION_PASSWORD")",
                   NUXT_OAUTH_GITHUB_CLIENT_ID: "$(echo -n "$NUXT_OAUTH_GITHUB_CLIENT_ID")",
-                  NUXT_OAUTH_GITHUB_CLIENT_SECRET: "$(echo -n "$NUXT_OAUTH_GITHUB_CLIENT_SECRET")"
+                  NUXT_OAUTH_GITHUB_CLIENT_SECRET: "$(echo -n "$NUXT_OAUTH_GITHUB_CLIENT_SECRET")",
                 }
               }]
             }
@@ -100,7 +102,3 @@ jobs:
             pm2 save
             echo "✅ 服务状态："
             pm2 status moongate
-        env:
-          NUXT_SESSION_PASSWORD: ${{ secrets.NUXT_SESSION_PASSWORD }}
-          NUXT_OAUTH_GITHUB_CLIENT_ID: ${{ secrets.NUXT_OAUTH_GITHUB_CLIENT_ID }}
-          NUXT_OAUTH_GITHUB_CLIENT_SECRET: ${{ secrets.NUXT_OAUTH_GITHUB_CLIENT_SECRET }}
