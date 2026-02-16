@@ -7,7 +7,7 @@ export default defineOAuthGitHubEventHandler({
     // ---------- 1. 获取来源页 ----------
     const session = await getUserSession(event)
     const redirect = (session.redirect as string) || '/'
-    
+
 
     // 清理 session 中的 redirect
     await setUserSession(event, { ...session, redirect: undefined })
@@ -31,6 +31,7 @@ export default defineOAuthGitHubEventHandler({
       dbUser = newUser
       console.log('新用户注册成功:', dbUser)
     }
+    console.log('用户登录成功:', dbUser)
 
     // ---------- 3. 登录状态写入 ----------
     await setUserSession(event, {
@@ -48,7 +49,7 @@ export default defineOAuthGitHubEventHandler({
   },
 
   async onError(event, error) {
-    console.error('GitHub OAuth error:', error)
+    console.error('GitHub OAuth error:', error.message)
     return sendRedirect(event, '/404')
   },
 })

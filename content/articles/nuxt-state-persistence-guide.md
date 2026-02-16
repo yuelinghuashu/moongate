@@ -2,7 +2,7 @@
 title: Nuxt 4 中安全实现状态持久化：根治水合失败指南
 description: 深入剖析 Nuxt 4 中因 SSR 导致 Pinia 状态持久化失败的根源，对比 useLocalStorage 与 Pinia 插件的底层设计差异，并提供基于“依赖注入”与“SSR 安全初始值”原则的完整解决方案与决策指南。
 date: 2026-02-11
-tags: ["Nuxt", "Pinia", "SSR", "Hydration", "状态管理", "持久化"]
+tags: [Nuxt, Pinia, SSR, Hydration, 状态管理, 持久化]
 ---
 
 # Nuxt 4 中安全实现状态持久化：根治水合失败指南
