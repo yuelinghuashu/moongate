@@ -7,6 +7,7 @@ export default defineOAuthGitHubEventHandler({
     // ---------- 1. 获取来源页 ----------
     const session = await getUserSession(event)
     const redirect = (session.redirect as string) || '/'
+    
 
     // 清理 session 中的 redirect
     await setUserSession(event, { ...session, redirect: undefined })

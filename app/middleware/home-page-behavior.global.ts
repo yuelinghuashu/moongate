@@ -16,7 +16,15 @@ export default defineNuxtRouteMiddleware((to) => {
     const nuxtApp = useNuxtApp()
     const locale = nuxtApp.$i18n.locale
     const localePath = useLocalePath()
-    const { homepageBehavior } = nuxtApp.$pinia.state.value.setting.settings
+    const settingStore = nuxtApp.$pinia?.state?.value?.setting
+
+    if (!settingStore) {
+      // Pinia 还没初始化，放行让页面继续加载
+      console.log('Pinia 还没初始化，放行让页面继续加载')
+      return
+    }
+
+    const homepageBehavior = settingStore.settings?.homepageBehavior
 
     if (to.path === '/' || to.path === `/${locale.value}/`) {
       try {
