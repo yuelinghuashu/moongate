@@ -59,53 +59,29 @@ OAuth 2.0 授权码模式是最安全的流程，核心思想是：客户端应�
 ## 二、GitHub OAuth 完整交互时序
 
 ```mermaid
-
 sequenceDiagram
-
 participant 用户 as 用户 (浏览器)
-
 participant 前端 as 应用前端 (Nuxt)
-
 participant 后端 as 应用后端 (Nuxt Server)
-
 participant GitHubAuth as GitHub 授权服务器
-
 participant GitHubAPI as GitHub 资源服务器
-
 用户->>前端: 1. 点击“GitHub登录”
-
 前端->>后端: 2. 跳转到 /api/auth/github
-
 后端->>GitHubAuth: 3. 302重定向到 GitHub (带 client_id, redirect_uri, state)
-
 GitHubAuth-->>用户: 4. 显示授权页面
-
 用户->>GitHubAuth: 5. 登录GitHub账号并点击“Authorize”
-
 GitHubAuth->>后端: 6. 302重定向回调地址 (带授权码 & state)
-
 后端->>GitHubAuth: 7. 用授权码 + client_secret 请求 Access Token
-
 GitHubAuth-->>后端: 8. 返回 Access Token
-
 后端->>GitHubAPI: 9. 用 Access Token 请求用户信息 (GET /user)
-
 GitHubAPI-->>后端: 10. 返回用户数据 (id, login, avatar_url...)
-
 后端->>后端: 11. 用 session 密码加密用户数据，存入 Cookie
-
 后端->>用户: 12. 302重定向回首页 (附带加密 Cookie)
-
 用户->>前端: 13. 访问首页，浏览器自动携带 Cookie
-
 前端->>后端: 14. Vue组件通过 useUserSession() 请求 /api/_auth/session
-
 后端->>后端: 15. 解密 Cookie，验证身份
-
 后端-->>前端: 16. 返回用户数据
-
 前端-->>用户: 17. 页面显示“欢迎，用户名”
-
 ```
 
 ### 各步骤原理
@@ -280,9 +256,104 @@ pnpm dev
 
 ---
 
-## 五、生产环境配置（服务器部署）
+## 五、进阶功能：登录后重定向回来源页
+### 5.1 问题的由来
 
-### 5.1 核心差异：环境变量来源
+默认实现中，登录成功后用户被重定向到首页 /。但更符合用户体验的做法是：用户从哪个页面点击登录，登录后就应该回到哪个页面。例如从 /en/articles/123 点击登录，成功后应回到同一页面。
+### 5.2 技术难点：GitHub 回调会丢弃自定义参数
+
+GitHub 在回调时只会保留 code 和 state 两个参数，你附加的任何自定义查询参数（如 ?redirect=/en/articles）都会被丢弃。因此无法通过 URL 参数直接传递来源页。
+### 5.3 解决方案：使用 session 存储来源页
+#### 5.3.1 创建存储来源页的 API
+
+```ts
+// server/api/store-redirect.post.ts
+export default defineEventHandler(async (event) => {
+  const { redirect } = await readBody(event)
+  await setUserSession(event, { redirect })
+  return { ok: true }
+})
+```
+
+#### 5.3.2 修改前端登录函数
+```vue
+<script setup>
+const { loggedIn } = useUserSession()
+const route = useRoute()
+
+const loginWithGitHub = async () => {
+  // 将当前完整路径保存到 session
+  await $fetch('/api/store-redirect', {
+    method: 'POST',
+    body: { redirect: route.fullPath }
+  })
+  navigateTo('/api/auth/github', { external: true })
+}
+</script>
+```
+
+#### 5.3.3 修改回调路由以读取来源页
+
+```ts
+// server/api/auth/github.get.ts
+export default defineOAuthGitHubEventHandler({
+  async onSuccess(event, { user }) {
+    // 获取之前存储的来源页
+    const session = await getUserSession(event)
+    let redirect = session.redirect as string || '/'
+
+    // 清理 session 中的 redirect（避免下次重复使用）
+    await setUserSession(event, { ...session, redirect: undefined })
+
+    // 存入用户信息
+    await setUserSession(event, {
+      user: {
+        githubId: String(user.id),
+        login: user.login,
+        name: user.name,
+        avatarUrl: user.avatar_url,
+        email: user.email,
+      },
+      loggedInAt: Date.now(),
+    })
+
+    // 重定向回来源页
+    return sendRedirect(event, redirect)
+  },
+
+  async onError(event, error) {
+    console.error('GitHub OAuth error:', error)
+    return sendRedirect(event, '/login?error=true')
+  },
+})
+```
+
+### 5.4 水合问题的处理
+
+当网站支持国际化时（如 /zh、/en 前缀），登录后重定向到来源页还有一个额外的好处：自动解决水合不匹配问题。
+#### 5.4.1 水合不匹配的产生原因
+
+    用户从 /en/articles/123 点击登录
+
+    登录成功后若重定向到 /（默认语言首页）
+
+    服务器渲染的是中文 HTML，但 URL 是 /，而客户端期望的是英文内容
+
+    导致水合警告：Hydration completed but contains mismatches
+
+#### 5.4.2 为什么重定向到来源页能解决
+
+    用户从 /en/articles/123 来，登录后回到 /en/articles/123
+
+    服务器根据 URL 中的 /en 前缀渲染对应的语言版本
+
+    客户端 hydration 时，DOM 结构与 URL 完全匹配，水合警告自然消失
+
+---
+
+## 六、生产环境配置（服务器部署）
+
+### 6.1 核心差异：环境变量来源
 
 | 环境   | 配置文件            | 变量来源                  |
 | ---- | --------------- | --------------------- |
@@ -292,7 +363,7 @@ pnpm dev
 **Nuxt 4 的设计原则**：生产环境不读取 `.env` 文件，所有环境变量必须通过运行环境提供（如 Vercel/Netlify 的环境变量面板、Linux 系统环境变量、Docker 环境变量等）。
 **千万不要将 `.env` 文件上传到服务器**，也不要在构建过程中打包进去。
 
-### 5.2 创建生产环境的 GitHub OAuth App
+### 6.2 创建生产环境的 GitHub OAuth App
 
 1. 登录 GitHub → 创建**另一个** OAuth App（与开发环境分开）。
     
@@ -307,9 +378,9 @@ pnpm dev
 3. 生成并保存 **Client ID** 和 **Client Secret**。
     
 
-### 5.3 服务器环境变量配置（以 Linux + PM2 为例）
+### 6.3 服务器环境变量配置（以 Linux + PM2 为例）
 
-#### 5.3.1 直接设置系统环境变量（临时方案）
+#### 6.3.1 直接设置系统环境变量（临时方案）
 
 ```bash
 # 编辑 /etc/profile 或 ~/.bashrc，添加：
@@ -320,7 +391,7 @@ export NUXT_OAUTH_GITHUB_CLIENT_SECRET=your_prod_client_secret
 source ~/.bashrc
 ```
 
-#### 5.3.2 在 PM2 配置文件中引用环境变量（**最推荐**）
+#### 6.3.2 在 PM2 配置文件中引用环境变量（**最推荐**）
 
 创建 `ecosystem.config.js`（或通过 CI/CD 自动生成）：
 
@@ -345,7 +416,7 @@ module.exports = {
 }
 ```
 
-### 5.4 CI/CD 自动化部署（GitHub Actions 示例）
+### 6.4 CI/CD 自动化部署（GitHub Actions 示例）
 
 ```yaml
 name: Deploy To Production
@@ -415,7 +486,7 @@ jobs:
             pm2 restart ecosystem.config.js --update-env
 ```
 
-### 5.5 验证生产环境
+### 6.5 验证生产环境
 
 - 访问 `https://你的域名.com/api/_auth/session`，应返回 `{"user":null}` 或登录后的用户信息。
     
@@ -424,9 +495,9 @@ jobs:
 
 ---
 
-## 六、生产环境常见错误（附根本原因与解决方案）
+## 七、生产环境常见错误（附根本原因与解决方案）
 
-### 6.1 静态资源 404（CSS/JS 无法加载）
+### 7.1 静态资源 404（CSS/JS 无法加载）
 
 **现象**：页面无样式，控制台大量 `.css`、`.js` 请求 404。  
 **原因**：
@@ -441,7 +512,7 @@ jobs:
 - 重启 PM2：`pm2 restart <app-name> --update-env`。
     
 
-### 6.2 `/api/_auth/session` 返回 500
+### 7.2 `/api/_auth/session` 返回 500
 
 **现象**：登录后无法获取用户信息，接口报错。  
 **原因**：
@@ -456,7 +527,7 @@ jobs:
 - 检查配置文件中的密码值是否干净。
     
 
-### 6.3 OAuth 回调成功但页面未登录
+### 7.3 OAuth 回调成功但页面未登录
 
 **现象**：GitHub 跳转回首页，但右上角仍显示“登录”。  
 **原因**：
@@ -471,7 +542,7 @@ jobs:
 - 确认生产环境使用的密码与加密时一致。
     
 
-### 6.4 `redirect_uri_mismatch`
+### 7.4 `redirect_uri_mismatch`
 
 **现象**：GitHub 返回错误“The redirect_uri MUST match the registered callback URL”。  
 **原因**：生产环境使用的回调 URL 未在 GitHub OAuth App 中注册。  
@@ -480,7 +551,7 @@ jobs:
 - 登录 GitHub，进入生产环境 OAuth App 设置，将 `https://你的域名/api/auth/github` 添加到回调 URL 列表。
     
 
-### 6.5 登录后 Pinia store 报错
+### 7.5 登录后 Pinia store 报错
 
 **现象**：控制台出现 `t.$pinia.state.value.xxx is undefined`。  
 **原因**：在 Pinia store 初始化完成前，某个组件试图访问 store 属性（常见于登录后的重定向瞬间）。  
@@ -493,7 +564,7 @@ jobs:
 
 ---
 
-## 七、开发与生产环境最佳实践总结
+## 八、开发与生产环境最佳实践总结
 
 |维度|开发环境|生产环境|
 |---|---|---|
@@ -505,7 +576,7 @@ jobs:
 
 ---
 
-## 八、结语
+## 九、结语
 
 本文从 OAuth 2.0 核心原理出发，完整呈现了在 Nuxt 4 中集成 GitHub 登录的**开发环境配置**与**生产环境部署**的全流程，并详细剖析了生产环境特有的问题和解决方案。
 
