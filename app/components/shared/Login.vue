@@ -12,9 +12,17 @@
 
 <script lang="ts" setup>
 const { loggedIn } = useUserSession();
+const route = useRoute();
 
 // 登录 GitHub账号
-const loginWithGitHub = () => {
-  navigateTo("/api/auth/github", { external: true });
+const loginWithGitHub = async() => {
+  // 将当前完整路径保存到 session
+  await $fetch("/api/store-redirect", {
+    method: "POST",
+    body: { redirect: route.fullPath },
+  });
+  
+  // 跳转到 GitHub OAuth
+  navigateTo('/api/auth/github', { external: true });
 };
 </script>
