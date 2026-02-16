@@ -28,7 +28,7 @@ export default defineOAuthGitHubEventHandler({
       }).returning()
 
       dbUser = newUser
-      console.log('新用户注册:', dbUser)
+      console.log('新用户注册成功:', dbUser)
     }
 
     // ---------- 3. 登录状态写入 ----------
