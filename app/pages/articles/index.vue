@@ -25,7 +25,7 @@
       <!-- 文章搜索选项 -->
       <ClientOnly>
         <USelect
-          v-model="settings.searchOption"
+          v-model="settingStore.settings.searchOption"
           :items="tm('search.options')"
           :label-key="isDev ? 'name.loc.source' : 'name'"
           value-key="id"
@@ -86,7 +86,7 @@ import { useEventListener, useScroll } from "@vueuse/core";
 import { useSwipeUp } from "~/composables/useSwipeUp";
 const { isMobile, isDesktop } = useResponsive();
 
-const { settings } = useSettingStore();
+const settingStore = useSettingStore();
 const {  tm, t } = useI18n();
 const route = useRoute();
 const localePath = useLocalePath();
@@ -134,7 +134,7 @@ const { data: articleData, refresh } = await useAsyncData(
     // settings.searchOption === 1 仅搜索标题
     // settings.searchOption === 2 搜索标题和描述
     if (keyword !== "") {
-      if (settings.searchOption === 1) {
+      if (settingStore.settings.searchOption === 1) {
         // 仅搜索标题
         query = query.where("title", "LIKE", `%${keyword}%`);
       } else {

@@ -48,6 +48,6 @@ export default defineOAuthGitHubEventHandler({
 
   async onError(event, error) {
     console.error('GitHub OAuth error:', error)
-    return sendRedirect(event, '/login?error=true')
+    return sendRedirect(event, '/404')
   },
 })
