@@ -25,6 +25,11 @@
         </template>
       </UDrawer>
     </main>
+
+    <!-- 打赏区 -->
+    <SharedBuyMeCoffee class="mb-4" />
+
+    <!-- 评论区 -->
     <ArticleCommentSection />
   </div>
   <div v-else><ErrorPage /></div>
@@ -35,49 +40,66 @@ import { withLeadingSlash } from "ufo";
 import dayjs from "dayjs";
 import { useLocalStorage } from "@vueuse/core";
 import useSettingStore from "~/stores/setting";
+
+// ==================== 组合式函数 ====================
 const { locale, t } = useI18n();
 const route = useRoute();
 const { isDesktop } = useResponsive();
 const settingStore = useSettingStore();
 
-// 核心：移除语言前缀，得到原始路径
-// 例如：/en/articles/welcome -> /articles/welcome
-const slug = computed(() => {
+// ==================== 响应式状态 ====================
+/**
+ * 目录显示状态 - 持久化到 localStorage
+ */
+const isOutlineVisible: Ref<boolean> = useLocalStorage(
+  "isOutlineVisible",
+  false,
+);
+
+// ==================== 计算属性 ====================
+/**
+ * 移除语言前缀，得到文章原始路径
+ * 例如：/en/articles/welcome -> /articles/welcome
+ */
+const slug: ComputedRef<string> = computed(() => {
   const path = withLeadingSlash(String(route.params.slug || "/"));
   // 移除语言前缀部分
   return path.replace(new RegExp(`^/(${locale.value})`), "") || "/";
 });
 
-// 稳定查询：永远只查询 'articles' 这个集合
+// ==================== 数据获取 ====================
+/**
+ * 获取文章内容
+ * 稳定查询：永远只查询 'articles' 这个集合
+ */
 const { data: page } = await useAsyncData(`articles-${slug.value}`, () => {
   return queryCollection("articles").path(`/articles${slug.value}`).first();
 });
 
-const isOutlineVisible = useLocalStorage("isOutlineVisible", false);
-
-// 是否显示目录图标
-watchEffect(() => {
+// ==================== 生命周期与副作用 ====================
+/**
+ * 监听文章变化，控制目录图标显示状态
+ */
+watchEffect((): void => {
   settingStore.isOutlineIconVisible = Boolean(
-    page.value && page.value?.body.toc?.links,
+    page.value && page.value?.body?.toc?.links?.length,
   );
 });
 
-// 设置 SEO 元信息
+// ==================== SEO 元信息 ====================
 if (page.value?.title && page.value?.description) {
   useSeoMeta({
-    title: page.value?.title,
-    description: page.value?.description,
-    ogTitle: page.value?.title,
-    ogDescription: page.value?.description,
+    title: page.value.title as string,
+    description: page.value.description as string,
+    ogTitle: page.value.title as string,
+    ogDescription: page.value.description as string,
   });
 } else {
   useSeoMeta({
-    title: t("title"),
-    description: t("description"),
-    ogTitle: t("title"),
-    ogDescription: t("description"),
+    title: t("title") as string,
+    description: t("description") as string,
+    ogTitle: t("title") as string,
+    ogDescription: t("description") as string,
   });
 }
 </script>
-
-<style scoped></style>

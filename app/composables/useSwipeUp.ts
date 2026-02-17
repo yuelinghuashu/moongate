@@ -1,6 +1,8 @@
 // composables/useSwipeUp.ts
 import { useEventListener } from '@vueuse/core'
 
+
+// 监听上滑事件
 export function useSwipeUp(onSwipe: () => void, options = { threshold: 60 }) {
   // 1. 记录触摸起点
   const touchStartY = ref(0)

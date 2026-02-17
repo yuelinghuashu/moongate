@@ -14,7 +14,7 @@
         <template v-if="articleSearchValue?.length" #trailing>
           <UButton
             color="neutral"
-            variant="link"
+            variant="ghost"
             icon="lucide-circle-x"
             aria-label="Clear input"
             @click="articleSearchValue = ''"
@@ -66,6 +66,7 @@
           :items-per-page="articlePagination.size"
         />
       </ClientOnly>
+      
       <USelect
         v-model="articlePagination.size"
         :items="articlePagination.sizeOptions"
