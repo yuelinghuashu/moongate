@@ -15,8 +15,9 @@
     "description": "GitHubアカウントでワンクリックログインし、コメントやインタラクションを利用可能"
   },
   "search": {
-    "placeholder": "記事を検索",
-    "options": [
+    "inputPlaceholder": "記事を検索",
+    "optionPlaceholder": "検索オプション",
+    "option": [
       { "id": 1, "name": "タイトルと説明を検索" },
       { "id": 2, "name": "タイトルのみ検索" }
     ],

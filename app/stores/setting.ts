@@ -3,6 +3,7 @@ const useSettingStore = defineStore('setting', () => {
   const { setLocale, locales, locale } = useI18n()
   const colorMode = useColorMode()
 
+  // 是否显示登录对话框
   const isLoginDialogVisible = ref(false)
 
   // 是否显示目录图标
@@ -15,12 +16,17 @@ const useSettingStore = defineStore('setting', () => {
 
   // 用户设置
   const settings = ref({
+    // 外观
     appearance: {
+      // 主题
       theme: 'system',
+      // 语言
       language: locales.value[defaultLocale]!.code,
     },
+    // 是否跳过首页
     homepageBehavior: 31,
-    searchOption: 2
+    // 文章搜索选项
+    searchOption: 1
   })
 
   // 设置主题

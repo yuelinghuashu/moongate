@@ -10,13 +10,14 @@
     "login": "Login",
     "logout": "Logout",
     "username": "Username",
-      "profile": "Profile",
+    "profile": "Profile",
     "title": "Access Terminal",
     "description": "One-click login with GitHub account to unlock comments and interactions"
   },
   "search": {
-    "placeholder": "Search articles",
-    "options": [
+    "inputPlaceholder": "Search articles",
+    "optionPlaceholder": "Search options",
+    "option": [
       { "id": 1, "name": "Search title and description" },
       { "id": 2, "name": "Search title only" }
     ],

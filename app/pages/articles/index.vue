@@ -2,11 +2,11 @@
 <template>
   <div>
     <form class="flex items-center justify-between search">
-      <!-- 搜索组件 -->
+      <!-- 搜索区 -->
       <UInput
         v-model="articleSearchValue"
         icon="lucide-search"
-        :placeholder="$t('search.placeholder')"
+        :placeholder="t('search.inputPlaceholder')"
         size="lg"
         class="w-full"
         @update:model-value="refresh()"
@@ -22,16 +22,18 @@
         </template>
       </UInput>
 
-      <!-- 文章搜索选项 -->
+      <!-- 文章选项区 -->
       <ClientOnly>
+        <!-- 文章搜索选项 -->
         <USelect
           v-model="settingStore.settings.searchOption"
-          :items="tm('search.options')"
+          :items="tm('search.option')"
           :label-key="isDev ? 'name.loc.source' : 'name'"
           value-key="id"
           size="lg"
-          placeholder="搜索选项"
-          class="ml-2 min-w-50"
+          :placeholder="t('search.optionPlaceholder')"
+          class="ml-2 min-w-60"
+          @update:model-value="refresh()"
         />
       </ClientOnly>
     </form>
@@ -41,7 +43,7 @@
       <UBlogPost
         v-for="(item, index) in articleList"
         :key="item.id"
-        :ui="{ description: 'line-clamp-2' }"
+        :ui="{ body: 'sm:p-4', description: 'line-clamp-2' }"
         :title="item.title"
         :description="item.description"
         :date="item.date"
@@ -106,6 +108,7 @@ const articlePagination = ref({
   sizeOptions: [5, 10, 15, 20], // 每页文章数选项
 });
 
+// 判断移动端是否正在加载更多文章
 const isLoading = ref(false);
 
 // 判断是否焦点在某个组件中
@@ -132,19 +135,19 @@ const { data: articleData, refresh } = await useAsyncData(
     let query = queryCollection("articles").order("date", "DESC");
 
     // 2. 增加搜索条件(搜索标题/描述)
-    // settings.searchOption === 1 仅搜索标题
-    // settings.searchOption === 2 搜索标题和描述
+    // settings.search.option === 1 搜索标题和描述
+    // settings.search.option === 2 仅搜索标题
     if (keyword !== "") {
       if (settingStore.settings.searchOption === 1) {
-        // 仅搜索标题
-        query = query.where("title", "LIKE", `%${keyword}%`);
-      } else {
         // 搜索标题和描述
         query = query.orWhere((q) =>
           q
             .where("title", "LIKE", `%${keyword}%`)
             .where("description", "LIKE", `%${keyword}%`),
         );
+      } else {
+        // 仅搜索标题
+        query = query.where("title", "LIKE", `%${keyword}%`);
       }
     }
 
@@ -170,7 +173,7 @@ const articleList = ref<[]>(articleData.value?.list || []);
 // 监听路由变化，更新分页参数
 watch(
   () => articleData.value?.list,
-  (newValue, oldValue) => {
+  (newValue) => {
     if (isMobile.value && articlePagination.value.page !== 1) {
       // 移动端加载更多时，合并新旧文章
       // 用 Map 去重：解决最后一页数据不足时，重复加载导致列表不变的问题

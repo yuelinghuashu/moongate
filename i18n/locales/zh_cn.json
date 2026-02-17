@@ -15,8 +15,9 @@
     "description": "使用 GitHub 账号一键登录，解锁评论与互动权限"
   },
   "search": {
-    "placeholder": "搜索文章",
-    "options": [
+    "inputPlaceholder": "搜索文章",
+    "optionPlaceholder": "搜索选项",
+    "option": [
       { "id": 1, "name": "搜索标题和描述" },
       { "id": 2, "name": "仅搜索标题" }
     ],
