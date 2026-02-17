@@ -1,11 +1,11 @@
 ---
-title: Nuxt 4 图片引用：为什么你应该用 `<NuxtImg>` 而不是原生 `<img>`
-description: 介绍了为什么在 Nuxt 项目中，永远优先使用 `<NuxtImg>` 而不是原生 `<img>`。
+title: Nuxt 4 图片引用：<NuxtImg> 替代原生 <img> 的一次实践
+description: 介绍了为什么在 Nuxt 项目中，永远优先使用 <NuxtImg> 而不是原生 <img>。
 date: 2026-02-17
 tags: [Nuxt, Image]
 ---
 
-# Nuxt 4 图片引用：为什么你应该用 `<NuxtImg>` 而不是原生 `<img>`
+# Nuxt 4 图片引用：`<NuxtImg>` 替代原生 `<img>` 的一次实践
 
 ## 从一次诡异的图片 404 错误说起
 
