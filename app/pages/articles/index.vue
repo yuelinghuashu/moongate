@@ -66,7 +66,7 @@
           :items-per-page="articlePagination.size"
         />
       </ClientOnly>
-      
+
       <USelect
         v-model="articlePagination.size"
         :items="articlePagination.sizeOptions"
@@ -88,7 +88,7 @@ import { useSwipeUp } from "~/composables/useSwipeUp";
 const { isMobile, isDesktop } = useResponsive();
 
 const settingStore = useSettingStore();
-const {  tm, t } = useI18n();
+const { tm, t } = useI18n();
 const route = useRoute();
 const localePath = useLocalePath();
 
@@ -171,9 +171,15 @@ const articleList = ref<[]>(articleData.value?.list || []);
 watch(
   () => articleData.value?.list,
   (newValue, oldValue) => {
-    if (isMobile.value && articlePagination.value.page !== 1)
-      articleList.value = [...oldValue, ...newValue];
-    else articleList.value = newValue;
+    if (isMobile.value && articlePagination.value.page !== 1) {
+      // 移动端加载更多时，合并新旧文章
+      // 用 Map 去重：解决最后一页数据不足时，重复加载导致列表不变的问题
+      const mergedMap = new Map();
+      [...articleList.value, ...newValue].forEach((item) => {
+        mergedMap.set(item.id, item);
+      });
+      articleList.value = Array.from(mergedMap.values());
+    } else articleList.value = newValue;
   },
 );
 
