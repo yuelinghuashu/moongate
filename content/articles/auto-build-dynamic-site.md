@@ -1,7 +1,7 @@
 ---
 date: 2026-01-23
 title: 从零到一：GitHub Actions + Caddy 全自动部署动态网站实战
-decription: 全自动部署静态网站实战教程，从零到一，一步步搭建自动化部署系统。
+description: 全自动部署静态网站实战教程，从零到一，一步步搭建自动化部署系统。
 tags: [GitHub Actions, Caddy, 动态网站]
 ---
 

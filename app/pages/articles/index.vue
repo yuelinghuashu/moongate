@@ -22,7 +22,7 @@
 
       <!-- 文章搜索选项 -->
       <USelect
-        v-model="searchOption"
+        v-model="searchInput"
         :items="tm('search.option')"
         :label-key="isDev ? 'name.loc.source' : 'name'"
         value-key="id"
@@ -76,55 +76,61 @@
 </template>
 
 <script lang="ts" setup>
-import { useRouteQuery } from "@vueuse/router";
 import { useEventListener, useScroll, watchDebounced } from "@vueuse/core";
 import { useSwipeUp } from "~/composables/useSwipeUp";
+import useUrlQueryStore from "~/stores/urlQuery";
+const urlQueryStore = useUrlQueryStore();
 const { isMobile, isDesktop } = useResponsive();
-
 const { tm, t } = useI18n();
 const localePath = useLocalePath();
 const { y } = useScroll(window);
 const isDev = import.meta.env.DEV;
 
-// ---------- 状态定义（自动同步到 URL）----------
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const toValidNumber = (val: any, defaultValue: number): number => {
-  if (import.meta.server) return defaultValue // 服务端直接返回默认值
-  const num = Number(val)
-  return isNaN(num) ? defaultValue : num
-}
+// 输入框实时值（独立于 store，用于防抖）
+const searchInput = ref(urlQueryStore.search);
 
-// 新增：搜索框实时值和 URL 搜索词
-const searchInput = ref<string>("") // 输入框实时值
-const searchQuery = useRouteQuery<string>("search", "") // URL 中的搜索词
+// 搜索选项（直接双向绑定到 store）
+const searchOption = computed({
+  get: () => urlQueryStore.option,
+  set: (val) => {
+    urlQueryStore.option = val;
+  },
+});
 
-const searchOption = useRouteQuery<number>('option', 1, {
-  transform: (val) => toValidNumber(val, 1)
-})
+// 分页直接使用 store 的计算属性（可写）
+const page = computed({
+  get: () => urlQueryStore.page,
+  set: (val) => {
+    urlQueryStore.page = val;
+  },
+});
+const size = computed({
+  get: () => urlQueryStore.size,
+  set: (val) => {
+    urlQueryStore.size = val;
+  },
+});
 
-const page = useRouteQuery<number>('page', 1, {
-  transform: (val) => toValidNumber(val, 1)
-})
-
-const size = useRouteQuery<number>('size', 5, {
-  transform: (val) => toValidNumber(val, 5)
-})
 const sizeOptions = [5, 10, 15, 20] as number[];
 
-// ---------- 搜索防抖：输入停止 500ms 后更新 URL，并重置页码到第一页 ----------
+console.log("searchInput", searchInput.value);
+console.log("searchOption", searchOption.value);
+console.log("page", page.value);
+console.log("size", size.value);
+
+// 防抖：输入停止 500ms 后更新 store 的 search 并重置页码
 watchDebounced(
   searchInput,
   (val) => {
-    searchQuery.value = val;
-    page.value = 1;
+    urlQueryStore.search = val;
+    urlQueryStore.page = 1; // ⚠️ 重置页码，必须保留
   },
   { debounce: 500 },
 );
 
-// URL 变化时（后退/前进）同步到输入框
+// 反向同步：当 store 的 search 被外部改变（如后退按钮）时，更新输入框
 watch(
-  searchQuery,
+  () => urlQueryStore.search,
   (val) => {
     searchInput.value = val;
   },
@@ -178,6 +184,7 @@ const { data: articleData, pending } = await useAsyncData(
         .limit(size.value)
         .all(),
     ]);
+    console.log("articleData", list);
 
     return { total, list };
   },
@@ -252,7 +259,7 @@ useEventListener("keydown", (e) => {
   }
 
   // 如果聚焦在输入框，不处理翻页
-  if (isInputFocused.value) return;
+  if (isInputFocused.value && isMobile) return;
 
   // 左右方向键翻页
   if (e.key === "ArrowLeft" && hasPrevPage.value) {
