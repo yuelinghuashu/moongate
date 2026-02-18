@@ -27,7 +27,7 @@
     </main>
 
     <!-- 打赏区 -->
-    <SharedBuyMeCoffee class="mb-4" />
+    <SharedBuyMeCoffee class="mt-4 mb-8" />
 
     <!-- 评论区 -->
     <ArticleCommentSection />

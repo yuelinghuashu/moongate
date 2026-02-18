@@ -1,6 +1,6 @@
 ---
 date: 2025-12-11
-title: Nuxt4国际化(i18n)完整配置：从基础设置到高级优化
+title: Nuxt 4 国际化(i18n)完整配置：从基础设置到高级优化
 description: 本文介绍了 @nuxt/i18n 模块的配置方法，并提供了一些常见问题的解决方案。
 tags: [Nuxt, i18n]
 ---

@@ -1,41 +1,35 @@
-<!-- eslint-disable vue/no-multiple-template-root -->
 <template>
   <div>
     <form class="flex items-center justify-between search">
       <!-- 搜索区 -->
       <UInput
-        v-model="articleSearchValue"
+        v-model="searchInput"
         icon="lucide-search"
         :placeholder="t('search.inputPlaceholder')"
         size="lg"
         class="w-full"
-        @update:model-value="refresh()"
       >
-        <template v-if="articleSearchValue?.length" #trailing>
+        <template v-if="searchInput?.length" #trailing>
           <UButton
             color="neutral"
             variant="ghost"
             icon="lucide-circle-x"
             aria-label="Clear input"
-            @click="articleSearchValue = ''"
+            @click="searchInput = ''"
           />
         </template>
       </UInput>
 
-      <!-- 文章选项区 -->
-      <ClientOnly>
-        <!-- 文章搜索选项 -->
-        <USelect
-          v-model="settingStore.settings.searchOption"
-          :items="tm('search.option')"
-          :label-key="isDev ? 'name.loc.source' : 'name'"
-          value-key="id"
-          size="lg"
-          :placeholder="t('search.optionPlaceholder')"
-          class="ml-2 min-w-60"
-          @update:model-value="refresh()"
-        />
-      </ClientOnly>
+      <!-- 文章搜索选项 -->
+      <USelect
+        v-model="searchOption"
+        :items="tm('search.option')"
+        :label-key="isDev ? 'name.loc.source' : 'name'"
+        value-key="id"
+        size="lg"
+        :placeholder="t('search.optionPlaceholder')"
+        class="ml-2 min-w-60"
+      />
     </form>
 
     <!-- 文章总览组件 -->
@@ -61,19 +55,17 @@
 
     <!-- 分页组件 -->
     <div v-if="isDesktop" class="flex justify-center items-center">
-      <ClientOnly>
-        <UPagination
-          v-model:page="articlePagination.page"
-          :total="articleData?.total"
-          :items-per-page="articlePagination.size"
-        />
-      </ClientOnly>
+      <UPagination
+        v-model:page="page"
+        :total="articleData?.total"
+        :items-per-page="size"
+      />
 
       <USelect
-        v-model="articlePagination.size"
-        :items="articlePagination.sizeOptions"
+        v-model="size"
+        :items="sizeOptions"
         class="ml-4"
-        @update:model-value="articlePagination.page = 1"
+        @update:model-value="page = 1"
       />
 
       <span class="ml-4">
@@ -84,40 +76,50 @@
 </template>
 
 <script lang="ts" setup>
-import useSettingStore from "~/stores/setting";
-import { useEventListener, useScroll } from "@vueuse/core";
+import { useRouteQuery } from "@vueuse/router";
+import { useEventListener, useScroll, watchDebounced } from "@vueuse/core";
 import { useSwipeUp } from "~/composables/useSwipeUp";
 const { isMobile, isDesktop } = useResponsive();
 
-const settingStore = useSettingStore();
 const { tm, t } = useI18n();
-const route = useRoute();
 const localePath = useLocalePath();
-
 const { y } = useScroll(window);
-
 const isDev = import.meta.env.DEV;
 
-// 文章搜索框
-const articleSearchValue = ref<string>(route.query.search?.toString() || "");
+// ---------- 状态定义（自动同步到 URL）----------
+const searchInput = ref<string>(""); // 输入框实时值
+const searchQuery = useRouteQuery<string>("search", ""); // URL 中的搜索词
+const searchOption = useRouteQuery<number>("option", 1, { transform: Number }); // URL 中的搜索选项
+const page = useRouteQuery<number>("page", 1, { transform: Number }); // URL 中的页码
+const size = useRouteQuery<number>("size", 5, { transform: Number }); // URL 中的每页条数
+const sizeOptions = [5, 10, 15, 20] as number[];
 
-// 文章分页
-const articlePagination = ref({
-  page: Number(route.query.page) || 1, // 当前页
-  size: Number(route.query.size) || 5, // 每页文章数
-  sizeOptions: [5, 10, 15, 20], // 每页文章数选项
-});
+// ---------- 搜索防抖：输入停止 500ms 后更新 URL，并重置页码到第一页 ----------
+watchDebounced(
+  searchInput,
+  (val) => {
+    searchQuery.value = val;
+    page.value = 1;
+  },
+  { debounce: 500 },
+);
 
-// 判断移动端是否正在加载更多文章
-const isLoading = ref(false);
+// URL 变化时（后退/前进）同步到输入框
+watch(
+  searchQuery,
+  (val) => {
+    searchInput.value = val;
+  },
+  { immediate: true },
+);
 
-// 判断是否焦点在某个组件中
+// ---------- 判断输入框焦点（用于键盘事件）----------
 const isInputFocused = computed(() => {
   const activeElement = document.activeElement?.tagName;
   return activeElement === "INPUT" || activeElement === "TEXTAREA";
 });
 
-// 监听窗口滚动，并计算是否接近底部
+// ---------- 滚动检测（用于移动端无限滚动）----------
 const isNearBottom = computed(() => {
   const scrollHeight = document.documentElement.scrollHeight;
   const viewportHeight = window.innerHeight;
@@ -125,12 +127,11 @@ const isNearBottom = computed(() => {
   return scrollHeight - y.value - viewportHeight < 200;
 });
 
-// 获取文章列表
-const { data: articleData, refresh } = await useAsyncData(
+// ---------- 获取文章列表（自动刷新）----------
+const { data: articleData, pending } = await useAsyncData(
   "article-list",
   async () => {
-    const { page, size } = articlePagination.value;
-    const keyword = articleSearchValue.value.trim();
+    const keyword = searchInput.value.trim();
     // 1. 构建基础查询
     let query = queryCollection("articles").order("date", "DESC");
 
@@ -138,7 +139,7 @@ const { data: articleData, refresh } = await useAsyncData(
     // settings.search.option === 1 搜索标题和描述
     // settings.search.option === 2 仅搜索标题
     if (keyword !== "") {
-      if (settingStore.settings.searchOption === 1) {
+      if (searchOption.value === 1) {
         // 搜索标题和描述
         query = query.orWhere((q) =>
           q
@@ -155,86 +156,93 @@ const { data: articleData, refresh } = await useAsyncData(
     const [total, list] = await Promise.all([
       query.count(),
       query
-        .skip((page - 1) * size)
-        .limit(size)
+        .skip((page.value - 1) * size.value)
+        .limit(size.value)
         .all(),
     ]);
 
     return { total, list };
   },
   {
-    watch: [articlePagination.value],
+    watch: [
+      () => searchInput.value, // 监听搜索词
+      () => searchOption.value, // 监听搜索选项
+      () => page.value, // 监听页码
+      () => size.value, // 监听每页条数
+    ],
   },
 );
 
-// 文章列表
-const articleList = ref<[]>(articleData.value?.list || []);
+// ---------- 累积文章列表（用于移动端无限滚动）----------
+const articleList = ref<[]>([]);
 
-// 监听路由变化，更新分页参数
+// 当数据更新时，根据当前模式（桌面/移动）处理列表
+// 注意：当 URL 中 page > 1 时，刷新后直接显示对应页，这是符合预期的（URL 驱动状态）
 watch(
   () => articleData.value?.list,
-  (newValue) => {
-    if (isMobile.value && articlePagination.value.page !== 1) {
-      // 移动端加载更多时，合并新旧文章
-      // 用 Map 去重：解决最后一页数据不足时，重复加载导致列表不变的问题
-      const mergedMap = new Map();
-      [...articleList.value, ...newValue].forEach((item) => {
-        mergedMap.set(item.id, item);
-      });
-      articleList.value = Array.from(mergedMap.values());
-    } else articleList.value = newValue;
+  (newList) => {
+    if (!newList) return; // 数据未加载时不处理
+
+    if (isMobile.value && page.value > 1) {
+      // 移动端加载更多：合并并去重
+      const merged = [...articleList.value, ...newList];
+      // 使用 Map 以 id 为键去重（假设每个文章有唯一 id）
+      const uniqueMap = new Map(merged.map((item) => [item.id, item]));
+      articleList.value = Array.from(uniqueMap.values());
+    } else {
+      // 桌面端翻页或移动端第一页：直接替换（搜索时 page 会被重置为 1，因此自动清空累积）
+      articleList.value = newList;
+    }
   },
+  { immediate: true }, // 立即执行一次，确保初始值
 );
 
+// ---------- 分页辅助计算 ----------
 // 计算总页数
 const totalPages = computed(() => {
-  const { size } = articlePagination.value;
-  return Math.ceil(articleData.value.total / size);
+  if (!articleData.value?.total) return 0;
+  return Math.ceil(articleData.value.total / size.value);
 });
 
 // 检查是否有上一页/下一页
-const hasPrevPage = computed(() => articlePagination.value.page > 1);
-const hasNextPage = computed(
-  () => articlePagination.value.page < totalPages.value,
-);
+const hasPrevPage = computed(() => page.value > 1);
+const hasNextPage = computed(() => page.value < totalPages.value);
 
-// 滑动事件，上滑加载更多文章
+// ---------- 移动端无限滚动 ----------
 const loadMoreArticles = () => {
   // 增加条件：不在加载中、接近底部、是移动端、还有下一页
   if (
-    isLoading.value ||
+    pending.value ||
     !isNearBottom.value ||
     !isMobile.value ||
     !hasNextPage.value
   )
     return;
 
-  isLoading.value = true;
-  try {
-    articlePagination.value.page += 1;
-    refresh();
-  } catch (error) {
-    console.error("加载失败", error);
-  } finally {
-    isLoading.value = false;
-  }
+  page.value += 1;
 };
 
 // 监听滑动事件
 useSwipeUp(loadMoreArticles, { threshold: 60 }); // 阈值可调
 
-// 监听键盘事件，左右方向键翻页
+// ---------- 键盘事件：左右翻页 + ESC 失焦 ----------
 useEventListener("keydown", (e) => {
+  // ESC 键：如果当前聚焦在输入框，则取消聚焦
+  if (e.key === "Escape" && isInputFocused.value) {
+    (document.activeElement as HTMLElement)?.blur();
+    return;
+  }
+
+  // 如果聚焦在输入框，不处理翻页
   if (isInputFocused.value) return;
 
+  // 左右方向键翻页
   if (e.key === "ArrowLeft" && hasPrevPage.value) {
     e.preventDefault();
-    articlePagination.value.page -= 1;
-    refresh();
+    page.value -= 1; // 自动触发数据刷新
   } else if (e.key === "ArrowRight" && hasNextPage.value) {
     e.preventDefault();
-    articlePagination.value.page += 1;
-    refresh();
+    page.value += 1; // 自动触发数据刷新
   }
 });
 </script>

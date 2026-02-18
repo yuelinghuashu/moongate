@@ -25,8 +25,6 @@ const useSettingStore = defineStore('setting', () => {
     },
     // 是否跳过首页
     homepageBehavior: 31,
-    // 文章搜索选项
-    searchOption: 1
   })
 
   // 设置主题
