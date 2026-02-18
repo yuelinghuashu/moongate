@@ -87,11 +87,24 @@ const { y } = useScroll(window);
 const isDev = import.meta.env.DEV;
 
 // ---------- 状态定义（自动同步到 URL）----------
-const searchInput = ref<string>(""); // 输入框实时值
-const searchQuery = useRouteQuery<string>("search", ""); // URL 中的搜索词
-const searchOption = useRouteQuery<number>("option", 1, { transform: Number }); // URL 中的搜索选项
-const page = useRouteQuery<number>("page", 1, { transform: Number }); // URL 中的页码
-const size = useRouteQuery<number>("size", 5, { transform: Number }); // URL 中的每页条数
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const toValidNumber = (val: any, defaultValue: number): number => {
+  if (import.meta.server) return defaultValue // 服务端直接返回默认值
+  const num = Number(val)
+  return isNaN(num) ? defaultValue : num
+}
+
+const searchOption = useRouteQuery<number>('option', 1, {
+  transform: (val) => toValidNumber(val, 1)
+})
+
+const page = useRouteQuery<number>('page', 1, {
+  transform: (val) => toValidNumber(val, 1)
+})
+
+const size = useRouteQuery<number>('size', 5, {
+  transform: (val) => toValidNumber(val, 5)
+})
 const sizeOptions = [5, 10, 15, 20] as number[];
 
 // ---------- 搜索防抖：输入停止 500ms 后更新 URL，并重置页码到第一页 ----------
