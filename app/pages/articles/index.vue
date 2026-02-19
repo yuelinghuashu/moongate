@@ -90,7 +90,7 @@ const isDev = import.meta.env.DEV;
 const searchInput = ref(route.query.search?.toString() || '')
 const searchOption = ref(Number(route.query.option) || 1)
 const page = ref(Number(route.query.page) || 1)
-const size = ref(Number(route.query.size) || 5)
+const size = ref(Number(route.query.size) || 10)
 const sizeOptions = [5, 10, 15, 20] as const
 
 // 监听路由变化（后退/前进）
@@ -98,7 +98,7 @@ watch(() => route.query, (q) => {
   searchInput.value = q.search?.toString() || ''
   searchOption.value = Number(q.option) || 1
   page.value = Number(q.page) || 1
-  size.value = Number(q.size) || 5
+  size.value = Number(q.size) || 10
 }, { immediate: true })
 
 // 工具函数：推路由（带相等性检查）

@@ -1,7 +1,7 @@
 ---
-date: 2025-12-28
 title: 解决Nuxt Content渲染问题：从基础配置到渲染显示完整指南
 description: 记录了我从零开始配置 @nuxt/content 模块，渲染 Markdown 内容的完整过程。
+date: 2025-12-28
 tags: [Nuxt, Content]
 ---
 
@@ -38,28 +38,80 @@ pnpm add better-sqlite3
 
 ### 1.3 处理可能存在的better-sqlite3模块的兼容问题
 
-- 在项目根目录创建 `pnpm-workspace.yaml` 配置文件，内容如下
+在安装 `@nuxt/content` 时，其依赖的 `better-sqlite3` 是一个原生模块，在使用 pnpm 管理依赖时可能会遇到二进制文件路径解析问题。以下是两种解决方案，你可以根据项目环境和需求选择其中一种。
 
-```yaml
-# 在项目根目录创建 pnpm-workspace.yaml 配置文件，内容如下
-onlyBuiltDependencies:
-  - better-sqlite3
+---
 
-# 或者直接使用pnpm add <package> --allow-build=<package> 命令来安装，这个命令会自动帮你配置文件，并把包名添加到 onlyBuiltDependencies 配置里
-pnpm add better-sqlite3 --allow-build=better-sqlite3
-```
+#### 方案一：通过 pnpm 配置与重建（推荐大多数项目）
 
-- 对`better-sqlite3`模块进行重新编译，并确保二进制文件被放置在正确的位置。
+此方案通过显式允许构建 `better-sqlite3` 并重建其二进制文件，确保模块在 pnpm 的严格模式下正常工作。
 
-```bash
-pnpm rebuild better-sqlite3
-```
+1. **创建或修改 `pnpm-workspace.yaml`**  
+   在项目根目录创建该文件，内容如下：
 
-- 尝试启动你的Nuxt项目
+   ```yaml
+   onlyBuiltDependencies:
+     - better-sqlite3
+   ```
 
-```bash
-pnpm run dev
-```
+   或者直接在安装时使用 `--allow-build` 参数，pnpm 会自动完成配置：
+
+   ```bash
+   pnpm add better-sqlite3 --allow-build=better-sqlite3
+   ```
+
+2. **重建 better-sqlite3**  
+   执行以下命令强制重新编译原生模块：
+
+   ```bash
+   pnpm rebuild better-sqlite3
+   ```
+
+3. **启动开发服务器验证**
+   ```bash
+   pnpm run dev
+   ```
+
+> 此方案保留了 pnpm 的所有优势，同时解决了原生模块的兼容性问题，适用于大多数 Nuxt 项目。
+
+---
+
+#### 方案二：启用 Nuxt Content 的原生 SQLite 支持（需要 Node.js v22.5.0+）
+
+从 `@nuxt/content` 的某个版本开始（具体请查阅对应版本的文档），你可以通过配置 `experimental.nativeSqlite` 选项直接启用原生 SQLite 绑定，无需手动处理 `better-sqlite3` 的 pnpm 兼容性问题。
+
+1. **确保 Node.js 版本 ≥ v22.5.0**  
+   检查当前 Node 版本：
+
+   ```bash
+   node -v
+   ```
+
+   如果版本过低，请升级。
+
+2. **在 `nuxt.config.ts` 中添加配置**
+
+   ```typescript
+   export default defineNuxtConfig({
+     modules: ["@nuxt/content"],
+     content: {
+       experimental: {
+         nativeSqlite: true, // 启用原生 SQLite 支持
+       },
+     },
+   });
+   ```
+
+3. **启动项目**
+   ```bash
+   pnpm run dev
+   ```
+
+启用此选项后，Nuxt Content 会使用原生的 `better-sqlite3` 实现，通常在服务器端性能和稳定性上更优，尤其适合生产环境。但请注意，此功能为实验性，可能需要配合特定版本的 Nuxt Content 使用。
+
+---
+
+**选择**：方案一适用于任何 Node 版本，对 pnpm 项目通用；方案二更简洁，但需要较高版本的 Node 环境和对实验性特性的接受度。请根据实际情况选择。
 
 ## 2. 基础配置
 
@@ -134,16 +186,19 @@ if (!page.value) {
 
 ### 2. 避坑指南
 
-- **问题**：@nuxt/content与better-sqlite3模块冲突
-  - **原因**：使用pnpm管理Nuxt项目时，特别是涉及到`@nuxt/content`模块和`better-sqlite3`这样的原生模块时，可能会遇到二进制文件路径解析的问题。
+- **问题**：`@nuxt/content` 与 `better-sqlite3` 原生模块在 pnpm 环境下冲突，导致安装或启动失败。
+  - **原因**：pnpm 的严格链接模式可能导致原生模块的二进制文件无法被正确加载，引发 `better-sqlite3` 相关错误。
+  - **解决**：有两种方式可处理该问题——
+    - **方案一**：通过 pnpm 配置显式允许构建并重建模块（详见上文 **1.3 方案一**）。
+    - **方案二**：升级 Node.js 至 **v22.5.0 或更高**，并在 `nuxt.config.ts` 中添加 `experimental: { nativeSqlite: true }`。此配置让 Nuxt Content 直接使用原生的 SQLite 绑定，从根本上避免路径解析问题，同时提升生产环境性能。**推荐使用此方案**，它同时解决了下文的生产环境数据丢失问题。
+- **问题**：生产环境使用 `useAsyncData` 渲染内容时，数据偶发无法获取，刷新后内容丢失。
+  - **原因**：默认情况下，Nuxt Content 在服务端可能回退到 JavaScript 实现的 SQLite，其性能不足以应对生产环境的并发请求，导致数据库访问失败。
+  - **解决**：确保 Node.js 版本 **≥ v22.5.0**，并在 `nuxt.config.ts` 的 `content` 配置中启用 `experimental: { nativeSqlite: true }`。该选项强制使用原生的 `better-sqlite3`，大幅提升数据库操作的稳定性和性能，彻底解决数据丢失问题。
 
-  - **解决**：通过创建`pnpm-workspace.yaml`配置文件并执行`pnpm rebuild better-sqlite3`命令，可以简单高效地解决这个问题。这个解决方案不仅适用于Nuxt项目，也适用于任何使用pnpm管理并依赖`better-sqlite3`的Node.js项目。它保留了pnpm的优势（如节省磁盘空间、更快的安装速度），同时解决了与原生模块的兼容性问题。
-
-- **问题**：Nuxt Content 使用 useAsyncData 渲染内容时，数据有时无法正常获取到，生产环境刷新后数据丢失。
-  - **原因**：主要原因是生产环境中 SQLite 数据库配置问题：默认使用 JavaScript 实现的 SQLite 在生产环境性能不佳，导致服务器端无法正确访问内容数据库。
-  - **解决**：确保Node.js v22.5.0 及以上版本，并在 nuxt.config.ts 的 content 配置中添加 experimental: { nativeSqlite: true }
+> **小结**：两个常见问题的根本原因都与 SQLite 的实现方式有关。通过升级 Node 版本并开启 `experimental.nativeSqlite`，可以同时解决原生模块兼容性与生产环境数据丢失的问题，是当前最简洁有效的做法。
 
 ### 3. 性能建议
+
 1. **代码分割**：利用 Nuxt 的自动代码分割功能
 2. **图片优化**：使用 `@nuxt/image` 模块优化内容中的图片
 

@@ -25,6 +25,7 @@
     "@tailwindcss/vite": "^4.1.18",
     "@vue/compiler-sfc": "^3.5.26",
     "@vueuse/core": "^14.1.0",
+    "@vueuse/router": "^14.2.1",
     "better-sqlite3": "^12.6.2",
     "dayjs": "^1.11.19",
     "dev": "^0.1.3",

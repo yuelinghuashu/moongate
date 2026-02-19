@@ -73,9 +73,9 @@ export default defineNuxtConfig({
 project-root/
 ├── i18n/
 │   └── locales/
-│       ├── zh-CN.json    # 简体中文
-│       ├── en-US.json    # 美式英文
-│       └── ja-JP.json    # 日文
+│       ├── zh_cn.json    # 简体中文
+│       ├── en.json    # 英文
+│       └── ja.json    # 日文
 ├── nuxt.config.ts
 └── app.vue
 ```
@@ -229,13 +229,13 @@ i18n: {
       code: 'zh_cn',
       domain: 'cn.your-app.com', // 生产环境子域名
       language: 'zh-CN',
-      file: 'zh-CN.json'
+      file: 'zh_cn.json'
     },
     {
       code: 'en',
       domain: 'your-app.com', // 主域名作为默认语言
       language: 'en-US',
-      file: 'en-US.json'
+      file: 'en.json'
     }
   ],
   differentDomains: true, // 启用子域名模式
