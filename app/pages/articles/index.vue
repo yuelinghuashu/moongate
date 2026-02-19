@@ -22,7 +22,7 @@
 
       <!-- 文章搜索选项 -->
       <USelect
-        v-model="searchInput"
+        v-model="searchOption"
         :items="tm('search.option')"
         :label-key="isDev ? 'name.loc.source' : 'name'"
         value-key="id"
@@ -78,64 +78,63 @@
 <script lang="ts" setup>
 import { useEventListener, useScroll, watchDebounced } from "@vueuse/core";
 import { useSwipeUp } from "~/composables/useSwipeUp";
-import useUrlQueryStore from "~/stores/urlQuery";
-const urlQueryStore = useUrlQueryStore();
 const { isMobile, isDesktop } = useResponsive();
 const { tm, t } = useI18n();
+const route = useRoute()
+const router = useRouter()
 const localePath = useLocalePath();
 const { y } = useScroll(window);
 const isDev = import.meta.env.DEV;
 
-// 输入框实时值（独立于 store，用于防抖）
-const searchInput = ref(urlQueryStore.search);
+// 从 URL 初始化
+const searchInput = ref(route.query.search?.toString() || '')
+const searchOption = ref(Number(route.query.option) || 1)
+const page = ref(Number(route.query.page) || 1)
+const size = ref(Number(route.query.size) || 5)
+const sizeOptions = [5, 10, 15, 20] as const
 
-// 搜索选项（直接双向绑定到 store）
-const searchOption = computed({
-  get: () => urlQueryStore.option,
-  set: (val) => {
-    urlQueryStore.option = val;
-  },
-});
+// 监听路由变化（后退/前进）
+watch(() => route.query, (q) => {
+  searchInput.value = q.search?.toString() || ''
+  searchOption.value = Number(q.option) || 1
+  page.value = Number(q.page) || 1
+  size.value = Number(q.size) || 5
+}, { immediate: true })
 
-// 分页直接使用 store 的计算属性（可写）
-const page = computed({
-  get: () => urlQueryStore.page,
-  set: (val) => {
-    urlQueryStore.page = val;
-  },
-});
-const size = computed({
-  get: () => urlQueryStore.size,
-  set: (val) => {
-    urlQueryStore.size = val;
-  },
-});
+// 工具函数：推路由（带相等性检查）
+function pushQuery() {
+  const query: Record<string, string> = {}
+  if (searchInput.value) query.search = searchInput.value
+  if (searchOption.value !== 1) query.option = String(searchOption.value)
+  if (page.value !== 1) query.page = String(page.value)
+  if (size.value !== 5) query.size = String(size.value)
 
-const sizeOptions = [5, 10, 15, 20] as number[];
+  const current = route.query
+  if (
+    query.search === (current.search?.toString() || '') &&
+    (query.option || '1') === (current.option?.toString() || '1') &&
+    (query.page || '1') === (current.page?.toString() || '1') &&
+    (query.size || '5') === (current.size?.toString() || '5')
+  ) return
 
-console.log("searchInput", searchInput.value);
-console.log("searchOption", searchOption.value);
-console.log("page", page.value);
-console.log("size", size.value);
+  router.push({ query })
+}
 
-// 防抖：输入停止 500ms 后更新 store 的 search 并重置页码
-watchDebounced(
-  searchInput,
-  (val) => {
-    urlQueryStore.search = val;
-    urlQueryStore.page = 1; // ⚠️ 重置页码，必须保留
-  },
-  { debounce: 500 },
-);
+// 分页变化立即推路由
+watch([page, size], () => {
+  pushQuery()
+})
 
-// 反向同步：当 store 的 search 被外部改变（如后退按钮）时，更新输入框
-watch(
-  () => urlQueryStore.search,
-  (val) => {
-    searchInput.value = val;
-  },
-  { immediate: true },
-);
+// 搜索防抖：输入停止 500ms 后推路由，并重置页码
+watchDebounced(searchInput, () => {
+  page.value = 1
+  pushQuery()
+}, { debounce: 500 })
+
+// 搜索选项变化立即推路由（不需要防抖）
+watch(searchOption, () => {
+  pushQuery()
+})
 
 // ---------- 判断输入框焦点（用于键盘事件）----------
 const isInputFocused = computed(() => {
