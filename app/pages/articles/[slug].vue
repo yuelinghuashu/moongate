@@ -6,7 +6,7 @@
         <UBadge
           class="mb-4"
           variant="outline"
-          :label="`// Update At ${dayjs(page.date).format('YYYY-MM-DD')}`"
+          :label="`// Create At ${dayjs(page.date).format('YYYY-MM-DD')}`"
         />
 
         <!-- 文档内容 -->
@@ -27,10 +27,10 @@
     </main>
 
     <!-- 打赏区 -->
-    <SharedBuyMeCoffee class="mt-4 mb-8" />
+    <SharedBuyMeCoffee class="mt-8 mb-8" />
 
     <!-- 评论区 -->
-    <ArticleCommentSection />
+    <ArticleCommentSection class="mb-8" />
   </div>
   <div v-else><ErrorPage /></div>
 </template>

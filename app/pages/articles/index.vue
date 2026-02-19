@@ -21,15 +21,27 @@
       </UInput>
 
       <!-- 文章搜索选项 -->
-      <USelect
-        v-model="searchOption"
-        :items="tm('search.option')"
-        :label-key="isDev ? 'name.loc.source' : 'name'"
-        value-key="id"
-        size="lg"
-        :placeholder="t('search.optionPlaceholder')"
-        class="ml-2 min-w-60"
-      />
+      <div class="flex justify-between" :class="isDesktop ? 'ml-2' : ''">
+        <USelect
+          v-model="searchOption"
+          :items="tm('search.option')"
+          :label-key="isDev ? 'name.loc.source' : 'name'"
+          value-key="id"
+          size="lg"
+          :placeholder="t('search.optionPlaceholder')"
+          class="flex-1"
+        />
+
+        <USelect
+          v-model="viewMode"
+          :items="tm('search.viewMode')"
+          :label-key="isDev ? 'name.loc.source' : 'name'"
+          value-key="id"
+          size="lg"
+          :placeholder="t('search.viewModePlaceholder')"
+          class="ml-2"
+        />
+      </div>
     </form>
 
     <!-- 文章总览组件 -->
@@ -37,9 +49,13 @@
       <UBlogPost
         v-for="(item, index) in articleList"
         :key="item.id"
-        :ui="{ body: 'sm:p-4', description: 'line-clamp-2' }"
+        :ui="{
+          body: 'sm:p-4',
+          description: 'line-clamp-2',
+          title: viewMode === 1 ? '' : 'line-clamp-1',
+        }"
         :title="item.title"
-        :description="item.description"
+        :description="viewMode === 1 ? item.description : ''"
         :date="item.date"
         :to="localePath(item.path)"
         class="card"
@@ -80,61 +96,74 @@ import { useEventListener, useScroll, watchDebounced } from "@vueuse/core";
 import { useSwipeUp } from "~/composables/useSwipeUp";
 const { isMobile, isDesktop } = useResponsive();
 const { tm, t } = useI18n();
-const route = useRoute()
-const router = useRouter()
+const route = useRoute();
+const router = useRouter();
 const localePath = useLocalePath();
 const { y } = useScroll(window);
 const isDev = import.meta.env.DEV;
 
 // 从 URL 初始化
-const searchInput = ref(route.query.search?.toString() || '')
-const searchOption = ref(Number(route.query.option) || 1)
-const page = ref(Number(route.query.page) || 1)
-const size = ref(Number(route.query.size) || 10)
-const sizeOptions = [5, 10, 15, 20] as const
+const searchInput = ref(route.query.search?.toString() || "");
+const searchOption = ref(Number(route.query.option) || 1);
+const page = ref(Number(route.query.page) || 1);
+const size = ref(Number(route.query.size) || 10);
+const sizeOptions = [5, 10, 15, 20] as const;
+const viewMode = ref(Number(route.query.viewMode) || 1);
 
 // 监听路由变化（后退/前进）
-watch(() => route.query, (q) => {
-  searchInput.value = q.search?.toString() || ''
-  searchOption.value = Number(q.option) || 1
-  page.value = Number(q.page) || 1
-  size.value = Number(q.size) || 10
-}, { immediate: true })
+watch(
+  () => route.query,
+  (newValue) => {
+    searchInput.value = newValue.search?.toString() || "";
+    searchOption.value = Number(newValue.option) || 1;
+    page.value = Number(newValue.page) || 1;
+    size.value = Number(newValue.size) || 10;
+    viewMode.value = Number(newValue.viewMode) || 1;
+  },
+  { immediate: true },
+);
 
 // 工具函数：推路由（带相等性检查）
 function pushQuery() {
-  const query: Record<string, string> = {}
-  if (searchInput.value) query.search = searchInput.value
-  if (searchOption.value !== 1) query.option = String(searchOption.value)
-  if (page.value !== 1) query.page = String(page.value)
-  if (size.value !== 5) query.size = String(size.value)
+  const query: Record<string, string> = {};
+  if (searchInput.value) query.search = searchInput.value;
+  if (searchOption.value !== 1) query.option = String(searchOption.value);
+  if (page.value !== 1) query.page = String(page.value);
+  if (size.value !== 5) query.size = String(size.value);
+  if (viewMode.value !== 1) query.viewMode = String(viewMode.value);
 
-  const current = route.query
+  const current = route.query;
   if (
-    query.search === (current.search?.toString() || '') &&
-    (query.option || '1') === (current.option?.toString() || '1') &&
-    (query.page || '1') === (current.page?.toString() || '1') &&
-    (query.size || '5') === (current.size?.toString() || '5')
-  ) return
+    query.search === (current.search?.toString() || "") &&
+    (query.option || "1") === (current.option?.toString() || "1") &&
+    (query.page || "1") === (current.page?.toString() || "1") &&
+    (query.size || "5") === (current.size?.toString() || "5") &&
+    (query.viewMode || "1") === (current.viewMode?.toString() || "1")
+  )
+    return;
 
-  router.push({ query })
+  router.push({ query });
 }
 
 // 分页变化立即推路由
-watch([page, size], () => {
-  pushQuery()
-})
+watch([page, size, viewMode], () => {
+  pushQuery();
+});
 
 // 搜索防抖：输入停止 500ms 后推路由，并重置页码
-watchDebounced(searchInput, () => {
-  page.value = 1
-  pushQuery()
-}, { debounce: 500 })
+watchDebounced(
+  searchInput,
+  () => {
+    page.value = 1;
+    pushQuery();
+  },
+  { debounce: 500 },
+);
 
 // 搜索选项变化立即推路由（不需要防抖）
 watch(searchOption, () => {
-  pushQuery()
-})
+  pushQuery();
+});
 
 // ---------- 判断输入框焦点（用于键盘事件）----------
 const isInputFocused = computed(() => {

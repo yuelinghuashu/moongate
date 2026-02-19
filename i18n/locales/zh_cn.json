@@ -17,9 +17,14 @@
   "search": {
     "inputPlaceholder": "搜索文章",
     "optionPlaceholder": "搜索选项",
+    "viewModePlaceholder": "视图模式",
     "option": [
       { "id": 1, "name": "搜索标题和描述" },
       { "id": 2, "name": "仅搜索标题" }
+    ],
+    "viewMode": [
+      { "id": 1, "name": "详细" },
+      { "id": 2, "name": "简洁" }
     ],
     "findCount": "已查询到 {count} 条文档"
   },

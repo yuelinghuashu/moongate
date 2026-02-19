@@ -65,6 +65,9 @@ importers:
       drizzle-orm:
         specifier: ^0.45.1
         version: 0.45.1(@types/pg@8.16.0)(better-sqlite3@12.6.2)(pg@8.18.0)
+      moon-gate:
+        specifier: 'link:'
+        version: 'link:'
       nanoid:
         specifier: ^5.1.6
         version: 5.1.6

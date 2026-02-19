@@ -17,9 +17,14 @@
   "search": {
     "inputPlaceholder": "記事を検索",
     "optionPlaceholder": "検索オプション",
+    "viewModePlaceholder": "表示モード",
     "option": [
       { "id": 1, "name": "タイトルと説明を検索" },
       { "id": 2, "name": "タイトルのみ検索" }
+    ],
+    "viewMode": [
+      { "id": 1, "name": "詳細" },
+      { "id": 2, "name": "シンプル" }
     ],
     "findCount": "{count} 件の文書が見つかりました"
   },

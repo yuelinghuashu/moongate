@@ -17,9 +17,14 @@
   "search": {
     "inputPlaceholder": "Search articles",
     "optionPlaceholder": "Search options",
+    "viewModePlaceholder": "View mode",
     "option": [
       { "id": 1, "name": "Search title and description" },
       { "id": 2, "name": "Search title only" }
+    ],
+    "viewMode": [
+      { "id": 1, "name": "Detailed" },
+      { "id": 2, "name": "Compact" }
     ],
     "findCount": "Found {count} documents"
   },
