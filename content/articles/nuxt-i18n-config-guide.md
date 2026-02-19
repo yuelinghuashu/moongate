@@ -82,7 +82,7 @@ project-root/
 
 ### 1.4 创建语言文件
 
-**`locales/zh-CN.json`**:
+**`locales/zh_cn.json`**:
 
 ```json
 {
@@ -95,7 +95,7 @@ project-root/
 }
 ```
 
-**`locales/en-US.json`**:
+**`locales/en.json`**:
 
 ```json
 {
