@@ -1,6 +1,6 @@
 import { drizzle } from 'drizzle-orm/node-postgres'
 import { Pool } from 'pg'
-import * as schema from '~/../server/db/schema'
+import * as schema from './schema'
 
 const config = useRuntimeConfig()
 
@@ -11,4 +11,4 @@ const pool = new Pool({
 })
 
 // 导出获取数据库实例的函数
-export const useDb = () => drizzle(pool, { schema })
+export const useDB = () => drizzle(pool, { schema })

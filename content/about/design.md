@@ -1,4 +1,5 @@
 ---
+permalink: nZnrfFtEUyJiKTFx
 title: MoonGate UI 设计理念：用 AI 作为思维延伸，构建极简科幻终端
 description: MoonGate 的 UI 设计理念：用 AI 作为思维延伸，构建极简科幻终端
 date: 2025-12-29

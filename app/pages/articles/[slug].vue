@@ -6,7 +6,7 @@
         <UBadge
           class="mb-4"
           variant="outline"
-          :label="`// Create At ${dayjs(page.date).format('YYYY-MM-DD')}`"
+          :label="`// Created At ${dayjs(page.date).format('YYYY-MM-DD')}`"
         />
 
         <!-- 文档内容 -->
@@ -30,7 +30,7 @@
     <SharedBuyMeCoffee class="mt-8 mb-8" />
 
     <!-- 评论区 -->
-    <ArticleCommentSection class="mb-8" />
+    <ArticleCommentSection :permalink="page.permalink" class="mb-40" />
   </div>
   <div v-else><ErrorPage /></div>
 </template>

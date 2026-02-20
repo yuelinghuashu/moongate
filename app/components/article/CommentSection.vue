@@ -8,46 +8,74 @@
       ref="commentInputRef"
       v-model="comment"
       autoresize
-      :maxrows="6"
+      :rows="1"
+      :maxrows="15"
       variant="outline"
       class="w-full mt-4 mb-2"
       :placeholder="t('comment.placeholder')"
     />
 
     <!-- 评论按钮 -->
-    <div class="text-right">
-      <UButton
-        :disabled="comment.trim().length === 0"
-        :label="t('comment.sendLabel')"
-      />
+    <div class="flex justify-between items-center">
+      <div class="flex items-center">
+        <UKbd value="ENTER" />
+        <span>&nbsp;换行</span>
+      </div>
+
+      <ClientOnly v-if="loggedIn">
+        <UButton
+          :disabled="comment.trim().length === 0"
+          :label="t('comment.sendLabel')"
+          size="lg"
+          @click="submitComment()"
+        />
+      </ClientOnly>
+
+      <div v-else class="flex items-center gap-2">
+        <p>登录后参与评论</p>
+        <SharedLogin />
+      </div>
     </div>
 
     <!-- 评论列表 -->
-    <div class="mt-4">
-      <div v-if="0" class="text-center">暂无评论</div>
-      <div v-else class="flex items-center gap-4">
-        <UUser name="MoonGate" description="网站创始人" size="3xl" />
-        <UChatMessage
-          id="1"
-          :parts="[
-            {
-              type: 'text',
-              id: '1',
-              text: '评论功能暂无，请等待后续开发',
-            },
-          ]"
-          role="user"
-          variant="outline"
-          :ui="{ container: 'pb-0' }"
+    <div v-if="commentList?.data.length" class="mt-4 space-y-3">
+      <div
+        v-for="item in commentList?.data"
+        :key="item.id"
+        class="flex gap-2"
+        :class="item.user?.username === user.login ? 'flex-row-reverse' : ''"
+      >
+        <!-- 头像（始终在最左边/最右边） -->
+        <UUser
+          :name="item.user?.username"
+          :description="item.user?.is_admin ? '博主' : '评论者'"
+          :ui="{
+            description: item.user?.username === user.login ? 'text-right' : '',
+          }"
         />
+
+        <!-- 评论内容 -->
+        <p class="card p-1 max-w-[70%]">{{ item.content }}</p>
       </div>
     </div>
+    <div v-else class="text-center mt-4 text-gray-500">暂无评论</div>
   </details>
 </template>
 
 <script lang="ts" setup>
+import type { ApiResponse } from "~/utils/type";
+import { watchDebounced } from "@vueuse/core";
+
 const { t } = useI18n();
 const { containerRef, onDetailsToggle } = useDetailsScroll();
+const { loggedIn, user } = useUserSession();
+
+const prop = defineProps({
+  permalink: {
+    type: String,
+    required: true,
+  },
+});
 
 const _ = containerRef;
 
@@ -63,4 +91,58 @@ defineShortcuts({
 const comment = ref<string>("");
 
 // ==================== 事件处理 ====================
+/**
+ * 获取评论列表
+ */
+const { data: commentList } = await useFetch("/api/comment/get", {
+  method: "get",
+  query: { permalink: prop.permalink },
+});
+console.log(commentList.value);
+
+/**
+ * 提交评论
+ */
+const submitComment = async () => {
+  if (comment.value.trim().length === 0) return false;
+  console.log("提交评论：" + comment.value);
+
+  try {
+    const response = await $fetch<ApiResponse>("/api/comment/post", {
+      method: "post",
+      body: {
+        content: comment.value,
+        permalink: prop.permalink,
+      },
+    });
+
+    // 清空评论内容
+    comment.value = "";
+
+    if (response.success && response.data) {
+      commentList.value = response.data;
+      console.log(commentList.value);
+      // TODO把新评论添加到评论区列表
+    } else {
+      // 显示错误信息
+      console.error("评论失败：" + response.message);
+    }
+  } catch (error) {
+    // 网络错误或其他未知错误
+    console.error("网络错误，请稍后重试", error);
+  }
+};
+
+/**
+ * 监听评论内容变化，并保存到本地缓存
+ */
+watchDebounced(
+  comment,
+  (newValue) => {
+    if (newValue.trim())
+      sessionStorage.setItem(`comment-draft-${prop.permalink}`, newValue);
+    else sessionStorage.removeItem(`comment-draft-${prop.permalink}`);
+  },
+  { debounce: 500 },
+);
 </script>

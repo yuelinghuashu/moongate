@@ -1,5 +1,5 @@
 // server/api/auth/github.get.ts
-import { users } from '~/../server/db/schema'
+import { users } from '~~/server/db/schema'
 import { eq } from 'drizzle-orm'
 
 export default defineOAuthGitHubEventHandler({
@@ -13,7 +13,7 @@ export default defineOAuthGitHubEventHandler({
     await setUserSession(event, { ...session, redirect: undefined })
 
     // ---------- 2. 数据库操作 ----------
-    const db = useDb()
+    const db = useDB()
 
     // 查找用户
     let dbUser = await db.query.users.findFirst({

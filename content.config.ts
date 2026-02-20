@@ -8,6 +8,7 @@ export default defineContentConfig({
       type: 'page',
       source: 'articles/*.md',
       schema: z.object({
+        permalink: z.string(),
         title: z.string(),
         description: z.string(),
         date: z.date(),
@@ -18,6 +19,7 @@ export default defineContentConfig({
       type: 'page',
       source: 'about/*.md',
       schema: z.object({
+        permalink: z.string(),
         title: z.string(),
         description: z.string(),
         date: z.date(),

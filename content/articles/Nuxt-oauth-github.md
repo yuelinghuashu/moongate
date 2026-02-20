@@ -1,4 +1,5 @@
 ---
+permalink: 5vG-3Ih987zA-xgU
 title: Nuxt 4 集成 GitHub 登录：从原理到实践（开发 + 生产环境完整版）
 description: Nuxt 4 集成 GitHub 登录：从原理到实践（开发 + 生产环境完整版）
 date: 2026-02-15
