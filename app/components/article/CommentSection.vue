@@ -94,7 +94,7 @@ const comment = ref<string>("");
 /**
  * 获取评论列表
  */
-const { data: commentList } = await useFetch("/api/comment/get", {
+const { data: commentList, refresh } = await useFetch("/api/comment/get", {
   method: "get",
   query: { permalink: prop.permalink },
 });
@@ -119,14 +119,8 @@ const submitComment = async () => {
     // 清空评论内容
     comment.value = "";
 
-    if (response.success && response.data) {
-      commentList.value.data = response.data;
-      console.log(commentList.value?.data);
-      // TODO把新评论添加到评论区列表
-    } else {
-      // 显示错误信息
-      console.error("评论失败：" + response.message);
-    }
+    if (response.success && response.data) await refresh();
+    else console.error("评论失败：" + response.message);
   } catch (error) {
     // 网络错误或其他未知错误
     console.error("网络错误，请稍后重试", error);
