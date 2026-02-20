@@ -120,8 +120,8 @@ const submitComment = async () => {
     comment.value = "";
 
     if (response.success && response.data) {
-      commentList.value = response.data;
-      console.log(commentList.value);
+      commentList.value.data = response.data;
+      console.log(commentList.value?.data);
       // TODO把新评论添加到评论区列表
     } else {
       // 显示错误信息
