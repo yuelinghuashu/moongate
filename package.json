@@ -30,6 +30,8 @@
     "dayjs": "^1.11.19",
     "dev": "^0.1.3",
     "drizzle-orm": "^0.45.1",
+    "isomorphic-dompurify": "^2.36.0",
+    "marked": "^17.0.3",
     "moon-gate": "link:",
     "nanoid": "^5.1.6",
     "pg": "^8.18.0",
@@ -48,6 +50,8 @@
     "eslint": "^9.39.2",
     "nuxt": "^4.2.2",
     "nuxt-auth-utils": "0.5.28",
+    "nuxt-shiki": "0.3.2",
+    "shiki": "^3.22.0",
     "typescript": "^5.9.3",
     "vite-plugin-remove-console": "^2.2.0",
     "vue-tsc": "^3.2.1"

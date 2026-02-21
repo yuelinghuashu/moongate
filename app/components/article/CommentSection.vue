@@ -38,11 +38,15 @@
     </div>
 
     <!-- 评论列表 -->
-    <div v-if="commentList?.data.length" class="mt-4 space-y-3">
+
+    <div
+      v-if="commentList?.data.length"
+      class="max-h-150 overflow-y-auto mt-4 space-y-2"
+    >
       <div
         v-for="item in commentList?.data"
         :key="item.id"
-        class="flex gap-2"
+        class="flex flex-row items-start gap-2"
         :class="item.user?.username === user.login ? 'flex-row-reverse' : ''"
       >
         <!-- 头像（始终在最左边/最右边） -->
@@ -55,10 +59,13 @@
         />
 
         <!-- 评论内容 -->
-        <p class="card p-1 max-w-[70%]">{{ item.content }}</p>
+        <ArticleMarkdownRenderer
+          :content="item.content"
+          class="max-w-[70%] max-h-120 overflow-auto"
+        />
       </div>
     </div>
-    <div v-else class="text-center mt-4 text-gray-500">暂无评论</div>
+    <div v-else class="text-center mt-4">暂无评论</div>
   </details>
 </template>
 
@@ -87,6 +94,13 @@ defineShortcuts({
   "/": () => commentInputRef.value?.textareaRef?.focus(),
 });
 
+onMounted(() => {
+  if (sessionStorage.getItem(`comment-draft-${prop.permalink}`)?.length) {
+    comment.value =
+      sessionStorage.getItem(`comment-draft-${prop.permalink}`) || "";
+  }
+});
+
 // 评论内容
 const comment = ref<string>("");
 
@@ -98,20 +112,31 @@ const { data: commentList, refresh } = await useFetch("/api/comment/get", {
   method: "get",
   query: { permalink: prop.permalink },
 });
-console.log(commentList.value);
+// console.log(commentList.value?.data);
+const content = commentList.value.data.map((item) => item.content);
+console.log(content);
 
 /**
  * 提交评论
  */
 const submitComment = async () => {
   if (comment.value.trim().length === 0) return false;
-  console.log("提交评论：" + comment.value);
+
+  let contentToSave = comment.value;
+
+  // 检测是否包含 Vue 代码但没有代码块包裹
+  const hasCodeBlock = /```[\s\S]*?```/.test(contentToSave);
+  const hasVueCode = /<template>|<script\s+setup>/.test(contentToSave);
+
+  if (hasVueCode && !hasCodeBlock) {
+    contentToSave = "```vue\n" + contentToSave + "\n```";
+  }
 
   try {
     const response = await $fetch<ApiResponse>("/api/comment/post", {
       method: "post",
       body: {
-        content: comment.value,
+        content: contentToSave,
         permalink: prop.permalink,
       },
     });

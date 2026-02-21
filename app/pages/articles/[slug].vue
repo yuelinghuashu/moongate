@@ -30,7 +30,7 @@
     <SharedBuyMeCoffee class="mt-8 mb-8" />
 
     <!-- 评论区 -->
-    <ArticleCommentSection :permalink="page.permalink" class="mb-40" />
+    <ArticleCommentSection :permalink="page.permalink" />
   </div>
   <div v-else><ErrorPage /></div>
 </template>

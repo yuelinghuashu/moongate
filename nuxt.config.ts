@@ -13,6 +13,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
     'nuxt-auth-utils',
+    'nuxt-shiki',
   ],
   ssr: true,
   devtools: {
@@ -41,8 +42,27 @@ export default defineNuxtConfig({
         toc: {
           depth: 4,
           searchDepth: 3
+        },
+        highlight: {
+          langs: ['json', 'js', 'ts', 'html', 'css', 'vue', 'shell', 'mdc', 'md', 'yaml', 'xml', 'mermaid'],
+        },
+        theme: {
+          default: 'material-theme-lighter',
+          light: 'material-theme-lighter',
+          dark: 'material-theme-palenight'
         }
       },
+    },
+    shiki: {
+      // 配置你需要的主题和语言
+      bundledThemes: ['material-theme-lighter', 'material-theme-palenight'],
+      bundledLangs: [
+        'javascript', 'typescript','js', 'html', 'css',
+        'vue', 'python', 'bash', 'json', 'markdown',
+        'xml', 'yaml', 'shell', 'diff'
+      ],
+      defaultTheme: 'material-theme-lighter',
+      dynamic: true, // 懒加载语言
     },
     experimental: {
       nativeSqlite: true
