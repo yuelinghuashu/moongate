@@ -1,12 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-// import removeConsole from 'vite-plugin-remove-console'
+import removeConsole from 'vite-plugin-remove-console'
+
 export default defineNuxtConfig({
   modules: [
     '@nuxtjs/color-mode',
     '@nuxt/ui',
     '@nuxtjs/i18n',
     '@nuxt/content',
-    'nuxt-module-feed',
+    'nuxt-feedme',
     '@nuxt/image',
     "@nuxt/eslint",
     '@nuxt/icon',
@@ -34,7 +35,7 @@ export default defineNuxtConfig({
   },
   vite: {
     plugins: [
-      // removeConsole({ includes: ['log'] }) // 移除console.log
+      removeConsole({ includes: ['log'] }) // 移除console.log
     ]
   },
   content: {
@@ -70,27 +71,23 @@ export default defineNuxtConfig({
     }
   },
   feedme: {
-    sources: [
-      {
-        path: '/feed.xml',   // RSS 2.0
-        type: 'rss2',
-        cacheTime: 60 * 15,  // 缓存 15 分钟
+    feeds: {
+      common: {
+        feed: {
+          title: 'MOONGATE',
+          description: 'Where Moon Meets Code',
+          link: 'https://moongate.top',
+          id: 'https://moongate.top',
+        },
+        collections: ['articles'], // 只包含文章集合
+        // 自动修正日期字段（字符串转 Date）
+        fixDateFields: true,
       },
-      {
-        path: '/feed.atom',  // Atom 1.0
-        type: 'atom1',
-        cacheTime: 60 * 15,
-      },
-      {
-        path: '/feed.json',  // JSON Feed 1.0
-        type: 'json1',
-        cacheTime: 60 * 15,
+      routes: {
+        '/feed.xml': { type: 'rss2' },
+        '/feed.atom': { type: 'atom1' },
+        '/feed.json': { type: 'json1' },
       }
-    ]
-  },
-  nitro: {
-    prerender: {
-      routes: ['/feed.xml', '/feed.atom', '/feed.json']
     }
   },
   css: ['~/assets/css/main.css'],
