@@ -1,6 +1,7 @@
 {
   "title": "Where Moon Meets Code",
   "description": "月の門を押し開け、コードで築かれた探求の空間へと足を踏み入れましょう。ここには、フルスタック開発、システム思考、そして複雑な問題を優雅に解きほぐす技術に関する思索と記録が綴られています。",
+  "coffeeTip": "この記事が役に立ったら、コーヒーをごちそうしてください ☕️",
   "navigationBar": [
     { "id": 1, "name": "記事", "link": "/ja/articles" },
     { "id": 2, "name": "概要", "link": "/ja/about" },
@@ -67,6 +68,11 @@
     "section": "コメント欄",
     "send": "送信",
     "sendLabel": "コメントを投稿",
-    "placeholder": "コメントを入力してください"
+    "placeholder": "コメントを入力してください",
+    "newLine": "改行",
+    "noComments": "コメントはまだありません",
+    "login_to_comment": "ログインしてコメントに参加する",
+    "admin": "管理人",
+    "commenter": "コメント投稿者"
   }
 }

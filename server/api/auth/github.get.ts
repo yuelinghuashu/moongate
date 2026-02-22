@@ -1,6 +1,8 @@
 // server/api/auth/github.get.ts
 import { users } from '~~/server/db/schema'
 import { eq } from 'drizzle-orm'
+import { useDB } from '~~/server/db'
+
 
 export default defineOAuthGitHubEventHandler({
   async onSuccess(event, { user }) {

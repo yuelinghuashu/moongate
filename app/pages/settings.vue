@@ -6,8 +6,8 @@
           <URadioGroup
             v-model="settings.appearance.theme"
             :items="tm('settings.theme.options')"
-            :label-key="isDev ? 'name.loc.source' : 'name'"
-            :value-key="isDev ? 'name.loc.source' : 'name'"
+            label-key="name"
+            value-key="name"
             orientation="horizontal"
             size="xl"
             @update:model-value="(theme) => setTheme(theme)"
@@ -17,8 +17,8 @@
           <URadioGroup
             v-model="settings.appearance.language"
             :items="tm('settings.language.options')"
-            :label-key="isDev ? 'name.loc.source' : 'name'"
-            :value-key="isDev ? 'code.loc.source' : 'code'"
+            label-key="name"
+            value-key="code"
             orientation="horizontal"
             size="xl"
             @update:model-value="(lang) => setLanguage(lang)"
@@ -28,7 +28,7 @@
           <URadioGroup
             v-model="settings.homepageBehavior"
             :items="tm('settings.homePage.options')"
-            :label-key="isDev ? 'name.loc.source' : 'name'"
+            label-key="name"
             value-key="id"
             orientation="horizontal"
             size="xl"
@@ -41,10 +41,10 @@
 
 <script lang="ts" setup>
 import useSettingStore from "~/stores/setting";
-const { tm, t } = useI18n();
+const { t } = useI18n();
+const { tm } = useI18nSafe();
 
 const { settings, setTheme, setLanguage } = useSettingStore();
-const isDev = import.meta.env.DEV;
 </script>
 
 <style scoped>

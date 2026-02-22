@@ -1,6 +1,7 @@
 {
   "title": "Where Moon Meets Code",
   "description": "Push open the Moon Gate, and step into an exploratory space built with code. Here lie contemplations and notes on full-stack development, systems thinking, and the art of elegantly untangling complexity.",
+  "coffeeTip": "If this article helped you, you can buy me a coffee ☕️",
   "navigationBar": [
     { "id": 1, "name": "Articles", "link": "/en/articles" },
     { "id": 2, "name": "About", "link": "/en/about" },
@@ -67,6 +68,11 @@
     "section": "Comments",
     "send": "Send",
     "sendLabel": "Post Comment",
-    "placeholder": "Enter your comment"
+    "placeholder": "Enter your comment",
+    "newLine": "New Line",
+    "noComments": "No comments yet",
+    "login_to_comment": "Login to join the discussion",
+    "admin": "Admin",
+    "commenter": "Commenter"
   }
 }

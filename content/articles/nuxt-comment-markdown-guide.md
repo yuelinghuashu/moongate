@@ -8,7 +8,99 @@ tags: [Nuxt, 评论区, Markdown, Shiki, 教程]
 
 # Nuxt 评论区完美支持 Markdown：从解析、高亮到安全渲染全攻略
 
-## 内含与 Nuxt Content 配色保持一致的技巧，让你的评论区和文章浑然一体
+> 内含与 Nuxt Content 配色保持一致的技巧，让你的评论区和文章浑然一体
+
+---
+
+## 📦 适用版本
+
+本文基于以下版本编写，请确保你的项目版本与之匹配：
+
+| 依赖 | 版本 | 备注 |
+|------|------|------|
+| Nuxt | **v4** | 核心框架 |
+| Nuxt Content | **v3** | 文章内容管理 |
+| Nuxt UI | **v4** | 提供 `useColorMode` |
+| marked | **v15+** | Markdown 解析器 |
+| shiki | **v3+** | 代码高亮引擎 |
+| isomorphic-dompurify | **v2+** | XSS 防护 |
+
+> 💡 如果你使用其他版本，核心思路仍可参考，但具体 API 可能需要调整。
+
+---
+
+<details>
+<summary>评论区原理</summary>
+
+在开始之前，先聊聊评论区的本质。
+
+很多人（包括我一开始）觉得评论区很复杂——要处理嵌套、要实时更新、要防攻击……但实际上，**一个最小可用的评论区，核心就是最简单的增删改查**：
+
+- **增**：用户提交评论，存到数据库（`INSERT`）
+- **删**：用户删除自己的评论（`DELETE`）
+- **改**：编辑评论（`UPDATE`，可选）
+- **查**：加载文章下的所有评论（`SELECT`）
+
+没有算法、没有实时推送、没有复杂的机制——**就是最基础的后端操作 + 前端展示**。
+
+> 评论区没那么可怕，它只是一个长得像对话框的 CRUD 而已。
+
+本文就是在“增删改查”的基础上，给你的评论加上 **Markdown 渲染** 能力。如果你连基础的评论功能都还没做，可以先花 30 分钟搭一个简单的版本，再回来看本文。
+
+</details>
+
+---
+
+<details>
+<summary>前置要求</summary>
+
+本文默认读者已经具备以下能力：
+
+- ✅ **能独立完成评论的基础 CRUD**（数据表设计、API 编写、前端展示）
+- ✅ **熟悉 Vue / Nuxt 组件开发**（知道 `props`、`ref`、`watch` 怎么用）
+- ✅ **了解 Markdown 基本语法**（知道 `**粗体**`、`` `代码` `` 是什么意思）
+- ✅ **能自行查阅文档**（marked、Shiki、DOMPurify 的官网用法）
+
+如果你还不具备这些，建议先补充基础：
+
+- <a href="https://cn.vuejs.org/guide/introduction.html" target="_blank" rel="noopener noreferrer">Vue 3 中文官方文档</a>
+- <a href="https://nuxt.zhcndoc.com/docs/4.x/getting-started/installation" target="_blank" rel="noopener noreferrer">Nuxt 4 中文官方文档</a>
+- <a href="https://markdown.com.cn/intro.html" target="_blank" rel="noopener noreferrer">Markdown 中文官方文档</a>
+
+
+**本文不会解释 SQL 怎么写、不会教 Vue 基础、不会重复官网 API——只讲“如何把评论区升级为 Markdown 渲染”。**
+
+</details>
+
+---
+
+<details>
+<summary>为什么写这篇文档？</summary>
+
+我在实现评论区 Markdown 功能时，搜遍全网发现：
+
+- 官网文档：只给 API，不给实战
+- 个人博客：要么复制粘贴，要么浅尝辄止
+- 中文社区：全是其他平台的教程（WordPress、Typecho）
+
+**没有一篇是专门针对 Nuxt 4 的、完整的、经过实战检验的评论区 Markdown 集成教程。**
+
+所以我把自己折腾了七八个小时的过程写下来——包括踩过的坑、填过的土、以及那些“网上搜不到”的解决方案。希望能让后来的人少走些弯路。
+
+</details>
+
+---
+
+<details>
+<summary>本文能给你什么</summary>
+
+- ✅ **完整的 Markdown 渲染方案**（marked + Shiki + DOMPurify）
+- ✅ **代码块高亮与文章配色统一**（深浅色自动切换）
+- ✅ **XSS 防护的正确姿势**（不只是过滤标签）
+- ✅ **两种性能方案对比**（预加载 vs 懒加载）
+- ✅ **7 个实战踩坑记录**（`$` 陷阱、`watch` 监听、主题不匹配等）
+
+</details>
 
 ---
 
@@ -21,8 +113,6 @@ tags: [Nuxt, 评论区, Markdown, Shiki, 教程]
 - 担心 XSS 攻击，不敢直接渲染用户输入的 HTML。
 
 **本文目标**：手把手教你为 Nuxt 博客评论区添加**安全、美观、功能完整**的 Markdown 渲染支持，并且代码块配色与文章（Nuxt Content v3）**自动保持统一**，深浅色模式无缝切换。
-
-> **适用版本**：Nuxt 4、Nuxt Content v3、Nuxt UI v4（用于 `useColorMode`）。如果你用的是 Nuxt 2 或其他 UI 库，核心思路依然可参考，但具体 API 需相应调整。
 
 ---
 
@@ -137,7 +227,7 @@ const renderContent = async () => {
     // ---------- 第一步：手动提取并高亮所有代码块 ----------
     let processed = props.content;
     // 正则匹配围栏代码块：```lang\n代码\n```（支持语言可选）
-    const codeBlockRegex = /```(\w*)\n([\s\S]*?)```/g;
+    const codeBlockRegex = /```([a-zA-Z0-9+#-]+)\n([\s\S]*?)```/g;
     const matches = [...processed.matchAll(codeBlockRegex)];
 
     for (const match of matches) {
@@ -219,6 +309,21 @@ const renderContent = async () => {
         "target",
         "rel",
       ],
+      // 限制 URL 只能使用以下安全协议：
+      // - http: / https: → 网页链接、图片链接（评论区核心需求）
+      // - ftp: → 文件下载链接（极少出现，但保留无害）
+      // - mailto: → 邮箱联系方式（偶尔有人留邮箱）
+      // - tel: → 电话联系方式（虽少但保留）
+      // - blob: → 临时文件/本地文件（为可能的图片上传预留）
+      // - data: → base64 图片（用户直接贴 base64 图片时用）
+      // 其他协议（如 javascript:、vbscript:、file: 等）一律拦截，防止 XSS 攻击
+      ALLOWED_URI_REGEXP: /^(https?|ftp|mailto|tel|blob|data):/i,
+
+      // 是否允许未在 ALLOWED_URI_REGEXP 中列出的协议：
+      // - true  → 正则只作为“推荐列表”，未知协议可能被放行（不安全）
+      // - false → 正则作为“强制列表”，只有列出的协议才允许（安全）
+      // 评论区场景必须设置为 false，确保所有 URL 都经过协议白名单检查
+      ALLOW_UNKNOWN_PROTOCOLS: false,
     });
   } catch (error) {
     console.error("渲染失败:", error);
@@ -368,7 +473,7 @@ Nuxt Content 默认代码块样式带有背景、边框和圆角。我们通过 
 - Shiki 的主题和语言在第一次使用时才加载，后续自动缓存，优化首屏体积。
 - 保留了手动正则提取代码块的逻辑，确保参数类型安全，避免 marked 内部传递不确定对象的问题。
 
-```vue
+````vue
 <template>
   <!-- eslint-disable-next-line vue/no-v-html -->
   <div v-html="renderedContent" />
@@ -387,7 +492,7 @@ const renderedContent = ref("");
 const currentTheme = computed(() => {
   return colorMode.value === "dark"
     ? "material-theme-palenight" // 深色主题（请根据你的实际主题替换）
-    : "material-theme-lighter";   // 浅色主题（请根据你的实际主题替换）
+    : "material-theme-lighter"; // 浅色主题（请根据你的实际主题替换）
 });
 
 // 核心渲染函数：将用户输入的 Markdown 内容转换为安全的、高亮的 HTML
@@ -401,7 +506,7 @@ const renderContent = async () => {
     // ---------- 第一步：手动提取并高亮所有代码块 ----------
     let processed = props.content;
     // 正则匹配围栏代码块：```lang\n代码\n```（支持语言可选）
-    const codeBlockRegex = /```(\w*)\n([\s\S]*?)```/g;
+    const codeBlockRegex = /```([a-zA-Z0-9+#-]+)\n([\s\S]*?)```/g;
     const matches = [...processed.matchAll(codeBlockRegex)];
 
     for (const match of matches) {
@@ -409,7 +514,7 @@ const renderContent = async () => {
       try {
         // 调用 Shiki 进行语法高亮（懒加载，按需加载主题和语言）
         const highlighted = await codeToHtml(code.trim(), {
-          lang: lang || "text",      // 未指定语言时当作纯文本
+          lang: lang || "text", // 未指定语言时当作纯文本
           theme: currentTheme.value, // 使用当前主题
         });
 
@@ -430,25 +535,74 @@ const renderContent = async () => {
     // ---------- 第二步：将处理后的内容（代码块已替换）解析为 Markdown ----------
     const html = await marked.parse(processed, {
       breaks: true, // 将换行符转换为 <br>
-      gfm: true,    // 启用 GitHub 风格 Markdown（表格、删除线等）
+      gfm: true, // 启用 GitHub 风格 Markdown（表格、删除线等）
     });
 
     // ---------- 第三步：使用 DOMPurify 过滤不安全内容，防止 XSS 攻击 ----------
     renderedContent.value = DOMPurify.sanitize(html, {
       // 明确允许的 HTML 标签（涵盖所有 Markdown 可能生成的标签）
       ALLOWED_TAGS: [
-        "p", "br", "strong", "em", "u", "s", "del", "ins", "span", "div",
-        "h1", "h2", "h3", "h4", "h5", "h6",
-        "ul", "ol", "li",
-        "a", "blockquote",
-        "code", "pre",
-        "table", "thead", "tbody", "tr", "th", "td",
-        "hr", "img", "sub", "sup",
+        "p",
+        "br",
+        "strong",
+        "em",
+        "u",
+        "s",
+        "del",
+        "ins",
+        "span",
+        "div",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "ul",
+        "ol",
+        "li",
+        "a",
+        "blockquote",
+        "code",
+        "pre",
+        "table",
+        "thead",
+        "tbody",
+        "tr",
+        "th",
+        "td",
+        "hr",
+        "img",
+        "sub",
+        "sup",
       ],
       // 允许的属性（class/style 用于代码高亮样式，其他为链接、图片等常用属性）
       ALLOWED_ATTR: [
-        "class", "style", "href", "lang", "src", "alt", "title", "target", "rel",
+        "class",
+        "style",
+        "href",
+        "lang",
+        "src",
+        "alt",
+        "title",
+        "target",
+        "rel",
       ],
+      // 限制 URL 只能使用以下安全协议：
+      // - http: / https: → 网页链接、图片链接（评论区核心需求）
+      // - ftp: → 文件下载链接（极少出现，但保留无害）
+      // - mailto: → 邮箱联系方式（偶尔有人留邮箱）
+      // - tel: → 电话联系方式（虽少但保留）
+      // - blob: → 临时文件/本地文件（为可能的图片上传预留）
+      // - data: → base64 图片（用户直接贴 base64 图片时用）
+      // 其他协议（如 javascript:、vbscript:、file: 等）一律拦截，防止 XSS 攻击
+      ALLOWED_URI_REGEXP: /^(https?|ftp|mailto|tel|blob|data):/i,
+
+      // 是否允许未在 ALLOWED_URI_REGEXP 中列出的协议：
+      // - true  → 正则只作为“推荐列表”，未知协议可能被放行（不安全）
+      // - false → 正则作为“强制列表”，只有列出的协议才允许（安全）
+      // 评论区场景必须设置为 false，确保所有 URL 都经过协议白名单检查
+      ALLOW_UNKNOWN_PROTOCOLS: false,
     });
   } catch (error) {
     console.error("Markdown 渲染失败:", error);
@@ -462,19 +616,20 @@ watch([() => props.content, () => colorMode.value], renderContent, {
   immediate: true,
 });
 </script>
-```
+````
 
 #### 与方案一（插件预加载）的对比
 
-| 特性             | 方案一（预加载插件）            | 方案二（懒加载 `codeToHtml`）      |
-| -------------- | --------------------- | -------------------------- |
+| 特性               | 方案一（预加载插件）                       | 方案二（懒加载 `codeToHtml`）           |
+| ------------------ | ------------------------------------------ | --------------------------------------- |
 | **Shiki 实例创建** | 通过插件全局创建一次，预加载所有主题和语言 | 直接在组件中调用 `codeToHtml`，按需加载 |
-| **初始加载体积**     | 包含所有预置语言，稍大           | 仅包含核心，语言在用到时才加载            |
-| **首次高亮速度**     | 无额外延迟                 | 首次出现某语言时需等待加载（之后缓存）        |
-| **代码复杂度**      | 需要维护插件文件              | 组件内完成，无需额外文件               |
-| **适用场景**       | 评论语言种类固定，对渲染速度要求极高    | 语言种类多，追求首屏性能优化             |
+| **初始加载体积**   | 包含所有预置语言，稍大                     | 仅包含核心，语言在用到时才加载          |
+| **首次高亮速度**   | 无额外延迟                                 | 首次出现某语言时需等待加载（之后缓存）  |
+| **代码复杂度**     | 需要维护插件文件                           | 组件内完成，无需额外文件                |
+| **适用场景**       | 评论语言种类固定，对渲染速度要求极高       | 语言种类多，追求首屏性能优化            |
 
 ### 使用说明
+
 1. 删除原有的 `plugins/shiki.client.ts` 文件（如果存在）。
 2. 确保安装了 `shiki`、`marked`、`isomorphic-dompurify`。
 3. 根据你的博客实际配色，修改 `currentTheme` 中的主题 ID（参考 [Shiki 主题列表](https://shiki.zhcndoc.com/themes)）。

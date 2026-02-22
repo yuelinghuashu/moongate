@@ -19,7 +19,7 @@
     <div class="flex justify-between items-center">
       <div class="flex items-center">
         <UKbd value="ENTER" />
-        <span>&nbsp;换行</span>
+        <span>&nbsp;{{ t("comment.newLine") }}</span>
       </div>
 
       <ClientOnly v-if="loggedIn">
@@ -32,7 +32,7 @@
       </ClientOnly>
 
       <div v-else class="flex items-center gap-2">
-        <p>登录后参与评论</p>
+        <p>{{ t("comment.login_to_comment") }}</p>
         <SharedLogin />
       </div>
     </div>
@@ -52,7 +52,9 @@
         <!-- 头像（始终在最左边/最右边） -->
         <UUser
           :name="item.user?.username"
-          :description="item.user?.is_admin ? '博主' : '评论者'"
+          :description="
+            item.user?.is_admin ? t('comment.admin') : t('comment.commenter')
+          "
           :ui="{
             description: item.user?.username === user.login ? 'text-right' : '',
           }"
@@ -65,7 +67,7 @@
         />
       </div>
     </div>
-    <div v-else class="text-center mt-4">暂无评论</div>
+    <div v-else class="text-center mt-4">{{ t("comment.noComments") }}</div>
   </details>
 </template>
 

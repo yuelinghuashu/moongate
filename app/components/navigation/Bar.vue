@@ -6,17 +6,15 @@
         v-for="item in tm('navigationBar')"
         :key="item.id"
         :class="{
-          active: route.fullPath.includes(
-            isDev ? item.link.loc.source : item.link,
-          ),
+          active: route.fullPath.includes(item.link),
         }"
       >
         <NuxtLink
-          :to="isDev ? item.link.loc.source : item.link"
+          :to="item.link"
           class="block px-4 py-2"
           active-class="nav-link active"
         >
-          {{ isDev ? item.name.loc.source : item.name }}
+          {{ item.name }}
         </NuxtLink>
       </li>
     </ul>
@@ -24,10 +22,8 @@
 </template>
 
 <script lang="ts" setup>
-const { tm } = useI18n();
+const { tm } = useI18nSafe();
 const route = useRoute();
-const isDev = import.meta.env.DEV;
-
 
 const props = defineProps({
   orientation: {

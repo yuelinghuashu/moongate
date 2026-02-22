@@ -23,7 +23,6 @@
         >
           <template #body> <SharedLogin /></template>
         </UModal>
-        
       </template>
     </UPage>
 

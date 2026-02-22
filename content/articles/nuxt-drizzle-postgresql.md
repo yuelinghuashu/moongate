@@ -8,26 +8,38 @@ tags: [Nuxt, Drizzle, ORM, PostgreSQL]
 
 # 🚀 Nuxt 4 集成 Drizzle ORM (PostgreSQL) 完整教程
 
-## 📋 教程范围与前置知识
+> 适用版本
+> | 依赖 | 版本 | 备注 |
+> | ----------- | ------------------ | --------------------------- |
+> | Drizzle ORM | **v1.0.0-alpha.x** | 本文基于 alpha.10，后续版本 API 可能微调 |
+> | pg | **v8** | PostgreSQL 驱动 |
+
+> ⚠️ **注意**：Drizzle ORM 目前仍处于 alpha 阶段，如果你使用更新版本，建议参考[官方文档](https://orm.drizzle.org.cn/)。
+
+<details>
+<summary>📋教程范围与前置要求</summary>
 
 本教程专注 **PostgreSQL + Nuxt 4** 的 Drizzle ORM 集成。如果您使用 MySQL/SQLite，驱动和类型会有差异，请参考官方文档相应部分。
 
 **前置要求**：
+
 - 已有一个 Nuxt 4 项目（`npm create nuxt@latest <project-name>`）
 - 本地已安装 PostgreSQL（或使用云数据库）
 - 了解 TypeScript 基础
+
+</details>
 
 ---
 
 ## ⚠️ 核心区别：Drizzle 官方文档 vs Nuxt 集成
 
-| 对比维度         | Drizzle 官方文档          | 本教程（Nuxt 4）                      |
-| ---------------- | ------------------------- | -------------------------------------- |
-| **项目类型**     | 普通 Node.js 项目         | Nuxt 4（基于 Nitro 服务器）            |
-| **目录结构**     | 自由定义                  | 严格遵循 `server/` 目录规范            |
-| **数据库连接**   | 直接导出 `db` 实例        | 通过 `server/db/index` 导出 `useDB()`    |
-| **Schema 组织**  | 通常单个文件              | 建议拆分多文件，并**必须包含关系定义** |
-| **运行环境**     | 手动执行脚本              | 通过 API 路由触发，由 Nitro 管理       |
+| 对比维度        | Drizzle 官方文档   | 本教程（Nuxt 4）                       |
+| --------------- | ------------------ | -------------------------------------- |
+| **项目类型**    | 普通 Node.js 项目  | Nuxt 4（基于 Nitro 服务器）            |
+| **目录结构**    | 自由定义           | 严格遵循 `server/` 目录规范            |
+| **数据库连接**  | 直接导出 `db` 实例 | 通过 `server/db/index` 导出 `useDB()`  |
+| **Schema 组织** | 通常单个文件       | 建议拆分多文件，并**必须包含关系定义** |
+| **运行环境**    | 手动执行脚本       | 通过 API 路由触发，由 Nitro 管理       |
 
 **关键点**：**完全照搬官方文档会在 Nuxt 中失败**，因为 Nuxt 的服务端目录结构和自动导入机制与普通 Node 项目不同。
 
@@ -42,26 +54,29 @@ pnpm add drizzle-orm pg
 pnpm add -D drizzle-kit @types/pg dotenv
 ```
 
-| 包名          | 作用                           |
-| ------------- | ------------------------------ |
-| `drizzle-orm` | ORM 核心，提供类型安全的查询   |
-| `pg`          | PostgreSQL 驱动                |
-| `drizzle-kit` | 迁移工具，自动生成 SQL         |
-| `@types/pg`   | TypeScript 类型（用于 pg）     |
-| `dotenv`      | 开发时从 `.env` 加载环境变量   |
+| 包名          | 作用                         |
+| ------------- | ---------------------------- |
+| `drizzle-orm` | ORM 核心，提供类型安全的查询 |
+| `pg`          | PostgreSQL 驱动              |
+| `drizzle-kit` | 迁移工具，自动生成 SQL       |
+| `@types/pg`   | TypeScript 类型（用于 pg）   |
+| `dotenv`      | 开发时从 `.env` 加载环境变量 |
 
 ---
 
 ## 🔐 第二步：环境变量与配置
 
 ### 1. 创建 `.env` 文件（**必须加入 `.gitignore`**）
+
 ```env
 # .env
 NUXT_DATABASE_URL=postgresql://postgres:yourpassword@localhost:5432/yourdb
 ```
+
 > 确保 URL 格式正确：`postgresql://用户名:密码@主机:端口/数据库名`
 
 ### 2. 配置 `nuxt.config.ts`
+
 ```ts
 export default defineNuxtConfig({
   runtimeConfig: {
@@ -80,6 +95,7 @@ export default defineNuxtConfig({
 Nuxt 项目中，建议将所有数据库相关文件放在 `server/db/` 下。**必须同时包含表定义和关系定义**。
 
 ### 目录结构
+
 ```
 server/
 ├── db/
@@ -92,16 +108,24 @@ server/
 ```
 
 ### 3.1 定义表（以 users 和 comments 为例）
-**`server/db/schema/users.ts`**
-```ts
-import { pgTable, serial, varchar, boolean, timestamp } from 'drizzle-orm/pg-core';
 
-export const users = pgTable('users', {
-  id: serial('id').primaryKey(),
-  githubId: varchar('github_id', { length: 39 }).notNull().unique(),
-  username: varchar('username', { length: 100 }).notNull(),
-  isAdmin: boolean('is_admin').default(false),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+**`server/db/schema/users.ts`**
+
+```ts
+import {
+  pgTable,
+  serial,
+  varchar,
+  boolean,
+  timestamp,
+} from "drizzle-orm/pg-core";
+
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  githubId: varchar("github_id", { length: 39 }).notNull().unique(),
+  username: varchar("username", { length: 100 }).notNull(),
+  isAdmin: boolean("is_admin").default(false),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 
 export type User = typeof users.$inferSelect;
@@ -109,17 +133,29 @@ export type NewUser = typeof users.$inferInsert;
 ```
 
 **`server/db/schema/comments.ts`**
-```ts
-import { pgTable, serial, integer, text, varchar, timestamp } from 'drizzle-orm/pg-core';
-import { users } from './users';
 
-export const comments = pgTable('comments', {
-  id: serial('id').primaryKey(),
-  userId: integer('user_id').references(() => users.id, { onDelete: 'set null' }),
-  content: text('content').notNull(),
-  permalink: varchar('permalink', { length: 255 }).notNull(),
-  parentId: integer('parent_id').references((): any => comments.id, { onDelete: 'cascade' }),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+```ts
+import {
+  pgTable,
+  serial,
+  integer,
+  text,
+  varchar,
+  timestamp,
+} from "drizzle-orm/pg-core";
+import { users } from "./users";
+
+export const comments = pgTable("comments", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id, {
+    onDelete: "set null",
+  }),
+  content: text("content").notNull(),
+  permalink: varchar("permalink", { length: 255 }).notNull(),
+  parentId: integer("parent_id").references((): any => comments.id, {
+    onDelete: "cascade",
+  }),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 
 export type Comment = typeof comments.$inferSelect;
@@ -127,11 +163,13 @@ export type NewComment = typeof comments.$inferInsert;
 ```
 
 ### 3.2 定义关系（relations）
+
 **`server/db/schema/relations.ts`**
+
 ```ts
-import { relations } from 'drizzle-orm';
-import { users } from './users';
-import { comments } from './comments';
+import { relations } from "drizzle-orm";
+import { users } from "./users";
+import { comments } from "./comments";
 
 // 评论 -> 用户（多对一）
 export const commentsRelations = relations(comments, ({ one }) => ({
@@ -148,11 +186,13 @@ export const usersRelations = relations(users, ({ many }) => ({
 ```
 
 ### 3.3 统一导出
+
 **`server/db/schema/index.ts`**
+
 ```ts
-export * from './users';
-export * from './comments';
-export * from './relations';
+export * from "./users";
+export * from "./comments";
+export * from "./relations";
 ```
 
 ---
@@ -162,10 +202,11 @@ export * from './relations';
 Nuxt 中，数据库连接应放在 `server/db/` 下以便导入。
 
 **`server/db.ts`**
+
 ```ts
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { Pool } from 'pg';
-import * as schema from '../db/schema'; // 导入完整的 schema
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
+import * as schema from "../db/schema"; // 导入完整的 schema
 
 const config = useRuntimeConfig();
 
@@ -186,8 +227,9 @@ export const useDB = () => drizzle(pool, { schema });
 创建测试 API 路由，确保一切正常。
 
 **`server/api/test/db.get.ts`**
+
 ```ts
-import { sql } from 'drizzle-orm';
+import { sql } from "drizzle-orm";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -195,7 +237,7 @@ export default defineEventHandler(async (event) => {
     const result = await db.execute(sql`SELECT 1+1 as result`);
     return { success: true, data: result.rows[0] };
   } catch (error) {
-    console.error('DB connection failed:', error);
+    console.error("DB connection failed:", error);
     return { success: false, error: String(error) };
   }
 });
@@ -208,15 +250,17 @@ export default defineEventHandler(async (event) => {
 ## 📜 第六步：数据库迁移
 
 ### 6.1 配置 `drizzle.config.ts`
+
 在项目根目录创建：
+
 ```ts
-import 'dotenv/config';
-import { defineConfig } from 'drizzle-kit';
+import "dotenv/config";
+import { defineConfig } from "drizzle-kit";
 
 export default defineConfig({
-  out: './server/db/migrations',
-  schema: './server/db/schema/index.ts', // 指向统一导出文件
-  dialect: 'postgresql',
+  out: "./server/db/migrations",
+  schema: "./server/db/schema/index.ts", // 指向统一导出文件
+  dialect: "postgresql",
   dbCredentials: {
     url: process.env.NUXT_DATABASE_URL!,
   },
@@ -224,17 +268,21 @@ export default defineConfig({
 ```
 
 ### 6.2 生成迁移文件
+
 ```bash
 npx drizzle-kit generate
 ```
+
 这会在 `server/db/migrations` 生成 SQL 文件。
 
 ### 6.3 执行迁移
+
 ```bash
 npx drizzle-kit migrate
 ```
 
 **开发环境**也可以直接用 `push` 快速同步：
+
 ```bash
 npx drizzle-kit push
 ```
@@ -246,10 +294,12 @@ npx drizzle-kit push
 ## 🛠️ 第七步：在 API 中使用 Drizzle
 
 ### 查询示例（带关系）
+
 **`server/api/comments.get.ts`**
+
 ```ts
-import { comments } from '~/server/db/schema'; // 需要显式导入表定义
-import { eq, desc } from 'drizzle-orm';
+import { comments } from "~/server/db/schema"; // 需要显式导入表定义
+import { eq, desc } from "drizzle-orm";
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
@@ -271,10 +321,12 @@ export default defineEventHandler(async (event) => {
 ```
 
 ### 插入示例
+
 **`server/api/comments.post.ts`**
+
 ```ts
-import { comments, type NewComment } from '~/server/db/schema';
-import { useDB } from "~~/server/db"
+import { comments, type NewComment } from "~/server/db/schema";
+import { useDB } from "~~/server/db";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
@@ -296,22 +348,27 @@ export default defineEventHandler(async (event) => {
 ## 🐛 常见错误与解决方案
 
 ### 错误 1：`Cannot read properties of undefined (reading 'referencedTable')`
+
 **原因**：初始化 `drizzle` 时没有传入完整 schema（缺少 relations）。
 **解决**：确保 `useDB()` 中 `drizzle(pool, { schema })` 的 `schema` 对象包含了 `relations` 导出。
 
 ### 错误 2：`useDB()` 未定义
+
 **原因**：文件未放在 `server/utils/` 下，或 Nuxt 自动导入失效（需重启 dev）。
 **解决**：检查文件路径，重启 `pnpm dev`。
 
 ### 错误 3：`db.query.comments.findMany` 不存在
+
 **原因**：没有启用 Drizzle 的关系查询 API，需要传入 schema 并确保 `drizzle-orm` 版本支持。
 **解决**：确认 `useDB()` 返回的是带有 `query` 属性的实例（即传入了 schema）。
 
 ### 错误 4：迁移时找不到表
+
 **原因**：`drizzle.config.ts` 中的 `schema` 路径错误，或指向的文件没有导出所有表。
 **解决**：确保路径正确，且 `schema/index.ts` 导出了所有表。
 
 ### 错误 5：生产环境数据库连接失败
+
 **原因**：环境变量未正确设置，或连接字符串格式错误。
 **解决**：在服务器上检查 `NUXT_DATABASE_URL` 是否正确，并确保网络可达。
 

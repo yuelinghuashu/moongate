@@ -10,6 +10,22 @@ tags: [Nuxt, i18n]
 
 本文档基于 `@nuxtjs/i18n` 模块，版本为10.2.1，详细讲解在 Nuxt 4 项目中实现国际化的完整流程，并特别指出中文配置中的常见“痛点”及解决方案。
 
+> ⚠️ 重要提示：@nuxtjs/i18n v10 版本相对于 v8 有重大重构，配置方式、API 和路由策略均发生了较大变化。如果你之前使用过旧版本，请务必抛弃固有认知，以本文档和官方文档为准，避免因版本差异导致的配置错误。
+
+---
+
+<details>
+<summary>适用版本</summary>
+
+- Nuxt: **v4**
+- Nuxt i18n: **V10**
+
+> 如果你用的是其他版本，核心思路可参考，但具体 API 可能需要调整。
+
+</details>
+
+---
+
 ## 一、快速开始
 
 ### 1.1 安装模块
@@ -109,6 +125,19 @@ project-root/
 }
 ```
 
+**locales/ja.json**
+
+```json
+{
+  "welcome": "アプリへようこそ",
+  "about": "会社概要",
+  "user": {
+    "profile": "ユーザープロフィール",
+    "settings": "設定"
+  }
+}
+```
+
 ### 1.5 动态区域设置
 
 ```vue
@@ -165,7 +194,7 @@ useHead({
 { code: 'zh_cn', name: '简体中文' }
 ```
 
-**`language`/`iso`字段**：用于HTML `lang`属性和SEO，使用标准 **`zh-CN`**（连字符格式）
+**`language`字段**：用于HTML `lang`属性和SEO，使用标准 **`zh-CN`**（连字符格式）
 
 ```typescript
 { code: 'zh_cn', language: 'zh-CN' }

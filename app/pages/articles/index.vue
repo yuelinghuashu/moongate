@@ -25,7 +25,7 @@
         <USelect
           v-model="searchOption"
           :items="tm('search.option')"
-          :label-key="isDev ? 'name.loc.source' : 'name'"
+          label-key="name"
           value-key="id"
           size="lg"
           :placeholder="t('search.optionPlaceholder')"
@@ -35,7 +35,7 @@
         <USelect
           v-model="viewMode"
           :items="tm('search.viewMode')"
-          :label-key="isDev ? 'name.loc.source' : 'name'"
+          label-key="name"
           value-key="id"
           size="lg"
           :placeholder="t('search.viewModePlaceholder')"
@@ -95,12 +95,12 @@
 import { useEventListener, useScroll, watchDebounced } from "@vueuse/core";
 import { useSwipeUp } from "~/composables/useSwipeUp";
 const { isMobile, isDesktop } = useResponsive();
-const { tm, t } = useI18n();
+const { t } = useI18n();
+const { tm } = useI18nSafe();
 const route = useRoute();
 const router = useRouter();
 const localePath = useLocalePath();
 const { y } = useScroll(window);
-const isDev = import.meta.env.DEV;
 
 // 从 URL 初始化
 const searchInput = ref(route.query.search?.toString() || "");
@@ -212,7 +212,6 @@ const { data: articleData, pending } = await useAsyncData(
         .limit(size.value)
         .all(),
     ]);
-    console.log("articleData", list);
 
     return { total, list };
   },

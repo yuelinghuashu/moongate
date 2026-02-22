@@ -77,7 +77,6 @@ const { isDesktop } = useResponsive();
 const route = useRoute();
 const { loggedIn } = useUserSession();
 
-console.log(route.fullPath)
 
 
 // 目录是否可见

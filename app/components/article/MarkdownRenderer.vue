@@ -33,7 +33,7 @@ const renderContent = async () => {
     // ---------- 第一步：手动提取并高亮所有代码块 ----------
     let processed = props.content;
     // 正则匹配围栏代码块：```lang\n代码\n```（支持语言可选）
-    const codeBlockRegex = /```(\w*)\n([\s\S]*?)```/g;
+    const codeBlockRegex = /```([a-zA-Z0-9+#-]+)\n([\s\S]*?)```/g;
     const matches = [...processed.matchAll(codeBlockRegex)];
 
     for (const match of matches) {
@@ -65,7 +65,6 @@ const renderContent = async () => {
       gfm: true, // 启用 GitHub 风格 Markdown（表格、删除线等）
     });
 
-    // ---------- 第三步：使用 DOMPurify 过滤不安全内容，防止 XSS 攻击 ----------
     renderedContent.value = DOMPurify.sanitize(html, {
       // 明确允许的 HTML 标签（涵盖所有 Markdown 可能生成的标签）
       ALLOWED_TAGS: [
@@ -103,6 +102,7 @@ const renderContent = async () => {
         "sub",
         "sup",
       ],
+
       // 允许的属性（class/style 用于代码高亮样式，其他为链接、图片等常用属性）
       ALLOWED_ATTR: [
         "class",
@@ -115,6 +115,22 @@ const renderContent = async () => {
         "target",
         "rel",
       ],
+
+      // 限制 URL 只能使用以下安全协议：
+      // - http: / https: → 网页链接、图片链接（评论区核心需求）
+      // - ftp: → 文件下载链接（极少出现，但保留无害）
+      // - mailto: → 邮箱联系方式（偶尔有人留邮箱）
+      // - tel: → 电话联系方式（虽少但保留）
+      // - blob: → 临时文件/本地文件（为可能的图片上传预留）
+      // - data: → base64 图片（用户直接贴 base64 图片时用）
+      // 其他协议（如 javascript:、vbscript:、file: 等）一律拦截，防止 XSS 攻击
+      ALLOWED_URI_REGEXP: /^(https?|ftp|mailto|tel|blob|data):/i,
+      
+      // 是否允许未在 ALLOWED_URI_REGEXP 中列出的协议：
+      // - true  → 正则只作为“推荐列表”，未知协议可能被放行（不安全）
+      // - false → 正则作为“强制列表”，只有列出的协议才允许（安全）
+      // 评论区场景必须设置为 false，确保所有 URL 都经过协议白名单检查
+      ALLOW_UNKNOWN_PROTOCOLS: false,
     });
   } catch (error) {
     console.error("渲染失败:", error);
