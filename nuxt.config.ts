@@ -88,6 +88,11 @@ export default defineNuxtConfig({
       }
     ]
   },
+  nitro: {
+    prerender: {
+      routes: ['/feed.xml', '/feed.atom', '/feed.json']
+    }
+  },
   css: ['~/assets/css/main.css'],
   i18n: {
     locales: [{
