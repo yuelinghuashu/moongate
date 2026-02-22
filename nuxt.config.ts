@@ -1,19 +1,18 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import removeConsole from 'vite-plugin-remove-console'
-
+// import removeConsole from 'vite-plugin-remove-console'
 export default defineNuxtConfig({
   modules: [
     '@nuxtjs/color-mode',
     '@nuxt/ui',
     '@nuxtjs/i18n',
     '@nuxt/content',
+    'nuxt-module-feed',
     '@nuxt/image',
     "@nuxt/eslint",
     '@nuxt/icon',
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
     'nuxt-auth-utils',
-    'nuxt-shiki',
   ],
   ssr: true,
   devtools: {
@@ -28,12 +27,14 @@ export default defineNuxtConfig({
     },
     databaseUrl: '',
     public: {
-      siteUrl: process.env.SITE_URL,
+      siteUrl: '',
+      siteName: '',
+      siteDescription: '',
     }
   },
   vite: {
     plugins: [
-      removeConsole({ includes: ['log'] }) // 移除console.log
+      // removeConsole({ includes: ['log'] }) // 移除console.log
     ]
   },
   content: {
@@ -57,7 +58,7 @@ export default defineNuxtConfig({
       // 配置你需要的主题和语言
       bundledThemes: ['material-theme-lighter', 'material-theme-palenight'],
       bundledLangs: [
-        'javascript', 'typescript','js', 'html', 'css',
+        'javascript', 'typescript', 'js', 'html', 'css',
         'vue', 'python', 'bash', 'json', 'markdown',
         'xml', 'yaml', 'shell', 'diff'
       ],
@@ -67,6 +68,25 @@ export default defineNuxtConfig({
     experimental: {
       nativeSqlite: true
     }
+  },
+  feedme: {
+    sources: [
+      {
+        path: '/feed.xml',   // RSS 2.0
+        type: 'rss2',
+        cacheTime: 60 * 15,  // 缓存 15 分钟
+      },
+      {
+        path: '/feed.atom',  // Atom 1.0
+        type: 'atom1',
+        cacheTime: 60 * 15,
+      },
+      {
+        path: '/feed.json',  // JSON Feed 1.0
+        type: 'json1',
+        cacheTime: 60 * 15,
+      }
+    ]
   },
   css: ['~/assets/css/main.css'],
   i18n: {

@@ -47,7 +47,9 @@
         v-for="item in commentList?.data"
         :key="item.id"
         class="flex flex-row items-start gap-2"
-        :class="item.user?.username === user.login ? 'flex-row-reverse' : ''"
+        :class="
+          user && item.user?.username === user.login ? 'flex-row-reverse' : ''
+        "
       >
         <!-- 头像（始终在最左边/最右边） -->
         <UUser
@@ -56,7 +58,8 @@
             item.user?.is_admin ? t('comment.admin') : t('comment.commenter')
           "
           :ui="{
-            description: item.user?.username === user.login ? 'text-right' : '',
+            description:
+              user && item.user?.username === user.login ? 'text-right' : '',
           }"
         />
 
@@ -72,7 +75,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { ApiResponse } from "~/utils/type";
 import { watchDebounced } from "@vueuse/core";
 
 const { t } = useI18n();
@@ -135,7 +137,7 @@ const submitComment = async () => {
   }
 
   try {
-    const response = await $fetch<ApiResponse>("/api/comment/post", {
+    const response = await $fetch("/api/comment/post", {
       method: "post",
       body: {
         content: contentToSave,
