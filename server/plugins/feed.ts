@@ -1,15 +1,36 @@
 // server/plugins/feed.ts
 import type { NitroApp } from 'nitropack'
 
-export default defineNitroPlugin((nitroApp: NitroApp) => {
-  // 使用内容项钩子，在每个 feed 项生成后被调用
-  nitroApp.hooks.hook('feedme:handle:content:item', ({ item, context }) => {
-    // 从 runtimeConfig 获取域名
+export default ((nitroApp: NitroApp) => {
+  // 通用钩子：处理所有 feed 路由
+  nitroApp.hooks.hook('feedme:handle', async ({ context: { event }, feed: { obtain } }) => {
+    // 只处理我们关心的 feed 路由
+    const feedRoutes = ['/feed.xml', '/feed.atom', '/feed.json']
+    if (!feedRoutes.includes(event.path)) return
+
+    console.log(`✅ Generating feed for ${event.path}`)
     const siteUrl = useRuntimeConfig().public.siteUrl
 
-    // 如果 item.link 存在且以 '/' 开头，则补全域名
-    if (item.link && item.link.startsWith('/')) {
-      item.link = siteUrl + item.link
+    // 创建 feed 对象
+    const feed = obtain({
+      title: 'MoonGate',
+      description: 'Where Moon Meets Code',
+      id: siteUrl,
+      link: siteUrl,
+    })
+
+    // 获取文章数据
+    const articles = await queryCollection(event, 'articles').order('date', 'DESC').all()
+
+    // 添加条目
+    for (const article of articles) {
+      feed.addItem({
+        title: article.title,
+        id: article.permalink,
+        link: `${siteUrl}${article.path}`,
+        date: new Date(article.date),
+        description: article.description,
+      })
     }
   })
 })

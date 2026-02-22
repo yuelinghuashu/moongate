@@ -72,17 +72,6 @@ export default defineNuxtConfig({
   },
   feedme: {
     feeds: {
-      common: {
-        feed: {
-          title: 'MOONGATE',
-          description: 'Where Moon Meets Code',
-          link: 'https://moongate.top',
-          id: 'https://moongate.top',
-        },
-        collections: ['articles'], // 只包含文章集合
-        // 自动修正日期字段（字符串转 Date）
-        fixDateFields: true,
-      },
       routes: {
         '/feed.xml': { type: 'rss2' },
         '/feed.atom': { type: 'atom1' },
