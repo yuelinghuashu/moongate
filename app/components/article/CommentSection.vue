@@ -3,20 +3,50 @@
   <details ref="containerRef" @toggle="onDetailsToggle($event)">
     <summary class="text-center">{{ t("comment.section") }}</summary>
 
-    <!-- 评论输入框 -->
-    <UTextarea
-      ref="commentInputRef"
-      v-model="comment"
-      autoresize
-      :rows="1"
-      :maxrows="15"
-      variant="outline"
-      class="w-full mt-4 mb-2"
-      :placeholder="t('comment.placeholder')"
-    />
+    <!-- 评论与预览区域 -->
+    <div
+      class="w-full max-h-150 overflow-auto grid grid-cols-2 gap-4 mt-4 mb-6"
+    >
+      <!-- 左侧预览卡 -->
+      <div
+        class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-hidden"
+      >
+        <div
+          class="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-700 flex items-center gap-1.5"
+        >
+          <span class="w-2 h-2 bg-green-500" />
+          <span class="text-xs">{{ t("comment.preview") }}</span>
+        </div>
+        <div class="p-4 prose prose-sm max-w-none dark:prose-invert">
+          <ArticleMarkdownRenderer class="text-base" :content="comment" />
+        </div>
+      </div>
+
+      <!-- 右侧输入卡 -->
+      <div
+        class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-hidden"
+      >
+        <div
+          class="px-3 py-2 bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-700 flex items-center gap-1.5"
+        >
+          <span class="w-2 h-2 bg-blue-500" />
+          <span class="text-xs">{{ t("comment.input") }}</span>
+        </div>
+        <UTextarea
+          ref="commentInputRef"
+          v-model="comment"
+          autoresize
+          size="xl"
+          :rows="5"
+          variant="none"
+          :placeholder="t('comment.placeholder')"
+          class="p-4 w-full border-0 focus:ring-0 resize-none"
+        />
+      </div>
+    </div>
 
     <!-- 评论按钮 -->
-    <div class="flex justify-between items-center">
+    <div class="flex justify-between items-center mb-8">
       <div class="flex items-center">
         <UKbd value="ENTER" />
         <span>&nbsp;{{ t("comment.newLine") }}</span>
@@ -38,9 +68,8 @@
     </div>
 
     <!-- 评论列表 -->
-
     <div
-      v-if="commentList?.data.length"
+      v-if="commentList.data.length > 0"
       class="max-h-150 overflow-y-auto mt-4 space-y-2"
     >
       <div
@@ -75,7 +104,7 @@
 </template>
 
 <script lang="ts" setup>
-import { watchDebounced } from "@vueuse/core";
+import { useSessionStorage, watchDebounced } from "@vueuse/core";
 
 const { t } = useI18n();
 const { containerRef, onDetailsToggle } = useDetailsScroll();
@@ -98,15 +127,8 @@ defineShortcuts({
   "/": () => commentInputRef.value?.textareaRef?.focus(),
 });
 
-onMounted(() => {
-  if (sessionStorage.getItem(`comment-draft-${prop.permalink}`)?.length) {
-    comment.value =
-      sessionStorage.getItem(`comment-draft-${prop.permalink}`) || "";
-  }
-});
-
 // 评论内容
-const comment = ref<string>("");
+const comment = useSessionStorage(`comment-draft-${prop.permalink}`, "");
 
 // ==================== 事件处理 ====================
 /**
@@ -116,9 +138,6 @@ const { data: commentList, refresh } = await useFetch("/api/comment/get", {
   method: "get",
   query: { permalink: prop.permalink },
 });
-// console.log(commentList.value?.data);
-const content = commentList.value.data.map((item) => item.content);
-console.log(content);
 
 /**
  * 提交评论
@@ -159,13 +178,5 @@ const submitComment = async () => {
 /**
  * 监听评论内容变化，并保存到本地缓存
  */
-watchDebounced(
-  comment,
-  (newValue) => {
-    if (newValue.trim())
-      sessionStorage.setItem(`comment-draft-${prop.permalink}`, newValue);
-    else sessionStorage.removeItem(`comment-draft-${prop.permalink}`);
-  },
-  { debounce: 500 },
-);
+watchDebounced(comment, () => {}, { debounce: 500 });
 </script>

@@ -68,11 +68,14 @@
     "section": "评论区",
     "send": "发送",
     "sendLabel": "发表评论",
-    "placeholder": "请输入您的评论",
+    "placeholder": "Markdown 支持",
+    "input": "输入",
+    "preview": "预览",
     "newLine": "换行",
     "noComments": "暂无评论",
     "login_to_comment": "登录后参与评论",
     "admin": "博主",
-    "commenter": "评论者"
+    "commenter": "评论者",
+    "markdownSupport": ""
   }
 }

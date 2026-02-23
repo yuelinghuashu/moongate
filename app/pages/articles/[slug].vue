@@ -75,7 +75,6 @@ const slug: ComputedRef<string> = computed(() => {
 const { data: page } = await useAsyncData(`articles-${slug.value}`, () => {
   return queryCollection("articles").path(`/articles${slug.value}`).first();
 });
-console.log(page.value);
 
 // ==================== 生命周期与副作用 ====================
 /**

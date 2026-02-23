@@ -125,7 +125,7 @@ const renderContent = async () => {
       // - data: → base64 图片（用户直接贴 base64 图片时用）
       // 其他协议（如 javascript:、vbscript:、file: 等）一律拦截，防止 XSS 攻击
       ALLOWED_URI_REGEXP: /^(https?|ftp|mailto|tel|blob|data):/i,
-      
+
       // 是否允许未在 ALLOWED_URI_REGEXP 中列出的协议：
       // - true  → 正则只作为“推荐列表”，未知协议可能被放行（不安全）
       // - false → 正则作为“强制列表”，只有列出的协议才允许（安全）
@@ -339,7 +339,7 @@ watch([() => props.content, () => colorMode.value], renderContent, {
 }
 
 :deep(img) {
-  max-width: 100%;
+  max-width: 20vw;
   border-radius: var(--ui-radius);
 }
 

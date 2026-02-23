@@ -157,7 +157,6 @@ export default defineEventHandler(async (event) => {
     <description>${siteDescription}</description>
     <language>zh-CN</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
-    <atom:link href="${siteUrl}/feed.xml" rel="self" type="application/rss+xml"></atom>
 `;
 
   for (const article of articles) {
@@ -382,14 +381,6 @@ curl http://localhost:3000/feed.json
 # 检查响应头
 curl -I http://localhost:3000/feed.xml
 ```
-
-### 使用 RSS 阅读器测试
-
-推荐几款优秀的开源阅读器：
-
-- **Feeder** (Android) - 开源、无广告
-- **Fluent Reader** (Windows/macOS) - 界面美观
-- **NetNewsWire** (iOS/macOS) - 老牌经典
 
 ---
 
