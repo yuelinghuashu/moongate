@@ -7,7 +7,6 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxtjs/i18n',
     '@nuxt/content',
-    'nuxt-feedme',
     '@nuxt/image',
     "@nuxt/eslint",
     '@nuxt/icon',
@@ -68,15 +67,6 @@ export default defineNuxtConfig({
     },
     experimental: {
       nativeSqlite: true
-    }
-  },
-  feedme: {
-    feeds: {
-      routes: {
-        '/feed.xml': { type: 'rss2' },
-        '/feed.atom': { type: 'atom1' },
-        '/feed.json': { type: 'json1' },
-      }
     }
   },
   css: ['~/assets/css/main.css'],

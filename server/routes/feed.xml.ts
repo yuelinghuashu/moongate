@@ -1,0 +1,59 @@
+// server/routes/feed.xml.ts
+import { minimarkToHtml } from '../../utils/minimarkToHtml'
+
+export default defineCachedEventHandler(async (event) => {
+  const { siteName, siteDescription, siteUrl } = useRuntimeConfig().public
+
+  const articles = await queryCollection(event, 'articles')
+    .order('date', 'DESC')
+    .all()
+
+  // 手动拼接 RSS XML
+  let rss = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>${siteName}</title>
+    <link>${siteUrl}</link>
+    <description>${siteDescription}</description>
+    <language>zh-CN</language>
+    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+`
+
+  for (const article of articles) {
+    // 将 MinimarkTree 转换为 HTML
+    let fullContent = ''
+    if (article.body.value) {
+      try {
+        fullContent = minimarkToHtml(article.body.value)
+      } catch (e) {
+        console.error('转换失败:', e)
+        fullContent = article.description || ''
+      }
+    }
+
+    const link = `${siteUrl}${article.path}`
+    const date = new Date(article.date).toUTCString()
+
+    rss += `
+    <item>
+      <title><![CDATA[${article.title}]]></title>
+      <link>${link}</link>
+      <guid isPermaLink="true">${link}</guid>
+      <pubDate>${date}</pubDate>
+      <content:encoded><![CDATA[${fullContent}]]></content:encoded>
+      <description><![CDATA[${article.description || ''}]]></description>
+    </item>
+`
+  }
+
+  rss += `
+  </channel>
+</rss>`
+
+  setResponseHeader(event, 'content-type', 'application/xml')
+  return rss
+}, {
+  maxAge: 60 * 60, // 缓存1小时（单位：秒）
+  name: 'rss-feed', // 缓存名称
+  getKey: () => 'static' // 固定key，所有请求共享缓存
+})
