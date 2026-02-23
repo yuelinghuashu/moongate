@@ -2,7 +2,7 @@
 import { minimarkToHtml } from '../../utils/minimarkToHtml'
 
 export default defineCachedEventHandler(async (event) => {
-  const { siteName, siteDescription, siteUrl } = useRuntimeConfig().public
+  const {   siteUrl } = useRuntimeConfig().public
 
   const articles = await queryCollection(event, 'articles')
     .order('date', 'DESC')
@@ -12,9 +12,9 @@ export default defineCachedEventHandler(async (event) => {
   let rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>${siteName}</title>
+    <title>MoonGate</title>
     <link>${siteUrl}</link>
-    <description>${siteDescription}</description>
+    <description>Where Moon Meets Code</description>
     <language>zh-CN</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
 `
