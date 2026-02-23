@@ -24,19 +24,22 @@ export function minimarkToHtml(node: any): string {
   }
 
   if (node && typeof node === 'object') {
-    // 处理带标签的元素
+    // 元素节点（带标签）
     if (node.tag) {
-      const tag = node.tag
-      const children = (node.children || [])
-        .map(minimarkToHtml)
-        .join('')
+      // 生成属性字符串
+      const attrs = node.props
+        ? ' ' + Object.entries(node.props)
+          .map(([key, val]) => `${key}="${String(val).replace(/"/g, '&quot;')}"`)
+          .join(' ')
+        : ''
 
-      // 处理自闭合标签
-      if (['img', 'br', 'hr'].includes(tag)) {
-        return `<${tag} />`
+      const children = (node.children || []).map(minimarkToHtml).join('')
+
+      // 自闭合标签
+      if (['img', 'br', 'hr', 'input'].includes(node.tag)) {
+        return `<${node.tag}${attrs} />`
       }
-
-      return `<${tag}>${children}</${tag}>`
+      return `<${node.tag}${attrs}>${children}</${node.tag}>`
     }
 
     // 处理文本节点

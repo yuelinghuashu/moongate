@@ -8,7 +8,7 @@
     <!-- 网站标题 -->
     <template #left>
       <SharedLogo />
-      <NuxtLink :to="localePath('/')" class="text-2xl">MOONGATE</NuxtLink>
+      <NuxtLink :to="localePath('/')" rel="noopener noreferrer" class="text-2xl">MOONGATE</NuxtLink>
     </template>
 
     <template #default>

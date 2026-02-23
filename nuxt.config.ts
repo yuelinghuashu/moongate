@@ -27,9 +27,7 @@ export default defineNuxtConfig({
     },
     databaseUrl: '',
     public: {
-      siteUrl: '',
-      siteName: '',
-      siteDescription: '',
+      siteUrl: ''
     }
   },
   vite: {

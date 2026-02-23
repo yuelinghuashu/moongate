@@ -8,6 +8,7 @@
           :href="`#${item.id}`"
           class="block"
           :class="route.fullPath.includes(item.id) ? 'nav-link active' : ''"
+          rel="noopener noreferrer"
           @click="isOutlineVisible = !isOutlineVisible"
           >{{ item.text }}
         </NuxtLink>
@@ -21,6 +22,7 @@
               :class="
                 route.fullPath.includes(item2.id) ? 'nav-link active' : ''
               "
+              rel="noopener noreferrer"
               @click="isOutlineVisible = !isOutlineVisible"
               >{{ item2.text }}
             </NuxtLink>
@@ -38,6 +40,7 @@
                   :class="
                     route.fullPath.includes(item3.id) ? 'nav-link active' : ''
                   "
+                  rel="noopener noreferrer"
                   @click="isOutlineVisible = !isOutlineVisible"
                   >{{ item3.text }}
                 </NuxtLink>

@@ -12,6 +12,7 @@
         <NuxtLink
           :to="item.link"
           class="block px-4 py-2"
+          rel="noopener noreferrer"
           active-class="nav-link active"
         >
           {{ item.name }}

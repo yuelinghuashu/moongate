@@ -2,7 +2,7 @@
 import { minimarkToHtml } from '../../utils/minimarkToHtml'
 
 export default defineCachedEventHandler(async (event) => {
-  const {   siteUrl } = useRuntimeConfig().public
+  const { siteUrl } = useRuntimeConfig().public
 
   const articles = await queryCollection(event, 'articles')
     .order('date', 'DESC')
@@ -17,6 +17,7 @@ export default defineCachedEventHandler(async (event) => {
     <description>Where Moon Meets Code</description>
     <language>zh-CN</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+    <atom:link href="${siteUrl}/feed.xml" rel="self" type="application/rss+xml"></atom>
 `
 
   for (const article of articles) {
@@ -24,7 +25,7 @@ export default defineCachedEventHandler(async (event) => {
     let fullContent = ''
     if (article.body.value) {
       try {
-        fullContent = minimarkToHtml(article.body.value)
+        fullContent = minimarkToHtml(article.body.value).replace(/]]>/g, ']]]]><![CDATA[>') // 转义 CDATA 结束符
       } catch (e) {
         console.error('转换失败:', e)
         fullContent = article.description || ''
@@ -50,7 +51,7 @@ export default defineCachedEventHandler(async (event) => {
   </channel>
 </rss>`
 
-  setResponseHeader(event, 'content-type', 'application/xml')
+  setResponseHeader(event, 'content-type', 'application/xml; charset=utf-8')
   return rss
 }, {
   maxAge: 60 * 60, // 缓存1小时（单位：秒）

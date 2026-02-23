@@ -37,7 +37,7 @@ tags: [Nuxt, i18n]
 ```vue
 <template>
   <div v-for="item in tm('navigationBar')" :key="item.id">
-    <NuxtLink :to="isDev ? item.link?.loc?.source : item.link">
+    <NuxtLink :to="isDev ? item.link?.loc?.source : item.link" rel="noopener noreferrer">
       {{ isDev ? item.name?.loc?.source : item.name }}
     </NuxtLink>
   </div>
@@ -111,7 +111,7 @@ const { tm } = useI18nSafe()
 
 <template>
   <div v-for="item in tm('navigationBar')" :key="item.id">
-    <NuxtLink :to="item.link">{{ item.name }}</NuxtLink>
+    <NuxtLink :to="item.link" rel="noopener noreferrer">{{ item.name }}</NuxtLink>
   </div>
 </template>
 ```

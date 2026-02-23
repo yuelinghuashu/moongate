@@ -11,7 +11,11 @@
           class="p-2 nav-link"
           :class="{ active: item.code === locale }"
         >
-          <NuxtLink class="cursor-pointer" @click="setLanguage(item.code)">
+          <NuxtLink
+            rel="noopener noreferrer"
+            class="cursor-pointer"
+            @click="setLanguage(item.code)"
+          >
             {{ item.name }}
           </NuxtLink>
         </li>
