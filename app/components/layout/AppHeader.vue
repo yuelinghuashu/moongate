@@ -56,6 +56,7 @@
       <!-- 登录图标按钮 -->
       <UButton
         v-else
+        :ui="{ leadingIcon: 'toolbar-icon-btn' }"
         icon="lucide:log-in"
         variant="ghost"
         class="cursor-pointer"
