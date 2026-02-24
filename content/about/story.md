@@ -1,11 +1,11 @@
 ---
 permalink: iANWJ-HXYG-FFOn1
-title: MoonGate 的命名：当月亮与代码交汇
+title: MoonGate 故事：当月亮与代码交汇
 description: MoonGate 的诞生，始于一个诗意的个人印记 (月灵花束)，经过了对词源意象的精密辨析 (Moon vs. Lunar, Gate vs. Door)，最终落地为一个与视觉设计、技术风格高度统一的完整品牌。
 date: 2025-12-29
 ---
 
-# MoonGate 的命名：当月亮与代码交汇
+# MoonGate 故事：当月亮与代码交汇
 
 ---
 

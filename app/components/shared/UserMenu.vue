@@ -20,7 +20,7 @@ const route = useRoute();
 const items = computed<DropdownMenuItem[]>(() => [
   {
     label: t("user.profile"),
-    icon: "i-lucide-user",
+    icon: "lucide-user",
     active:
       user && user.value?.login
         ? route.path === localePath(`/${user.value.login}/profile`)

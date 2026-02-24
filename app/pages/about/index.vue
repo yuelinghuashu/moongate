@@ -19,7 +19,6 @@ const localePath = useLocalePath();
 const { data: page } = await useAsyncData("about-list", () => {
   return queryCollection("about").order("date", "ASC").all();
 });
-console.log("articleList", page.value ? true : false);
 </script>
 
 <style></style>
