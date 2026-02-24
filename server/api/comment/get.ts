@@ -7,10 +7,10 @@ export default defineEventHandler(async (event) => {
   const query = getQuery(event)
   console.log(query)
 
-  if (!query.permalink) return { success: false, status: 400, message: '文章标识不能为空', data: [] }
+  if (!query.permalink) return { success: false, status: 400, message: '文档标识不能为空', data: [] }
 
   try {
-    // 查询当前文章下的评论
+    // 查询当前文档下的评论
     const result = await useDB().query.comments.findMany({
       where: eq(comments.permalink, query.permalink as string),
       orderBy: [desc(comments.created_at)],

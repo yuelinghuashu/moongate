@@ -16,7 +16,7 @@
 
 - ⚙️ 用户偏好设置（主题、语言、默认视图）
 
-- 🔍 文章搜索
+- 🔍 文档搜索
 
 - 📱 响应式设计
 
@@ -62,7 +62,7 @@ moongate/
 ├── app/                   # 核心应用
 │   ├── assets/           # 静态资源
 │   ├── components/       # 组件
-│   │   ├── article/     # 文章页专属
+│   │   ├── article/     # 文档页专属
 │   │   ├── error/       # 错误页
 │   │   ├── layout/      # 布局框架
 │   │   ├── navigation/  # 导航
@@ -77,7 +77,7 @@ moongate/
 │   └── Caddyfile
 ├── content/             # 内容管理
 │   ├── about/          # 关于页面
-│   ├── articles/       # 技术文章
+│   ├── articles/       # 技术文档
 │   └── i18n/          # 多语言文件
 │       ├── en.json
 │       ├── ja.json

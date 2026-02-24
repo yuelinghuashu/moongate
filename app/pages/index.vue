@@ -6,12 +6,13 @@
     :links="[
       {
         label: '// Accessing the gate',
-        to: localePath('/articles'),
+        to: localePath('/docs'),
         target: '_self',
         trailingIcon: 'lucide-arrow-right',
         size: 'xl',
         variant: 'solid',
         color: 'primary',
+        class: 'nav-link',
       },
     ]"
   />

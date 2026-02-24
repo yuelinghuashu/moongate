@@ -8,7 +8,14 @@
     <!-- 网站标题 -->
     <template #left>
       <SharedLogo />
-      <NuxtLink :to="localePath('/')" rel="noopener noreferrer" class="text-2xl">MOONGATE</NuxtLink>
+      <div>
+        <NuxtLink
+          :to="localePath('/')"
+          rel="noopener noreferrer"
+          class="text-2xl nav-link"
+          >MOONGATE</NuxtLink
+        >
+      </div>
     </template>
 
     <template #default>
@@ -17,23 +24,22 @@
 
     <!-- 辅助图标栏 -->
     <template #right>
-      <ClientOnly>
-        <!-- 目录图标 -->
-        <UButton
-          v-if="
-            settingStore.isOutlineIconVisible &&
-            route.path.match(/^\/(?:[a-z_-]+\/)?(articles|about)\/.+/)
-          "
-          icon="i-tabler:list"
-          variant="ghost"
-          class="cursor-pointer"
-          @click="isOutlineVisible = !isOutlineVisible"
-        />
+      <!-- 目录图标 -->
+      <UButton
+        v-if="isOutlineIconVisible"
+        :ui="{ leadingIcon: 'toolbar-icon-btn' }"
+        variant="ghost"
+        icon="tabler:list"
+        class="cursor-pointer"
+        @click="toggleOutline()"
+      />
 
+      <ClientOnly>
         <!-- 主题图标 -->
         <UButton
           variant="ghost"
           class="cursor-pointer"
+          :ui="{ leadingIcon: 'toolbar-icon-btn' }"
           :icon="colorMode.value === 'dark' ? 'tabler:moon' : 'tabler:sun'"
           @click="
             settingStore.setTheme(colorMode.value === 'dark' ? 'light' : 'dark')
@@ -67,7 +73,6 @@
 </template>
 
 <script lang="ts" setup>
-import { useLocalStorage } from "@vueuse/core";
 import useSettingStore from "~/stores/setting";
 
 const settingStore = useSettingStore();
@@ -76,9 +81,13 @@ const localePath = useLocalePath();
 const { isDesktop } = useResponsive();
 const route = useRoute();
 const { loggedIn } = useUserSession();
+const { isOutlineIconVisible, toggleOutline } = useOutline();
 
-
-
-// 目录是否可见
-const isOutlineVisible = useLocalStorage("isOutlineVisible", false);
+watchEffect(() => {
+  if (route.path.match(/^\/(?:[a-z_-]+\/)?(docs|about)\/.+/)) {
+    isOutlineIconVisible.value = true;
+  } else {
+    isOutlineIconVisible.value = false;
+  }
+});
 </script>

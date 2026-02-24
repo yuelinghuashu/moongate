@@ -12,7 +12,7 @@
       >
         <template #content>
           <!-- 大纲目录 -->
-          <ArticleTableOfContents :outline="page?.body.toc?.links" />
+          <DocsTableOfContents :outline="page?.body.toc?.links" />
         </template>
       </UDrawer>
     </main>
@@ -24,12 +24,11 @@
 
 <script lang="ts" setup>
 import { withLeadingSlash } from "ufo";
-import { useLocalStorage } from "@vueuse/core";
-import useSettingStore from "~/stores/setting";
 const route = useRoute();
 const { locale, t } = useI18n();
 const { isDesktop } = useResponsive();
-const settingStore = useSettingStore();
+const { isOutlineVisible, isOutlineIconVisible } = useOutline();
+
 
 const slug = computed(() => {
   const path = withLeadingSlash(String(route.params.slug || "/"));
@@ -41,15 +40,13 @@ const { data: page } = await useAsyncData(`about-${slug.value}`, () => {
   return queryCollection("about").path(`/about${slug.value}`).first();
 });
 
-console.log("page", page.value);
-
-const isOutlineVisible = useLocalStorage("isOutlineVisible", false);
-
-// 是否显示目录图标
+// 监听文档详情页面内容是否有大纲目录，并设置是否显示大纲目录图标
 watchEffect(() => {
-  settingStore.isOutlineIconVisible = Boolean(
-    page.value && page.value?.body.toc?.links,
-  );
+  if (page.value && page.value.body.value && page.value.body.toc?.links) {
+    isOutlineIconVisible.value = true;
+  } else {
+    isOutlineIconVisible.value = false;
+  }
 });
 
 // 设置 SEO 元信息

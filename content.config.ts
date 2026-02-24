@@ -3,10 +3,10 @@ import { z } from 'zod'
 
 export default defineContentConfig({
   collections: {
-    articles: defineCollection({
+    docs: defineCollection({
       // 指定此集合内内容的类型
       type: 'page',
-      source: 'articles/*.md',
+      source: 'docs/*.md',
       schema: z.object({
         permalink: z.string(),
         title: z.string(),

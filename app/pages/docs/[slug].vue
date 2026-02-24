@@ -1,6 +1,6 @@
 <template>
   <div v-if="page">
-    <!-- 文章区 -->
+    <!-- 文档区 -->
     <main class="flex">
       <div class="flex-1 min-w-0">
         <UBadge
@@ -21,7 +21,7 @@
         :description="t('article.description')"
       >
         <template #body>
-          <ArticleTableOfContents :outline="page.body.toc?.links" />
+          <DocsTableOfContents :outline="page.body.toc?.links" />
         </template>
       </UDrawer>
     </main>
@@ -30,7 +30,7 @@
     <SharedBuyMeCoffee class="mt-8 mb-8" />
 
     <!-- 评论区 -->
-    <ArticleCommentSection :permalink="page.permalink" />
+    <DocsCommentSection :permalink="page.permalink" />
   </div>
   <div v-else><ErrorPage /></div>
 </template>
@@ -39,13 +39,12 @@
 import { withLeadingSlash } from "ufo";
 import dayjs from "dayjs";
 import { useLocalStorage } from "@vueuse/core";
-import useSettingStore from "~/stores/setting";
 
 // ==================== 组合式函数 ====================
 const { locale, t } = useI18n();
 const route = useRoute();
 const { isDesktop } = useResponsive();
-const settingStore = useSettingStore();
+const { isOutlineIconVisible } = useOutline();
 
 // ==================== 响应式状态 ====================
 /**
@@ -58,8 +57,8 @@ const isOutlineVisible: Ref<boolean> = useLocalStorage(
 
 // ==================== 计算属性 ====================
 /**
- * 移除语言前缀，得到文章原始路径
- * 例如：/en/articles/welcome -> /articles/welcome
+ * 移除语言前缀，得到文档原始路径
+ * 例如：/en/docs/welcome -> /docs/welcome
  */
 const slug: ComputedRef<string> = computed(() => {
   const path = withLeadingSlash(String(route.params.slug || "/"));
@@ -69,22 +68,24 @@ const slug: ComputedRef<string> = computed(() => {
 
 // ==================== 数据获取 ====================
 /**
- * 获取文章内容
- * 稳定查询：永远只查询 'articles' 这个集合
+ * 获取文档内容
+ * 稳定查询：永远只查询 'docs' 这个集合
  */
-const { data: page } = await useAsyncData(`articles-${slug.value}`, () => {
-  return queryCollection("articles").path(`/articles${slug.value}`).first();
+const { data: page } = await useAsyncData(`docs-${slug.value}`, () => {
+  return queryCollection("docs").path(`/docs${slug.value}`).first();
 });
 
 // ==================== 生命周期与副作用 ====================
 /**
- * 监听文章变化，控制目录图标显示状态
+ * 监听文档详情页面内容是否有大纲目录，并设置是否显示大纲目录图标
  */
-watchEffect((): void => {
-  settingStore.isOutlineIconVisible = Boolean(
-    page.value && page.value?.body?.toc?.links?.length,
-  );
-});
+watchEffect(() => {
+  if (page.value && page.value.body.value && page.value.body.toc?.links) {
+    isOutlineIconVisible.value = true;
+  } else {
+    isOutlineIconVisible.value = false;
+  }
+}, {});
 
 // ==================== SEO 元信息 ====================
 if (page.value?.title && page.value?.description) {

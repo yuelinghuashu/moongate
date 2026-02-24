@@ -1,6 +1,11 @@
 <template>
   <UDropdownMenu :items="items">
-    <UButton icon="lucide:user" variant="ghost" class="cursor-pointer" />
+    <UButton
+      :ui="{ leadingIcon: 'toolbar-icon-btn' }"
+      icon="lucide:user"
+      variant="ghost"
+      class="cursor-pointer"
+    />
   </UDropdownMenu>
 </template>
 
@@ -9,22 +14,27 @@ import type { DropdownMenuItem } from "@nuxt/ui";
 const localePath = useLocalePath();
 const { user, clear } = useUserSession();
 const { t } = useI18n();
+const route = useRoute();
 
-
+// 用户下拉菜单列表
 const items = computed<DropdownMenuItem[]>(() => [
   {
     label: t("user.profile"),
     icon: "i-lucide-user",
+    active:
+      user && user.value?.login
+        ? route.path === localePath(`/${user.value.login}/profile`)
+        : false,
     onSelect() {
-      navigateTo(localePath(`/${user.value?.login}/profile`))
+      navigateTo(localePath(`/${user.value?.login}/profile`));
     },
   },
   {
     label: t("user.logout"),
     icon: "i-lucide-log-out",
     onSelect() {
-      clear()
+      clear();
     },
   },
-])
+]);
 </script>

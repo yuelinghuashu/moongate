@@ -4,7 +4,6 @@
       <!-- 搜索区 -->
       <UInput
         v-model="searchInput"
-        icon="lucide-search"
         :placeholder="t('search.inputPlaceholder')"
         size="lg"
         class="w-full"
@@ -20,7 +19,7 @@
         </template>
       </UInput>
 
-      <!-- 文章搜索选项 -->
+      <!-- 文档搜索选项 -->
       <div class="flex justify-between" :class="isDesktop ? 'ml-2' : ''">
         <USelect
           v-model="searchOption"
@@ -44,10 +43,10 @@
       </div>
     </form>
 
-    <!-- 文章总览组件 -->
-    <div class="mt-4 mb-8 grid grid-cols-2 grid-rows-2 gap-2 articles-grid">
+    <!-- 文档总览组件 -->
+    <div class="mt-4 mb-8 grid grid-cols-2 grid-rows-2 gap-2 docs-grid">
       <UBlogPost
-        v-for="(item, index) in articleList"
+        v-for="(item, index) in docsList"
         :key="item.id"
         :ui="{
           body: 'sm:p-4',
@@ -60,8 +59,8 @@
         :to="localePath(item.path)"
         class="card"
         :class="
-          articleList.length % 2 !== 0 &&
-          index === articleList.length - 1 &&
+          docsList.length % 2 !== 0 &&
+          index === docsList.length - 1 &&
           isDesktop
             ? 'col-span-2'
             : ''
@@ -73,7 +72,7 @@
     <div v-if="isDesktop" class="flex justify-center items-center">
       <UPagination
         v-model:page="page"
-        :total="articleData?.total"
+        :total="docsData?.total"
         :items-per-page="size"
       />
 
@@ -85,7 +84,7 @@
       />
 
       <span class="ml-4">
-        {{ t("search.findCount", { count: articleData?.total }) }}
+        {{ t("search.findCount", { count: docsData?.total }) }}
       </span>
     </div>
   </div>
@@ -179,13 +178,13 @@ const isNearBottom = computed(() => {
   return scrollHeight - y.value - viewportHeight < 200;
 });
 
-// ---------- 获取文章列表（自动刷新）----------
-const { data: articleData, pending } = await useAsyncData(
-  "article-list",
+// ---------- 获取文档列表（自动刷新）----------
+const { data: docsData, pending } = await useAsyncData(
+  "docs-list",
   async () => {
     const keyword = searchInput.value.trim();
     // 1. 构建基础查询
-    let query = queryCollection("articles").order("date", "DESC");
+    let query = queryCollection("docs").order("date", "DESC");
 
     // 2. 增加搜索条件(搜索标题/描述)
     // settings.search.option === 1 搜索标题和描述
@@ -225,25 +224,25 @@ const { data: articleData, pending } = await useAsyncData(
   },
 );
 
-// ---------- 累积文章列表（用于移动端无限滚动）----------
-const articleList = ref<[]>([]);
+// ---------- 累积文档列表（用于移动端无限滚动）----------
+const docsList = ref<[]>([]);
 
 // 当数据更新时，根据当前模式（桌面/移动）处理列表
 // 注意：当 URL 中 page > 1 时，刷新后直接显示对应页，这是符合预期的（URL 驱动状态）
 watch(
-  () => articleData.value?.list,
+  () => docsData.value?.list,
   (newList) => {
     if (!newList) return; // 数据未加载时不处理
 
     if (isMobile.value && page.value > 1) {
       // 移动端加载更多：合并并去重
-      const merged = [...articleList.value, ...newList];
-      // 使用 Map 以 id 为键去重（假设每个文章有唯一 id）
+      const merged = [...docsList.value, ...newList];
+      // 使用 Map 以 id 为键去重（假设每个文档有唯一 id）
       const uniqueMap = new Map(merged.map((item) => [item.id, item]));
-      articleList.value = Array.from(uniqueMap.values());
+      docsList.value = Array.from(uniqueMap.values());
     } else {
       // 桌面端翻页或移动端第一页：直接替换（搜索时 page 会被重置为 1，因此自动清空累积）
-      articleList.value = newList;
+      docsList.value = newList;
     }
   },
   { immediate: true }, // 立即执行一次，确保初始值
@@ -252,8 +251,8 @@ watch(
 // ---------- 分页辅助计算 ----------
 // 计算总页数
 const totalPages = computed(() => {
-  if (!articleData.value?.total) return 0;
-  return Math.ceil(articleData.value.total / size.value);
+  if (!docsData.value?.total) return 0;
+  return Math.ceil(docsData.value.total / size.value);
 });
 
 // 检查是否有上一页/下一页
@@ -261,7 +260,7 @@ const hasPrevPage = computed(() => page.value > 1);
 const hasNextPage = computed(() => page.value < totalPages.value);
 
 // ---------- 移动端无限滚动 ----------
-const loadMoreArticles = () => {
+const loadMoredocs = () => {
   // 增加条件：不在加载中、接近底部、是移动端、还有下一页
   if (
     pending.value ||
@@ -275,7 +274,7 @@ const loadMoreArticles = () => {
 };
 
 // 监听滑动事件
-useSwipeUp(loadMoreArticles, { threshold: 60 }); // 阈值可调
+useSwipeUp(loadMoredocs, { threshold: 60 }); // 阈值可调
 
 // ---------- 键盘事件：左右翻页 + ESC 失焦 ----------
 useEventListener("keydown", (e) => {
@@ -315,7 +314,7 @@ useEventListener("keydown", (e) => {
     margin-left: 0;
   }
 
-  .articles-grid {
+  .docs-grid {
     grid-template-columns: none;
   }
 }

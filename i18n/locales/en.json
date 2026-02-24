@@ -3,7 +3,7 @@
   "description": "Push open the Moon Gate, and step into an exploratory space built with code. Here lie contemplations and notes on full-stack development, systems thinking, and the art of elegantly untangling complexity.",
   "coffeeTip": "If this article helped you, you can buy me a coffee ☕️",
   "navigationBar": [
-    { "id": 1, "name": "Articles", "link": "/en/articles" },
+    { "id": 1, "name": "Docs", "link": "/en/docs" },
     { "id": 2, "name": "About", "link": "/en/about" },
     { "id": 3, "name": "Settings", "link": "/en/settings" }
   ],
@@ -16,7 +16,7 @@
     "description": "One-click login with GitHub account to unlock comments and interactions"
   },
   "search": {
-    "inputPlaceholder": "Search articles",
+    "inputPlaceholder": "Search Docs",
     "optionPlaceholder": "Search options",
     "viewModePlaceholder": "View mode",
     "option": [

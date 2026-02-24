@@ -93,7 +93,7 @@ Nuxt Content v3 返回的 `article.body.value` 是结构化的 MinimarkTree，�
 
 /**
  * 将 Nuxt Content v3 的 MinimarkTree 转换为 HTML 字符串
- * @param node - 文章 body 的 value 节点 (article.body.value)
+ * @param node - 文档 body 的 value 节点 (article.body.value)
  * @returns HTML 字符串
  */
 export function minimarkToHtml(node: any): string {
@@ -117,18 +117,21 @@ export function minimarkToHtml(node: any): string {
     if (node.tag) {
       // 生成属性字符串
       const attrs = node.props
-        ? ' ' + Object.entries(node.props)
-          .map(([key, val]) => `${key}="${String(val).replace(/"/g, '&quot;')}"`)
-          .join(' ')
-        : ''
+        ? " " +
+          Object.entries(node.props)
+            .map(
+              ([key, val]) => `${key}="${String(val).replace(/"/g, "&quot;")}"`,
+            )
+            .join(" ")
+        : "";
 
-      const children = (node.children || []).map(minimarkToHtml).join('')
+      const children = (node.children || []).map(minimarkToHtml).join("");
 
       // 自闭合标签
-      if (['img', 'br', 'hr', 'input'].includes(node.tag)) {
-        return `<${node.tag}${attrs} />`
+      if (["img", "br", "hr", "input"].includes(node.tag)) {
+        return `<${node.tag}${attrs} />`;
       }
-      return `<${node.tag}${attrs}>${children}</${node.tag}>`
+      return `<${node.tag}${attrs}>${children}</${node.tag}>`;
     }
   }
 
@@ -351,15 +354,30 @@ export default defineCachedEventHandler(
 ```vue
 // app.vue
 <script setup>
-const { siteName } = useRuntimeConfig().public
+const { siteName } = useRuntimeConfig().public;
 
 useHead({
   link: [
-    { rel: 'alternate', type: 'application/rss+xml', title: siteName, href: '/feed.xml' },
-    { rel: 'alternate', type: 'application/atom+xml', title: siteName, href: '/feed.atom' },
-    { rel: 'alternate', type: 'application/json', title: siteName, href: '/feed.json' }
-  ]
-})
+    {
+      rel: "alternate",
+      type: "application/rss+xml",
+      title: siteName,
+      href: "/feed.xml",
+    },
+    {
+      rel: "alternate",
+      type: "application/atom+xml",
+      title: siteName,
+      href: "/feed.atom",
+    },
+    {
+      rel: "alternate",
+      type: "application/json",
+      title: siteName,
+      href: "/feed.json",
+    },
+  ],
+});
 </script>
 ```
 

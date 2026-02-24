@@ -3,7 +3,7 @@ export default defineEventHandler(async (event) => {
   const siteUrl = useRuntimeConfig().public.siteUrl
 
   try {
-    // 1. 获取文章数据
+    // 1. 获取文档数据
     const articles = await queryCollection(event, 'articles')
       .select('path', 'date') // 增加date用于lastmod
       .order('date', 'DESC')
@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
       .select('path')
       .all()
 
-    // 获取当前时间作为lastmod（实际应用中可用最新文章的date）
+    // 获取当前时间作为lastmod（实际应用中可用最新文档的date）
     const lastmod = articles[0]?.date
       ? new Date(articles[0].date).toISOString().split('T')[0]
       : new Date().toISOString().split('T')[0]

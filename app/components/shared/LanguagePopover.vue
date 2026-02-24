@@ -2,7 +2,11 @@
 <template>
   <UPopover mode="hover" arrow>
     <!-- 语言选项按钮 -->
-    <UButton icon="i-tabler:language" color="neutral" variant="ghost" />
+    <UButton
+      :ui="{ leadingIcon: 'toolbar-icon-btn' }"
+      icon="tabler:language"
+      variant="ghost"
+    />
     <template #content>
       <ul class="w-25 text-center">
         <li

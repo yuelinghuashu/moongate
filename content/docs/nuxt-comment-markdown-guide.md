@@ -1,14 +1,14 @@
 ---
 permalink: AzbFPaOyjlexV3z7sr506
 itle: Nuxt 评论区完美支持 Markdown：从解析、高亮到安全渲染全攻略
-description: 手把手教你为 Nuxt 博客评论区添加安全、美观、功能完整的 Markdown 渲染支持，代码块配色与文章（Nuxt Content）自动统一，深浅色模式无缝切换。
+description: 手把手教你为 Nuxt 博客评论区添加安全、美观、功能完整的 Markdown 渲染支持，代码块配色与文档（Nuxt Content）自动统一，深浅色模式无缝切换。
 date: 2026-02-21
 tags: [Nuxt, 评论区, Markdown, Shiki, 教程]
 ---
 
 # Nuxt 评论区完美支持 Markdown：从解析、高亮到安全渲染全攻略
 
-> 内含与 Nuxt Content 配色保持一致的技巧，让你的评论区和文章浑然一体
+> 内含与 Nuxt Content 配色保持一致的技巧，让你的评论区和文档浑然一体
 
 ---
 
@@ -16,14 +16,14 @@ tags: [Nuxt, 评论区, Markdown, Shiki, 教程]
 
 本文基于以下版本编写，请确保你的项目版本与之匹配：
 
-| 依赖 | 版本 | 备注 |
-|------|------|------|
-| Nuxt | **v4** | 核心框架 |
-| Nuxt Content | **v3** | 文章内容管理 |
-| Nuxt UI | **v4** | 提供 `useColorMode` |
-| marked | **v15+** | Markdown 解析器 |
-| shiki | **v3+** | 代码高亮引擎 |
-| isomorphic-dompurify | **v2+** | XSS 防护 |
+| 依赖                 | 版本     | 备注                |
+| -------------------- | -------- | ------------------- |
+| Nuxt                 | **v4**   | 核心框架            |
+| Nuxt Content         | **v3**   | 文档内容管理        |
+| Nuxt UI              | **v4**   | 提供 `useColorMode` |
+| marked               | **v15+** | Markdown 解析器     |
+| shiki                | **v3+**  | 代码高亮引擎        |
+| isomorphic-dompurify | **v2+**  | XSS 防护            |
 
 > 💡 如果你使用其他版本，核心思路仍可参考，但具体 API 可能需要调整。
 
@@ -39,7 +39,7 @@ tags: [Nuxt, 评论区, Markdown, Shiki, 教程]
 - **增**：用户提交评论，存到数据库（`INSERT`）
 - **删**：用户删除自己的评论（`DELETE`）
 - **改**：编辑评论（`UPDATE`，可选）
-- **查**：加载文章下的所有评论（`SELECT`）
+- **查**：加载文档下的所有评论（`SELECT`）
 
 没有算法、没有实时推送、没有复杂的机制——**就是最基础的后端操作 + 前端展示**。
 
@@ -66,7 +66,6 @@ tags: [Nuxt, 评论区, Markdown, Shiki, 教程]
 - <a href="https://cn.vuejs.org/guide/introduction.html" target="_blank" rel="noopener noreferrer">Vue 3 中文官方文档</a>
 - <a href="https://nuxt.zhcndoc.com/docs/4.x/getting-started/installation" target="_blank" rel="noopener noreferrer">Nuxt 4 中文官方文档</a>
 - <a href="https://markdown.com.cn/intro.html" target="_blank" rel="noopener noreferrer">Markdown 中文官方文档</a>
-
 
 **本文不会解释 SQL 怎么写、不会教 Vue 基础、不会重复官网 API——只讲“如何把评论区升级为 Markdown 渲染”。**
 
@@ -95,7 +94,7 @@ tags: [Nuxt, 评论区, Markdown, Shiki, 教程]
 <summary>本文能给你什么</summary>
 
 - ✅ **完整的 Markdown 渲染方案**（marked + Shiki + DOMPurify）
-- ✅ **代码块高亮与文章配色统一**（深浅色自动切换）
+- ✅ **代码块高亮与文档配色统一**（深浅色自动切换）
 - ✅ **XSS 防护的正确姿势**（不只是过滤标签）
 - ✅ **两种性能方案对比**（预加载 vs 懒加载）
 - ✅ **7 个实战踩坑记录**（`$` 陷阱、`watch` 监听、主题不匹配等）
@@ -109,10 +108,10 @@ tags: [Nuxt, 评论区, Markdown, Shiki, 教程]
 许多 Nuxt 博主在搭建评论区时，会遇到以下问题：
 
 - 评论只能输入纯文本，无法贴代码、加粗、列表等。
-- 即使勉强支持 Markdown，代码块样式与文章正文（通常由 Nuxt Content 渲染）不一致，显得格格不入。
+- 即使勉强支持 Markdown，代码块样式与文档正文（通常由 Nuxt Content 渲染）不一致，显得格格不入。
 - 担心 XSS 攻击，不敢直接渲染用户输入的 HTML。
 
-**本文目标**：手把手教你为 Nuxt 博客评论区添加**安全、美观、功能完整**的 Markdown 渲染支持，并且代码块配色与文章（Nuxt Content v3）**自动保持统一**，深浅色模式无缝切换。
+**本文目标**：手把手教你为 Nuxt 博客评论区添加**安全、美观、功能完整**的 Markdown 渲染支持，并且代码块配色与文档（Nuxt Content v3）**自动保持统一**，深浅色模式无缝切换。
 
 ---
 
@@ -124,11 +123,11 @@ tags: [Nuxt, 评论区, Markdown, Shiki, 教程]
 | 代码语法高亮    | `shiki`                  | Nuxt Content 同款，主题丰富，输出稳定 HTML      |
 | XSS 防护        | `isomorphic-dompurify`   | SSR 兼容，过滤恶意标签和属性，保障安全          |
 | 深浅色模式      | `useColorMode` (Nuxt UI) | 自动监听系统/用户主题切换，动态更新渲染         |
-| 代码块样式统一  | CSS 变量 + 覆盖          | 复用 Nuxt UI 主题变量，使评论块与文章块视觉一致 |
+| 代码块样式统一  | CSS 变量 + 覆盖          | 复用 Nuxt UI 主题变量，使评论块与文档块视觉一致 |
 
 ### 为什么不用 Prism 或 highlight.js？
 
-Shiki 与 Nuxt Content 内部使用的高亮器一致，可以直接复用其主题和语言包，确保代码块颜色与文章**完全一致**，无需额外维护两套配色。
+Shiki 与 Nuxt Content 内部使用的高亮器一致，可以直接复用其主题和语言包，确保代码块颜色与文档**完全一致**，无需额外维护两套配色。
 
 > **主题与语言参考**：Shiki 支持的主题和语言列表请查阅官方文档：[主题列表](https://shiki.zhcndoc.com/themes) | [语言列表](https://shiki.zhcndoc.com/languages)。你可以根据自己博客的实际配色需求，从中选择与 Nuxt Content 匹配的主题（例如 `material-theme-*` 系列）。
 
@@ -152,7 +151,7 @@ Shiki 初始化较慢，且应只创建一次。我们通过 Nuxt 插件在客�
 import { createHighlighter } from "shiki";
 
 export default defineNuxtPlugin(async () => {
-  // 预加载文章用到的主题和语言（可根据实际需求调整）
+  // 预加载文档用到的主题和语言（可根据实际需求调整）
   // 主题列表：https://shiki.zhcndoc.com/themes
   // 语言列表：https://shiki.zhcndoc.com/languages
   const highlighter = await createHighlighter({
@@ -208,7 +207,7 @@ const colorMode = useColorMode();
 
 const renderedContent = ref("");
 
-// 根据当前颜色模式动态选择 Shiki 主题，确保与文章代码块配色一致
+// 根据当前颜色模式动态选择 Shiki 主题，确保与文档代码块配色一致
 const currentTheme = computed(() => {
   return colorMode.value === "dark"
     ? "material-theme-palenight" // 深色主题
@@ -358,7 +357,7 @@ watch([() => props.content, () => colorMode.value], renderContent, {
 </template>
 ```
 
-### 3.5 样式统一：让评论代码块与文章融为一体
+### 3.5 样式统一：让评论代码块与文档融为一体
 
 Nuxt Content 默认代码块样式带有背景、边框和圆角。我们通过 CSS 变量（由 Nuxt UI 提供）覆盖评论区的 `<pre>` 和 `<code>` 样式，实现视觉统一。如果你未使用 Nuxt UI，可替换为具体的颜色值。
 
@@ -398,7 +397,7 @@ Nuxt Content 默认代码块样式带有背景、边框和圆角。我们通过 
   display: contents !important;
 }
 
-/* 表格样式（与文章保持一致） */
+/* 表格样式（与文档保持一致） */
 :deep(table) {
   border-collapse: collapse;
   width: 100%;
@@ -435,7 +434,7 @@ Nuxt Content 默认代码块样式带有背景、边框和圆角。我们通过 
 </style>
 ```
 
-> **提示**：如果你的博客未使用 Nuxt UI，请检查文章代码块的实际样式（背景色、边框色、圆角等），然后将上述 `var(--ui-*)` 替换为对应的具体颜色值（如 `#f6f8fa`）。同时可酌情去掉 `!important`。
+> **提示**：如果你的博客未使用 Nuxt UI，请检查文档代码块的实际样式（背景色、边框色、圆角等），然后将上述 `var(--ui-*)` 替换为对应的具体颜色值（如 `#f6f8fa`）。同时可酌情去掉 `!important`。
 
 ---
 
@@ -443,8 +442,8 @@ Nuxt Content 默认代码块样式带有背景、边框和圆角。我们通过 
 
 ### 4.1 主题名称不匹配
 
-- **问题**：按照 Nuxt Content 文档示例使用 `github-light/dark`，但实际默认主题可能是 `material-theme-lighter/palenight`，导致评论区配色与文章不一致。
-- **解决**：打开浏览器检查文章代码块的 `<pre>` 标签，查看类名（如 `material-theme-lighter`），或在 `nuxt.config.ts` 中确认 `content.highlight.theme` 配置。然后在组件中替换为对应的主题 ID。
+- **问题**：按照 Nuxt Content 文档示例使用 `github-light/dark`，但实际默认主题可能是 `material-theme-lighter/palenight`，导致评论区配色与文档不一致。
+- **解决**：打开浏览器检查文档代码块的 `<pre>` 标签，查看类名（如 `material-theme-lighter`），或在 `nuxt.config.ts` 中确认 `content.highlight.theme` 配置。然后在组件中替换为对应的主题 ID。
 
 ### 4.2 `String.replace` 的 `$` 陷阱
 
@@ -488,7 +487,7 @@ const props = defineProps({ content: { type: String, required: true } });
 const colorMode = useColorMode();
 const renderedContent = ref("");
 
-// 根据当前颜色模式动态选择 Shiki 主题，确保与文章代码块配色一致
+// 根据当前颜色模式动态选择 Shiki 主题，确保与文档代码块配色一致
 const currentTheme = computed(() => {
   return colorMode.value === "dark"
     ? "material-theme-palenight" // 深色主题（请根据你的实际主题替换）
@@ -644,7 +643,7 @@ watch([() => props.content, () => colorMode.value], renderContent, {
 至此，你拥有了一个功能完备、安全可靠的评论区，支持：
 
 - 完整的 Markdown 语法（标题、列表、表格、引用、图片等）
-- 代码块语法高亮（与文章配色一致）
+- 代码块语法高亮（与文档配色一致）
 - 深浅色模式自动切换
 - XSS 防护
 
@@ -670,9 +669,9 @@ A：语言标识符请参考 [Shiki 官方语言列表](https://shiki.zhcndoc.co
 
 A：如果选择预加载方案，确保 Shiki 实例全局单例（插件方式已满足）。如果选择懒加载方案，首次加载某种语言时会有短暂延迟，但之后会缓存。若评论数量极大，可考虑对代码块渲染做虚拟滚动。
 
-**Q：如何确认文章实际使用的主题？**
+**Q：如何确认文档实际使用的主题？**
 
-A：打开浏览器开发者工具，选中文章中的一个代码块，查看 `<pre>` 或 `<code>` 标签的类名，通常包含主题名称（如 `material-theme-palenight`）。也可在 `nuxt.config.ts` 中查看 `content.highlight.theme` 配置。
+A：打开浏览器开发者工具，选中文档中的一个代码块，查看 `<pre>` 或 `<code>` 标签的类名，通常包含主题名称（如 `material-theme-palenight`）。也可在 `nuxt.config.ts` 中查看 `content.highlight.theme` 配置。
 
 ---
 

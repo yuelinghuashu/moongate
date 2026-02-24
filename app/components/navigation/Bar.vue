@@ -11,9 +11,9 @@
       >
         <NuxtLink
           :to="item.link"
-          class="block px-4 py-2"
+          class="px-4 py-2 nav-link"
           rel="noopener noreferrer"
-          active-class="nav-link active"
+          active-class="active"
         >
           {{ item.name }}
         </NuxtLink>

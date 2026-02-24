@@ -1,9 +1,9 @@
 {
   "title": "Where Moon Meets Code",
   "description": "推开月之门，进入一个由代码构筑的探索空间。这里记录着关于全栈开发、系统思考以及如何优雅解决复杂问题的沉思与笔记。",
-  "coffeeTip": "如果这篇文章对你有帮助，可以请我喝杯咖啡 ☕️",
+  "coffeeTip": "如果这篇文档对你有帮助，可以请我喝杯咖啡 ☕️",
   "navigationBar": [
-    { "id": 1, "name": "文章", "link": "/articles" },
+    { "id": 1, "name": "文档", "link": "/docs" },
     { "id": 2, "name": "关于", "link": "/about" },
     { "id": 3, "name": "设置", "link": "/settings" }
   ],
@@ -16,7 +16,7 @@
     "description": "使用 GitHub 账号一键登录，解锁评论与互动权限"
   },
   "search": {
-    "inputPlaceholder": "搜索文章",
+    "inputPlaceholder": "搜索文档",
     "optionPlaceholder": "搜索选项",
     "viewModePlaceholder": "视图模式",
     "option": [
@@ -50,7 +50,7 @@
       "name": "进入网站时",
       "options": [
         { "id": 31, "name": "先看看网站介绍" },
-        { "id": 32, "name": "直接开始浏览文章" }
+        { "id": 32, "name": "直接开始浏览文档" }
       ]
     }
   },

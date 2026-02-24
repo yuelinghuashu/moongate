@@ -2,9 +2,10 @@
 
 /**
  * 将 Nuxt Content v3 的 MinimarkTree 转换为 HTML 字符串
- * @param node - 文章 body 节点 (article.body)
+ * @param node - 文档 body 节点 (article.body)
  * @returns HTML 字符串
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function minimarkToHtml(node: any): string {
   if (!node) return ''
 
@@ -46,6 +47,7 @@ export function minimarkToHtml(node: any): string {
     if (node.type === 'text' && node.value) {
       return node.value
     }
+    
   }
 
   return ''

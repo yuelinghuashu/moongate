@@ -1,4 +1,4 @@
-<!-- components/article/MarkdownRenderer.vue -->
+<!-- components/docs/MarkdownRenderer.vue -->
 <template>
   <!-- eslint-disable-next-line vue/no-v-html -->
   <div v-html="renderedContent" />
@@ -14,7 +14,7 @@ const colorMode = useColorMode();
 
 const renderedContent = ref("");
 
-// 根据当前颜色模式动态选择 Shiki 主题，确保与文章代码块配色一致
+// 根据当前颜色模式动态选择 Shiki 主题，确保与文档代码块配色一致
 const currentTheme = computed(() => {
   return colorMode.value === "dark"
     ? "material-theme-palenight" // 深色主题

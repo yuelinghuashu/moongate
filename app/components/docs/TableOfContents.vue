@@ -6,7 +6,8 @@
       <li v-for="item in prop.outline" :key="item.id" class="indent-2">
         <NuxtLink
           :href="`#${item.id}`"
-          class="block"
+          class="nav-link"
+          active-class="active"
           :class="route.fullPath.includes(item.id) ? 'nav-link active' : ''"
           rel="noopener noreferrer"
           @click="isOutlineVisible = !isOutlineVisible"
@@ -18,10 +19,8 @@
           <li v-for="item2 in item.children" :key="item2.id" class="indent-8">
             <NuxtLink
               :href="`#${item2.id}`"
-              class="block"
-              :class="
-                route.fullPath.includes(item2.id) ? 'nav-link active' : ''
-              "
+              class="nav-link"
+              :active-class="route.fullPath.includes(item2.id) ? ' active' : ''"
               rel="noopener noreferrer"
               @click="isOutlineVisible = !isOutlineVisible"
               >{{ item2.text }}
@@ -36,9 +35,9 @@
               >
                 <NuxtLink
                   :href="`#${item3.id}`"
-                  class="block"
-                  :class="
-                    route.fullPath.includes(item3.id) ? 'nav-link active' : ''
+                  class="nav-link"
+                  :active-class="
+                    route.fullPath.includes(item3.id) ? ' active' : ''
                   "
                   rel="noopener noreferrer"
                   @click="isOutlineVisible = !isOutlineVisible"
