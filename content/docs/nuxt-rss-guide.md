@@ -86,14 +86,14 @@ export default defineNuxtConfig({
 
 ### 2. 创建 MinimarkTree 转 HTML 工具函数
 
-Nuxt Content v3 返回的 `article.body.value` 是结构化的 MinimarkTree，需要转换为 HTML。函数会完整保留标签属性，确保图片、链接等元素正常显示。
+Nuxt Content v3 返回的 `doc.body.value` 是结构化的 MinimarkTree，需要转换为 HTML。函数会完整保留标签属性，确保图片、链接等元素正常显示。
 
 ```ts
 // utils/minimarkToHtml.ts
 
 /**
  * 将 Nuxt Content v3 的 MinimarkTree 转换为 HTML 字符串
- * @param node - 文档 body 的 value 节点 (article.body.value)
+ * @param node - 文档 body 的 value 节点 (doc.body.value)
  * @returns HTML 字符串
  */
 export function minimarkToHtml(node: any): string {
@@ -148,7 +148,7 @@ import { minimarkToHtml } from "~/utils/minimarkToHtml";
 export default defineEventHandler(async (event) => {
   const { siteName, siteDescription, siteUrl } = useRuntimeConfig().public;
 
-  const articles = await queryCollection(event, "articles")
+  const docs = await queryCollection(event, "docs")
     .order("date", "DESC")
     .all();
 
@@ -162,27 +162,27 @@ export default defineEventHandler(async (event) => {
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
 `;
 
-  for (const article of articles) {
+  for (const doc of docs) {
     let fullContent = "";
-    if (article.body?.value) {
+    if (doc.body?.value) {
       try {
-        fullContent = minimarkToHtml(article.body.value);
+        fullContent = minimarkToHtml(doc.body.value);
       } catch (e) {
         console.error("转换失败:", e);
-        fullContent = article.description || "";
+        fullContent = doc.description || "";
       }
     }
 
-    const link = `${siteUrl}${article.path}`;
-    const date = new Date(article.date).toUTCString();
+    const link = `${siteUrl}${doc.path}`;
+    const date = new Date(doc.date).toUTCString();
 
     rss += `
     <item>
-      <title><![CDATA[${article.title}]]></title>
+      <title><![CDATA[${doc.title}]]></title>
       <link>${link}</link>
       <guid isPermaLink="true">${link}</guid>
       <pubDate>${date}</pubDate>
-      <description><![CDATA[${article.description || ""}]]></description>
+      <description><![CDATA[${doc.description || ""}]]></description>
       <content:encoded><![CDATA[${fullContent}]]></content:encoded>
     </item>
 `;
@@ -208,12 +208,12 @@ import { minimarkToHtml } from "~/utils/minimarkToHtml";
 export default defineEventHandler(async (event) => {
   const { siteName, siteDescription, siteUrl } = useRuntimeConfig().public;
 
-  const articles = await queryCollection(event, "articles")
+  const docs = await queryCollection(event, "docs")
     .order("date", "DESC")
     .all();
 
-  const updated = articles[0]?.date
-    ? new Date(articles[0].date).toISOString()
+  const updated = docs[0]?.date
+    ? new Date(docs[0].date).toISOString()
     : new Date().toISOString();
 
   let atom = `<?xml version="1.0" encoding="utf-8"?>
@@ -229,28 +229,28 @@ export default defineEventHandler(async (event) => {
   </author>
 `;
 
-  for (const article of articles) {
+  for (const doc of docs) {
     let content = "";
-    if (article.body?.value) {
+    if (doc.body?.value) {
       try {
-        content = minimarkToHtml(article.body.value);
+        content = minimarkToHtml(doc.body.value);
       } catch (e) {
         console.error("转换失败:", e);
-        content = article.description || "";
+        content = doc.description || "";
       }
     }
 
-    const link = `${siteUrl}${article.path}`;
-    const published = new Date(article.date).toISOString();
+    const link = `${siteUrl}${doc.path}`;
+    const published = new Date(doc.date).toISOString();
 
     atom += `
   <entry>
-    <title>${article.title}</title>
+    <title>${doc.title}</title>
     <link href="${link}"/>
     <id>${link}</id>
     <published>${published}</published>
     <updated>${published}</updated>
-    <summary>${article.description || ""}</summary>
+    <summary>${doc.description || ""}</summary>
     <content type="html"><![CDATA[${content}]]></content>
   </entry>
 `;
@@ -278,7 +278,7 @@ import { minimarkToHtml } from "~/utils/minimarkToHtml";
 export default defineEventHandler(async (event) => {
   const { siteUrl } = useRuntimeConfig().public;
 
-  const articles = await queryCollection(event, "articles")
+  const docs = await queryCollection(event, "docs")
     .order("date", "DESC")
     .all();
 
@@ -296,26 +296,26 @@ export default defineEventHandler(async (event) => {
       },
     ],
     items: await Promise.all(
-      articles.map(async (article) => {
+      docs.map(async (doc) => {
         let contentHtml = "";
-        if (article.body?.value) {
+        if (doc.body?.value) {
           try {
-            contentHtml = minimarkToHtml(article.body.value);
+            contentHtml = minimarkToHtml(doc.body.value);
           } catch (e) {
             console.error("转换失败:", e);
-            contentHtml = article.description || "";
+            contentHtml = doc.description || "";
           }
         }
 
         return {
-          id: `${siteUrl}${article.path}`,
-          url: `${siteUrl}${article.path}`,
-          title: article.title,
+          id: `${siteUrl}${doc.path}`,
+          url: `${siteUrl}${doc.path}`,
+          title: doc.title,
           content_html: contentHtml,
-          summary: article.description || "",
-          date_published: new Date(article.date).toISOString(),
+          summary: doc.description || "",
+          date_published: new Date(doc.date).toISOString(),
           language: "zh-CN",
-          tags: article.tags || [],
+          tags: doc.tags || [],
         };
       }),
     ),
@@ -406,7 +406,7 @@ curl -I http://localhost:3000/feed.xml
 
 ### Q1: RSS 显示 `[object Object]`
 
-**原因**：没有将 `article.body` 正确转换为 HTML。
+**原因**：没有将 `doc.body` 正确转换为 HTML。
 
 **解决**：使用本文提供的 `minimarkToHtml` 函数。
 
@@ -414,7 +414,7 @@ curl -I http://localhost:3000/feed.xml
 
 **原因**：拼接 URL 时遗漏了 `siteUrl`。
 
-**解决**：确保使用 `${siteUrl}${article.path}`。
+**解决**：确保使用 `${siteUrl}${doc.path}`。
 
 ### Q3: 日期格式错误
 
@@ -456,7 +456,7 @@ curl -I http://localhost:3000/feed.xml
 ### 1. 分页限制
 
 ```ts
-const articles = await queryCollection(event, "articles")
+const docs = await queryCollection(event, "docs")
   .order("date", "DESC")
   .limit(20) // 只取最近 20 篇
   .all();

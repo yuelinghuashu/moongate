@@ -9,6 +9,7 @@
         :direction="isDesktop ? 'right' : 'bottom'"
         :title="t('article.title')"
         :description="t('article.description')"
+        :class="[isMobile ? 'max-h-[80%]' : '']"
       >
         <template #content>
           <!-- 大纲目录 -->
@@ -28,7 +29,7 @@ const route = useRoute();
 const { locale, t } = useI18n();
 const { isDesktop } = useResponsive();
 const { isOutlineVisible, isOutlineIconVisible } = useOutline();
-
+const { isMobile } = useResponsive();
 
 const slug = computed(() => {
   const path = withLeadingSlash(String(route.params.slug || "/"));

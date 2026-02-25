@@ -11,7 +11,7 @@
       >
         <NuxtLink
           :to="item.link"
-          class="px-4 py-2 nav-link"
+          class="block px-4 py-2 nav-link"
           rel="noopener noreferrer"
           active-class="active"
         >

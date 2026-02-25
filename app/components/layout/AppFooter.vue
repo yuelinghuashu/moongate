@@ -1,7 +1,7 @@
 <template>
   <UFooter>
     <template #left>
-      <div>© {{ dayjs().format("YYYY") }} MOONGATE</div>
+      <i class="toolbar-icon-btn"> © {{ dayjs().format("YYYY") }} MOONGATE </i>
     </template>
     <template #right>
       <NuxtLink

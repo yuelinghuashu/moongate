@@ -349,6 +349,7 @@ export default defineEventHandler(async (event) => {
 
 ### 错误 1：`Cannot read properties of undefined (reading 'referencedTable')`
 
+
 **原因**：初始化 `drizzle` 时没有传入完整 schema（缺少 relations）。
 **解决**：确保 `useDB()` 中 `drizzle(pool, { schema })` 的 `schema` 对象包含了 `relations` 导出。
 

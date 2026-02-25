@@ -51,10 +51,10 @@ tags: [Nuxt, i18n, Content]
 
 ```mermaid
 graph LR
-    A[用户访问<br>/ja/articles/nuxt-guide] --> B{i18n 模块};
+    A[用户访问<br>/ja/docs/nuxt-guide] --> B{i18n 模块};
     B --> C[识别语言前缀 ja];
     C --> D[移除前缀 /ja];
-    D --> E[Content 查询 /articles/nuxt-guide];
+    D --> E[Content 查询 /docs/nuxt-guide];
     E --> F[返回统一内容];
     F --> G[界面元素使用 ja 语言包];
     G --> H[用户看到日文界面<br>英文内容];
@@ -87,19 +87,19 @@ const { locale } = useI18n();
 const route = useRoute();
 
 // 核心：移除语言前缀，得到原始路径
-// 例如：/en/articles/welcome -> /articles/welcome
+// 例如：/en/docs/welcome -> /docs/welcome
 const slug = computed(() => {
   const path = withLeadingSlash(String(route.params.slug || "/"));
   // 移除语言前缀部分
   return path.replace(new RegExp(`^/(${locale.value})`), "") || "/";
 });
 
-// 稳定查询：永远只查询 'articles' 这个集合
+// 稳定查询：永远只查询 'docs' 这个集合
 const { data: page } = await useAsyncData(
   route.path,
   () => {
-    return queryCollection("articles").path(`/articles${slug.value}`).first();
-    // 注意：查询路径需要加上 '/articles' 前缀，以匹配 content/articles/ 下的文件
+    return queryCollection("docs").path(`/docs${slug.value}`).first();
+    // 注意：查询路径需要加上 '/docs' 前缀，以匹配 content/docs/ 下的文件
   },
   {
     // 设置 transform 确保数据一致性
@@ -118,22 +118,22 @@ const { data: page } = await useAsyncData(
 
 ```text
 content/
-  articles/
+  docs/
     nuxt-content-guide.md
     getting-started.md
     i18n-config.md
   about.md
 ```
 
-> articles文件夹是我专门为项目建立的，无需跟我一模一样
+> docs文件夹是我专门为项目建立的，无需跟我一模一样
 
 ## 🔄 路由映射关系
 
 | 访问 URL                     | i18n 处理  | Content 查询           | 实际文件                         |
 | ---------------------------- | ---------- | ---------------------- | -------------------------------- |
-| `/zh_cn/articles/nuxt-guide` | 识别为中文 | `/articles/nuxt-guide` | `content/articles/nuxt-guide.md` |
-| `/en/articles/nuxt-guide`    | 识别为英文 | `/articles/nuxt-guide` | `content/articles/nuxt-guide.md` |
-| `/ja/articles/nuxt-guide`    | 识别为日文 | `/articles/nuxt-guide` | `content/articles/nuxt-guide.md` |
+| `/zh_cn/docs/nuxt-guide` | 识别为中文 | `/docs/nuxt-guide` | `content/docs/nuxt-guide.md` |
+| `/en/docs/nuxt-guide`    | 识别为英文 | `/docs/nuxt-guide` | `content/docs/nuxt-guide.md` |
+| `/ja/docs/nuxt-guide`    | 识别为日文 | `/docs/nuxt-guide` | `content/docs/nuxt-guide.md` |
 
 ## 总结
 
@@ -152,4 +152,4 @@ content/
 
 ---
 
-_本文采用所述方案编写，访问 `/en/articles/single-content-multilingual-routes` 或 `/zh_cn/articles/single-content-multilingual-routes` 可体验实际效果。_
+_本文采用所述方案编写，访问 `/en/docs/single-content-multilingual-routes` 或 `/zh_cn/docs/single-content-multilingual-routes` 可体验实际效果。_

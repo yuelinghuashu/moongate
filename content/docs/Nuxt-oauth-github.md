@@ -248,11 +248,11 @@ pnpm dev
 
 ### 5.1 问题的由来
 
-默认实现中，登录成功后用户被重定向到首页 /。但更符合用户体验的做法是：用户从哪个页面点击登录，登录后就应该回到哪个页面。例如从 /en/articles/123 点击登录，成功后应回到同一页面。
+默认实现中，登录成功后用户被重定向到首页 /。但更符合用户体验的做法是：用户从哪个页面点击登录，登录后就应该回到哪个页面。例如从 /en/docs/123 点击登录，成功后应回到同一页面。
 
 ### 5.2 技术难点：GitHub 回调会丢弃自定义参数
 
-GitHub 在回调时只会保留 code 和 state 两个参数，你附加的任何自定义查询参数（如 ?redirect=/en/articles）都会被丢弃。因此无法通过 URL 参数直接传递来源页。
+GitHub 在回调时只会保留 code 和 state 两个参数，你附加的任何自定义查询参数（如 ?redirect=/en/docs）都会被丢弃。因此无法通过 URL 参数直接传递来源页。
 
 ### 5.3 解决方案：使用 session 存储来源页
 
@@ -351,7 +351,7 @@ export default defineOAuthGitHubEventHandler({
 
 #### 5.4.1 水合不匹配的产生原因
 
-    用户从 /en/articles/123 点击登录
+    用户从 /en/docs/123 点击登录
 
     登录成功后若重定向到 /（默认语言首页）
 
@@ -361,7 +361,7 @@ export default defineOAuthGitHubEventHandler({
 
 #### 5.4.2 为什么重定向到来源页能解决
 
-    用户从 /en/articles/123 来，登录后回到 /en/articles/123
+    用户从 /en/docs/123 来，登录后回到 /en/docs/123
 
     服务器根据 URL 中的 /en 前缀渲染对应的语言版本
 

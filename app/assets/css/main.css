@@ -313,14 +313,18 @@ textarea::placeholder {
   opacity: 0.7;
 }
 
+header div button span,
+footer div a span,
 .toolbar-icon-btn {
   color: var(--ui-text-muted); /* 平时柔和灰 */
   transition: color 0.2s ease;
 }
-
+header div button span:hover,
+footer div a span:hover,
 .toolbar-icon-btn:hover {
   color: var(--ui-primary); /* 悬停主蓝 */
 }
+
 
 /* ===== 代码块样式 ===== */
 pre,

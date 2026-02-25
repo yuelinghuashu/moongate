@@ -62,7 +62,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     // 1. 获取文档数据
-    const articles = await queryCollection(event, "articles")
+    const docs = await queryCollection(event, "docs")
       .select("path")
       .all();
     const about = await queryCollection(event, "about").select("path").all();
@@ -70,10 +70,10 @@ export default defineEventHandler(async (event) => {
     // 2. 构建URL数组
     const urls = [
       `${siteUrl}`,
-      `${siteUrl}/articles`,
+      `${siteUrl}/docs`,
       `${siteUrl}/about`,
       `${siteUrl}/404`,
-      ...articles.map((article) => `${siteUrl}${article.path}`),
+      ...docs.map((doc) => `${siteUrl}${doc.path}`),
       ...about.map((about) => `${siteUrl}${about.path}`),
     ];
 
@@ -219,9 +219,9 @@ curl -I http://localhost:3000/sitemap.xml
 
 ```typescript
 // 正确：完整的 URL
-`${siteUrl}/articles/${slug}`
+`${siteUrl}/docs/${slug}`
 // 错误：相对路径
-`/articles/${slug}`;
+`/docs/${slug}`;
 ```
 
 ### Q3: 生产环境 siteUrl 为空

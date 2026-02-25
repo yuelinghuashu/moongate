@@ -19,6 +19,7 @@
         :direction="isDesktop ? 'right' : 'bottom'"
         :title="t('article.title')"
         :description="t('article.description')"
+        :class="isMobile ? 'max-h-[80%]' : ''"
       >
         <template #body>
           <DocsTableOfContents :outline="page.body.toc?.links" />
@@ -45,6 +46,7 @@ const { locale, t } = useI18n();
 const route = useRoute();
 const { isDesktop } = useResponsive();
 const { isOutlineIconVisible } = useOutline();
+const { isMobile } = useResponsive();
 
 // ==================== 响应式状态 ====================
 /**

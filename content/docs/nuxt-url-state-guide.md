@@ -10,7 +10,7 @@ tags: [Nuxt, Vue, URL状态同步]
 
 ## 引言：一个看似简单的需求
 
-在开发文档列表页时，我们通常需要支持**分页**和**搜索**。为了让用户能够通过链接分享当前页面状态，我们很自然地把页码、搜索词放到 URL query 里，例如 `/articles?page=2&search=nuxt`。
+在开发文档列表页时，我们通常需要支持**分页**和**搜索**。为了让用户能够通过链接分享当前页面状态，我们很自然地把页码、搜索词放到 URL query 里，例如 `/docs?page=2&search=nuxt`。
 
 这个需求看似简单，但实现后常遇到两个头疼的问题：
 
@@ -100,9 +100,9 @@ watch([searchInput, searchOption, page, size], () => {
 
 // 4. 数据获取：useAsyncData 自动刷新
 const { data } = useAsyncData(
-  "articles",
+  "docs",
   async () => {
-    return queryCollection("articles")
+    return queryCollection("docs")
       .where("title", "LIKE", `%${search.value}%`)
       .skip((page.value - 1) * size.value)
       .limit(size.value)
@@ -158,7 +158,7 @@ Invalid value used as weak map key
 ### 4.1 方案一：基于 `useRoute` + `watch` 的手写版（完全可控）
 
 ```ts
-// pages/articles/index.vue
+// pages/docs/index.vue
 const route = useRoute();
 const router = useRouter();
 

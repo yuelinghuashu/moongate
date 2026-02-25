@@ -66,10 +66,4 @@ const prop = defineProps({
 });
 </script>
 
-<style scoped>
-@media (max-width: 768px) {
-  div {
-    display: none;
-  }
-}
-</style>
+<style scoped></style>
