@@ -3,7 +3,7 @@ import { minimarkToHtml } from '../../utils/minimarkToHtml'
 export default defineCachedEventHandler(async (event) => {
   const { siteUrl } = useRuntimeConfig().public
 
-  const articles = await queryCollection(event, 'articles')
+  const docs = await queryCollection(event, 'docs')
     .order('date', 'DESC')
     .all()
 
@@ -19,27 +19,27 @@ export default defineCachedEventHandler(async (event) => {
       name: 'MoonGate',
       url: siteUrl
     }],
-    items: await Promise.all(articles.map(async (article) => {
+    items: await Promise.all(docs.map(async (doc) => {
       // 转换全文
       let contentHtml = ''
-      if (article.body?.value) {
+      if (doc.body?.value) {
         try {
-          contentHtml = minimarkToHtml(article.body.value)
+          contentHtml = minimarkToHtml(doc.body.value)
         } catch (e) {
           console.error('转换失败:', e)
-          contentHtml = article.description || ''
+          contentHtml = doc.description || ''
         }
       }
 
       return {
-        id: `${siteUrl}${article.path}`,
-        url: `${siteUrl}${article.path}`,
-        title: article.title,
+        id: `${siteUrl}${doc.path}`,
+        url: `${siteUrl}${doc.path}`,
+        title: doc.title,
         content_html: contentHtml,
-        summary: article.description || '',
-        date_published: new Date(article.date).toISOString(),
+        summary: doc.description || '',
+        date_published: new Date(doc.date).toISOString(),
         language: 'zh-CN',
-        tags: article.tags || []
+        tags: doc.tags || []
       }
     }))
   }

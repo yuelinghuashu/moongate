@@ -3,13 +3,13 @@ import { minimarkToHtml } from '../../utils/minimarkToHtml'
 export default defineCachedEventHandler(async (event) => {
   const { siteUrl } = useRuntimeConfig().public
 
-  const articles = await queryCollection(event, 'articles')
+  const docs = await queryCollection(event, 'docs')
     .order('date', 'DESC')
     .all()
 
   // 获取最新更新时间
-  const updated = articles[0]?.date
-    ? new Date(articles[0].date).toISOString()
+  const updated = docs[0]?.date
+    ? new Date(docs[0].date).toISOString()
     : new Date().toISOString()
 
   // 构建 Atom XML
@@ -26,30 +26,30 @@ export default defineCachedEventHandler(async (event) => {
   </author>
 `
 
-  for (const article of articles) {
+  for (const doc of docs) {
     // 转换全文
     let content = ''
-    if (article.body?.value) {
+    if (doc.body?.value) {
       try {
-        content = minimarkToHtml(article.body.value)
+        content = minimarkToHtml(doc.body.value)
       } catch (e) {
         console.error('转换失败:', e)
-        content = article.description || ''
+        content = doc.description || ''
       }
     }
 
-    const link = `${siteUrl}${article.path}`
-    const published = new Date(article.date).toISOString()
-    const id = link // 或使用 article.permalink
+    const link = `${siteUrl}${doc.path}`
+    const published = new Date(doc.date).toISOString()
+    const id = link // 或使用 doc.permalink
 
     atom += `
   <entry>
-    <title>${article.title}</title>
+    <title>${doc.title}</title>
     <link href="${link}"/>
     <id>${id}</id>
     <published>${published}</published>
     <updated>${published}</updated>
-    <summary>${article.description || ''}</summary>
+    <summary>${doc.description || ''}</summary>
     <content type="html"><![CDATA[${content}]]></content>
   </entry>
 `

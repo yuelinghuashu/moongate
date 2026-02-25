@@ -4,7 +4,7 @@ import { minimarkToHtml } from '../../utils/minimarkToHtml'
 export default defineCachedEventHandler(async (event) => {
   const { siteUrl } = useRuntimeConfig().public
 
-  const articles = await queryCollection(event, 'articles')
+  const docs = await queryCollection(event, 'docs')
     .order('date', 'DESC')
     .all()
 
@@ -19,29 +19,29 @@ export default defineCachedEventHandler(async (event) => {
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
 `
 
-  for (const article of articles) {
+  for (const doc of docs) {
     // 将 MinimarkTree 转换为 HTML
     let fullContent = ''
-    if (article.body.value) {
+    if (doc.body.value) {
       try {
-        fullContent = minimarkToHtml(article.body.value).replace(/]]>/g, ']]]]><![CDATA[>') // 转义 CDATA 结束符
+        fullContent = minimarkToHtml(doc.body.value).replace(/]]>/g, ']]]]><![CDATA[>') // 转义 CDATA 结束符
       } catch (e) {
         console.error('转换失败:', e)
-        fullContent = article.description || ''
+        fullContent = doc.description || ''
       }
     }
 
-    const link = `${siteUrl}${article.path}`
-    const date = new Date(article.date).toUTCString()
+    const link = `${siteUrl}${doc.path}`
+    const date = new Date(doc.date).toUTCString()
 
     rss += `
     <item>
-      <title><![CDATA[${article.title}]]></title>
+      <title><![CDATA[${doc.title}]]></title>
       <link>${link}</link>
       <guid isPermaLink="true">${link}</guid>
       <pubDate>${date}</pubDate>
       <content:encoded><![CDATA[${fullContent}]]></content:encoded>
-      <description><![CDATA[${article.description || ''}]]></description>
+      <description><![CDATA[${doc.description || ''}]]></description>
     </item>
 `
   }

@@ -2,7 +2,6 @@
 import * as allLocale from "@nuxt/ui/locale";
 const { locale } = useI18n();
 
-
 // 设置动态语言
 const lang = computed(() => allLocale[locale.value].code);
 const dir = computed(() => allLocale[locale.value].dir);
@@ -10,23 +9,23 @@ const dir = computed(() => allLocale[locale.value].dir);
 useHead({
   meta: [{ name: "viewport", content: "width=device-width, initial-scale=1" }],
   link: [
-    { rel: "icon", href: "/favicon.svg" },
+    { rel: "icon", href: "/favicon.png" },
     {
       rel: "alternate",
       type: "application/rss+xml",
-      title: 'MoonGate',
+      title: "MoonGate",
       href: "/feed.xml",
     },
     {
       rel: "alternate",
       type: "application/atom+xml",
-      title: 'MoonGate',
+      title: "MoonGate",
       href: "/feed.atom",
     },
     {
       rel: "alternate",
       type: "application/json",
-      title: 'MoonGate',
+      title: "MoonGate",
       href: "/feed.json",
     },
   ],

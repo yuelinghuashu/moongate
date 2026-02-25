@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     // 1. 获取文档数据
-    const articles = await queryCollection(event, 'articles')
+    const docs = await queryCollection(event, 'docs')
       .select('path', 'date') // 增加date用于lastmod
       .order('date', 'DESC')
       .all()
@@ -13,21 +13,21 @@ export default defineEventHandler(async (event) => {
       .all()
 
     // 获取当前时间作为lastmod（实际应用中可用最新文档的date）
-    const lastmod = articles[0]?.date
-      ? new Date(articles[0].date).toISOString().split('T')[0]
+    const lastmod = docs[0]?.date
+      ? new Date(docs[0].date).toISOString().split('T')[0]
       : new Date().toISOString().split('T')[0]
 
     // 2. 构建URL数组（带优先级和更新频率）
     const urlEntries = [
       { loc: `${siteUrl}`, priority: '1.0', changefreq: 'daily', lastmod },
-      { loc: `${siteUrl}/articles`, priority: '0.9', changefreq: 'weekly', lastmod },
+      { loc: `${siteUrl}/docs`, priority: '0.9', changefreq: 'weekly', lastmod },
       { loc: `${siteUrl}/about`, priority: '0.5', changefreq: 'monthly' },
       { loc: `${siteUrl}/404`, priority: '0.1', changefreq: 'yearly' },
-      ...articles.map(article => ({
-        loc: `${siteUrl}${article.path}`,
+      ...docs.map(doc => ({
+        loc: `${siteUrl}${doc.path}`,
         priority: '0.8',
         changefreq: 'monthly',
-        lastmod: article.date ? new Date(article.date).toISOString().split('T')[0] : lastmod
+        lastmod: doc.date ? new Date(doc.date).toISOString().split('T')[0] : lastmod
       })),
       ...about.map(about => ({
         loc: `${siteUrl}${about.path}`,
