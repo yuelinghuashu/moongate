@@ -1,7 +1,7 @@
 <template>
   <div v-if="loggedIn">Welcome</div>
   <UButton
-    label="Continue with GitHub"
+    :label="isLoading ? t('user.loggingIn') : t('user.login')"
     variant="solid"
     icon="lucide-github"
     size="lg"
@@ -14,7 +14,7 @@
 <script lang="ts" setup>
 const { loggedIn } = useUserSession();
 const route = useRoute();
-
+const { t } = useI18n();
 const isLoading = ref(false);
 
 // 登录 GitHub账号

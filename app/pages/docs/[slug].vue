@@ -17,8 +17,8 @@
       <UDrawer
         v-model:open="isOutlineVisible"
         :direction="isDesktop ? 'right' : 'bottom'"
-        :title="t('article.title')"
-        :description="t('article.description')"
+        :title="t('doc.title')"
+        :description="t('doc.description')"
         :class="isMobile ? 'max-h-[80%]' : ''"
       >
         <template #body>
@@ -52,6 +52,7 @@ const { isMobile } = useResponsive();
 /**
  * 目录显示状态 - 持久化到 localStorage
  */
+
 const isOutlineVisible: Ref<boolean> = useLocalStorage(
   "isOutlineVisible",
   false,

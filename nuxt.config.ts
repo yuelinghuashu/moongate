@@ -16,7 +16,7 @@ export default defineNuxtConfig({
   ],
   ssr: true,
   devtools: {
-    enabled: false
+    enabled: true
   },
   runtimeConfig: {
     oauth: {
@@ -43,7 +43,7 @@ export default defineNuxtConfig({
           searchDepth: 3
         },
         highlight: {
-          langs: ['json', 'js', 'ts', 'html', 'css', 'vue', 'shell', 'mdc', 'md', 'yaml', 'xml', 'mermaid'],
+          langs: ['json', 'js', 'ts', 'html', 'css', 'vue', 'shell', 'mdc', 'md', 'yaml', 'xml', 'mermaid', 'sql'],
         },
         theme: {
           default: 'material-theme-lighter',

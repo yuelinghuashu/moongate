@@ -275,18 +275,20 @@ watch([() => props.content, () => colorMode.value], renderContent, {
 :deep(pre) {
   padding: 1rem;
   background-color: var(--ui-bg-muted) !important;
+  border: var(--ui-border);
   border-radius: var(--ui-radius);
-  border: 1px solid var(--ui-border);
 }
 
 :deep(code) {
   font-family: "JetBrains Mono", "Fira Code", monospace;
   font-size: 0.9em;
   padding: 0.2em 0.4em;
-  border-radius: var(--ui-radius-sm);
+  border: var(--ui-border);
+  border-radius: var(--ui-radius);
 }
 
 :deep(pre code) {
+  border: var(--ui-border);
   border-radius: 0;
 }
 

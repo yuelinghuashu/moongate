@@ -8,8 +8,9 @@
     { "id": 3, "name": "設定", "link": "/ja/settings" }
   ],
   "user": {
-    "login": "ログイン",
+    "login": "GitHubでログイン",
     "logout": "ログアウト",
+    "loggingIn": "ログイン中...",
     "username": "ユーザー名",
     "title": "端末に接続",
     "profile": "プロフィール",
@@ -59,22 +60,36 @@
     "message": "お探しのページは存在しません。",
     "backToHome": "ホームに戻る"
   },
-  "article": {
+  "doc": {
     "title": "目次",
     "description": "セクションへジャンプ"
   },
   "comment": {
     "label": "コメント",
     "section": "コメント欄",
-    "send": "送信",
-    "sendLabel": "コメントを投稿",
-    "placeholder": "Markdown 対応",
-    "input": "入力",
-    "preview": "プレビュー",
-    "newLine": "改行",
-    "noComments": "コメントはまだありません",
-    "login_to_comment": "ログインしてコメントに参加する",
-    "admin": "管理人",
-    "commenter": "コメント投稿者"
+    "input": {
+      "placeholder": "Markdown対応",
+      "newLine": "改行",
+      "input": "入力",
+      "preview": "プレビュー",
+      "write": "記入"
+    },
+    "actions": {
+      "send": "送信",
+      "reply": "返信",
+      "edit": "編集",
+      "delete": "削除"
+    },
+    "badge": {
+      "admin": "管理者",
+      "commenter": "コメント投稿者",
+      "author": "作者"
+    },
+    "status": {
+      "noComments": "コメントはまだありません",
+      "login_to_comment": "コメントするにはログインしてください",
+      "loading": "読み込み中...",
+      "sending": "送信中..."
+    }
   }
 }

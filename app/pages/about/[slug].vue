@@ -7,8 +7,8 @@
       <UDrawer
         v-model:open="isOutlineVisible"
         :direction="isDesktop ? 'right' : 'bottom'"
-        :title="t('article.title')"
-        :description="t('article.description')"
+        :title="t('doc.title')"
+        :description="t('doc.description')"
         :class="[isMobile ? 'max-h-[80%]' : '']"
       >
         <template #content>

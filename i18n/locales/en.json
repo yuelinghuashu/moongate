@@ -8,8 +8,9 @@
     { "id": 3, "name": "Settings", "link": "/en/settings" }
   ],
   "user": {
-    "login": "Login",
+    "login": "Sign in with GitHub",
     "logout": "Logout",
+    "loggingIn": "Loading...",
     "username": "Username",
     "profile": "Profile",
     "title": "Access Terminal",
@@ -59,22 +60,36 @@
     "message": "The page you are looking for does not exist.",
     "backToHome": "Back to Home"
   },
-  "article": {
+  "doc": {
     "title": "Table of Contents",
     "description": "Jump to section"
   },
   "comment": {
     "label": "Comment",
     "section": "Comments",
-    "send": "Send",
-    "sendLabel": "Post Comment",
-    "placeholder": "Markdown supported",
-    "input": "Input",
-    "preview": "Preview",
-    "newLine": "New Line",
-    "noComments": "No comments yet",
-    "login_to_comment": "Login to join the discussion",
-    "admin": "Admin",
-    "commenter": "Commenter"
+    "input": {
+      "placeholder": "Markdown supported",
+      "newLine": "new line",
+      "input": "input",
+      "preview": "preview",
+      "write": "write"
+    },
+    "actions": {
+      "send": "Send",
+      "reply": "Reply",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "badge": {
+      "admin": "Admin",
+      "commenter": "Commenter",
+      "author": "Author"
+    },
+    "status": {
+      "noComments": "No comments yet",
+      "login_to_comment": "Login to comment",
+      "loading": "Loading...",
+      "sending": "Sending..."
+    }
   }
 }

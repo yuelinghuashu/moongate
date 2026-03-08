@@ -8,8 +8,9 @@
     { "id": 3, "name": "设置", "link": "/settings" }
   ],
   "user": {
-    "login": "登录",
+    "login": "使用 Github 登录",
     "logout": "退出登录",
+    "loggingIn": "正在登录...",
     "username": "用户名",
     "profile": "个人资料",
     "title": "接入终端",
@@ -59,23 +60,36 @@
     "message": "您正在查找的页面不存在。",
     "backToHome": "返回首页"
   },
-  "article": {
+  "doc": {
     "title": "目录",
     "description": "点击目录快速跳转"
   },
   "comment": {
     "label": "评论",
     "section": "评论区",
-    "send": "发送",
-    "sendLabel": "发表评论",
-    "placeholder": "Markdown 支持",
-    "input": "输入",
-    "preview": "预览",
-    "newLine": "换行",
-    "noComments": "暂无评论",
-    "login_to_comment": "登录后参与评论",
-    "admin": "博主",
-    "commenter": "评论者",
-    "markdownSupport": ""
+    "input": {
+      "placeholder": "支持 Markdown 格式",
+      "newLine": "换行",
+      "input": "输入",
+      "preview": "预览",
+      "write": "撰写"
+    },
+    "actions": {
+      "send": "发送评论",
+      "reply": "回复",
+      "edit": "编辑",
+      "delete": "删除"
+    },
+    "badge": {
+      "admin": "博主",
+      "commenter": "评论者",
+      "author": "作者"
+    },
+    "status": {
+      "noComments": "暂无评论",
+      "login_to_comment": "登录后参与评论",
+      "loading": "加载中...",
+      "sending": "发送中..."
+    }
   }
 }

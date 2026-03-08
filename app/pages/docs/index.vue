@@ -92,7 +92,7 @@
 
 <script lang="ts" setup>
 import { useEventListener, useScroll, watchDebounced } from "@vueuse/core";
-import { useSwipeUp } from "~/composables/useSwipeUp";
+import { useSwipe } from "~/composables/useSwipe";
 const { isMobile, isDesktop } = useResponsive();
 const { t } = useI18n();
 const { tm } = useI18nSafe();
@@ -176,6 +176,12 @@ const isNearBottom = computed(() => {
   const viewportHeight = window.innerHeight;
   // 当滚动到距离页面底部 200 像素以内时，认为接近底部
   return scrollHeight - y.value - viewportHeight < 200;
+});
+
+// 是否接近顶部
+const isNearTop = computed(() => {
+  // 当滚动距离顶部小于 200px 时，认为接近顶部
+  return y.value < 200;
 });
 
 // ---------- 获取文档列表（自动刷新）----------
@@ -273,8 +279,18 @@ const loadMoredocs = () => {
   page.value += 1;
 };
 
+const refreshDocs = () => {
+  if (isMobile.value && !pending.value && isNearTop.value) page.value = 1;
+};
+
 // 监听滑动事件
-useSwipeUp(loadMoredocs, { threshold: 60 }); // 阈值可调
+useSwipe(
+  {
+    onUp: () => loadMoredocs(),
+    onDown: () => refreshDocs(),
+  },
+  { threshold: 60 },
+);
 
 // ---------- 键盘事件：左右翻页 + ESC 失焦 ----------
 useEventListener("keydown", (e) => {
