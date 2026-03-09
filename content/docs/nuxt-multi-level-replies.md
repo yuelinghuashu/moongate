@@ -89,25 +89,20 @@ CREATE INDEX idx_replies_target ON replies(target_id, target_type);
 **`server/db/schema/comments.ts`**
 
 ```ts
-import {
-  pgTable,
-  serial,
-  integer,
-  text,
-  varchar,
-  timestamp,
-} from "drizzle-orm/pg-core";
-import { users } from "./users";
+import { pgTable, serial, varchar, timestamp, integer, text } from 'drizzle-orm/pg-core'
+import { users } from './users'
 
-export const comments = pgTable("comments", {
-  id: serial("id").primaryKey(),
-  user_id: integer("user_id").references(() => users.id, {
-    onDelete: "set null",
-  }),
-  content: text("content").notNull(),
-  permalink: varchar("permalink", { length: 255 }).notNull(),
-  created_at: timestamp("created_at", { withTimezone: true }).defaultNow(),
-});
+
+export const comments = pgTable('comments', {
+  id: serial('id').primaryKey(),
+  user_id: integer('user_id').references(() => users.id, { onDelete: 'set null' }),
+  content: text('content').notNull(),
+  permalink: varchar('permalink', { length: 255 }).notNull(),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow(),
+})
+
+export type CommentSelect = typeof comments.$inferSelect;
+export type CommentInsert = typeof comments.$inferInsert;
 ```
 
 **`server/db/schema/replies.ts`**（含枚举）
@@ -135,17 +130,27 @@ export const replies = pgTable("replies", {
   content: text("content").notNull(),
   created_at: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
+
+export type ReplySelect = typeof replies.$inferSelect;
+export type ReplyInsert = typeof replies.$inferInsert;
 ```
 
-**`server/db/schema/users.ts`**（简化）
+**`server/db/schema/users.ts`**
 
 ```ts
-export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
-  github_id: varchar("github_id", { length: 39 }).unique(),
-  username: varchar("username", { length: 100 }).notNull(),
-  is_admin: boolean("is_admin").default(false),
-});
+import { pgTable, serial, varchar, boolean, timestamp } from 'drizzle-orm/pg-core'
+
+
+export const users = pgTable('users', {
+  id: serial('id').primaryKey(),
+  github_id: varchar('github_id', { length: 39 }).notNull().unique(),
+  username: varchar('username', { length: 100 }).notNull(),
+  is_admin: boolean('is_admin').default(false),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow(),
+})
+
+export type UserSelect = typeof users.$inferSelect;
+export type UserInsert = typeof users.$inferInsert;
 ```
 
 </details>
