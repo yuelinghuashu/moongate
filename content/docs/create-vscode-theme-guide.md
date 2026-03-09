@@ -1,12 +1,12 @@
 ---
 permalink: zHv-nnnTcn4_3ZqoB8tC2
-title: 从博客配色到 VS Code 主题：Moongate 发布全记录
+title: 从博客配色到 VS Code 主题：基础开发指南
 description: 从零开始创建并发布 VS Code 主题的完整实战指南。本文以 Moongate 主题为例，详细讲解项目生成、配色配置、本地调试、打包发布全流程，包含两种发布方式（命令行 + 手动上传），并附常见问题与避坑技巧。适合有一定编程基础但初次尝试主题开发的开发者。
 date: 2026-02-25
 tags: [VSCode, Theme]
 ---
 
-# 从博客配色到 VS Code 主题：Moongate 发布全记录
+# 从博客配色到 VS Code 主题：基础开发指南
 
 如果你已经有一定的编程基础（熟悉 JavaScript、JSON、命令行），但对如何将自己的配色方案变成 VS Code 主题一无所知，这篇文章正是为你准备的。
 
