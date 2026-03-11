@@ -1,13 +1,20 @@
 ---
 permalink: AFuADwcr7A3kuZyPRt9-f
-title: 从单体到工程化：VS Code 主题进阶构建指南
-description: 介绍如何将一个单体的 JSON 主题重构为模块化、可维护的工程化项目，通过 YAML 拆分和构建脚本实现自动合并与变量替换。
+title: 进阶篇：从单体到工程化：VS Code 主题进阶构建指南
+description: 告别动辄上千行的 JSON 文件，通过 YAML 拆分和构建脚本实现主题的模块化管理。让颜色变量可复用、语言规则可维护，为多主题扩展打下坚实基础。
 date: 2026-03-10
+tags: [VSCode, Theme, Engineering, Build Tools, YAML, Modular]
 ---
 
-# 从单体到工程化：VS Code 主题进阶构建指南
+# 进阶篇：从单体到工程化：VS Code 主题进阶构建指南
 
-在[基础篇](./create-vscode-theme-guide.md)中，你已经学会了如何从零创建并发布一个 VS Code 主题。但随着主题功能越来越丰富，你可能遇到了以下痛点：
+> **系列导航**
+> - [基础篇：从零创建并发布你的第一个 VS Code 主题](./create-vscode-theme-basics.md)
+> - **进阶篇**：从单体 JSON 到模块化 YAML 工程重构
+> - [扩展篇：构建深色/浅色双主题及多主题变体](./create-vscode-theme-multi-theme.md)
+> - [系统篇：从设计系统到视觉契约，打造完整的主题品牌体系](./create-vscode-theme-design-system.md)
+
+在[基础篇](./create-vscode-theme-basics.md)中，你已经学会了如何从零创建并发布一个 VS Code 主题。但随着主题功能越来越丰富，你可能遇到了以下痛点：
 
 - 一个 JSON 文件动辄上千行，修改一个颜色需要全局搜索，容易误改。
 - 想为不同语言定制高亮，却要在同一个 `tokenColors` 数组里堆砌规则，难以维护。
