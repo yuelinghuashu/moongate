@@ -1,12 +1,12 @@
 ---
 permalink: 2Z9mH-AF90AuFuyI
 date: 2026-01-22
-title: 从零到一：GitHub Actions + Caddy 全自动部署静态网站实战
-description: 全自动部署静态网站实战教程，从零到一，一步步搭建自动化部署系统。
+title: GitHub Actions + Caddy 静态网站自动化部署（静态篇）
+description: 专注于纯前端资源的自动化发布，利用 Caddy 自动 HTTPS 和 SPA 路由支持，实现“推送即发布”。
 tags: [GitHub, Actions, Caddy, 静态网站]
 ---
 
-# 从零到一：GitHub Actions + Caddy 全自动部署静态网站实战
+# GitHub Actions + Caddy 静态网站自动化部署（静态篇）
 
 本教程将完整复现一个现代化静态网站从本地开发到自动化部署的全流程。你将搭建一套 **“Git推送即发布”** 的自动化系统，无需手动操作服务器。教程基于 **Nuxt.js** 静态生成，但核心流程适用于任何静态网站（如VitePress、Next.js SSG、Hugo等）。
 
@@ -18,8 +18,7 @@ tags: [GitHub, Actions, Caddy, 静态网站]
 
 这套方案的核心是 **“声明式自动化”**：你只需在代码仓库中声明“做什么”（配置文件），GitHub Actions 和 Caddy 就会自动执行“怎么做”。
 
-text
-
+```
 开发者本地 (Local)
 ↓ [git push]
 GitHub 仓库 (Repository)
@@ -29,14 +28,14 @@ GitHub Actions (CI/CD 管道)
 阿里云服务器 (Alibaba Cloud ECS)
 ↓ [Caddy 提供 HTTPS 服务]
 用户访问 (HTTPS Website)
+```
 
 ## 📦 前置准备
 
 1. **一个 GitHub 仓库**
 2. **一台阿里云 ECS 实例**（或任何具有公网 IP 的 Linux 服务器）
    - 推荐系统：Ubuntu 22.04 / Alibaba Cloud Linux 3
-   - 安全组预先开放：**SSH(22)**、**HTTP(80)**、**HTTPS(443)** 端口
-
+   - **安全组必须开放**：**SSH(22)**、**HTTP(80)**、**HTTPS(443)** 端口（请登录阿里云控制台检查确认）
 3. **一个域名**（可选，但推荐。教程以 `example.com` 为例）
 
 ---
@@ -45,7 +44,7 @@ GitHub Actions (CI/CD 管道)
 
 ### 1.1 登录并安装基础软件
 
-通过 SSH 登录你的云服务器。
+通过 SSH 登录你的云服务器（假设登录用户名为 `your-user`，后续步骤中请将 `$USER` 替换为实际用户名）。
 
 ```bash
 # 更新系统包
@@ -58,11 +57,9 @@ sudo apt install caddy
 curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
 sudo apt install -y nodejs
 
-# 创建网站根目录并授权
+# 创建网站根目录，并将所有权交给当前登录用户（确保后续 rsync 有写入权限）
 sudo mkdir -p /var/www/my-site
-# 注意：请务必将 `caddy` 用户替换为你的实际用户名
-sudo chown -R caddy:caddy /var/www/my-site
-sudo chmod -R 755 /var/www/my-site
+sudo chown -R $USER:$USER /var/www/my-site
 ```
 
 ### 1.2 配置 Caddy
@@ -76,7 +73,6 @@ sudo nano /etc/caddy/Caddyfile
 粘贴以下配置，**请务必将 `example.com` 替换为你的真实域名**。如果没有域名，可以用 `http://你的服务器IP` 格式，但将无法享受自动 HTTPS。
 
 ```caddy
-# /etc/caddy/Caddyfile
 example.com, www.example.com {
     # 网站根目录（必须与后续自动化部署的目录一致）
     root * /var/www/my-site
@@ -100,7 +96,7 @@ sudo systemctl restart caddy
 sudo systemctl status caddy
 ```
 
-> **💡 提示**：看到 `active (running)` 状态即表示 Caddy 已就绪。如果使用域名，Caddy 会在首次访问时**自动申请并配置 Let‘s Encrypt SSL 证书**。
+> **💡 提示**：看到 `active (running)` 状态即表示 Caddy 已就绪。如果使用域名，Caddy 会在首次访问时**自动申请并配置 Let's Encrypt SSL 证书**。
 
 ---
 
@@ -115,18 +111,13 @@ sudo systemctl status caddy
 ```bash
 # 生成一对新的密钥，专用于自动化部署
 ssh-keygen -t ed25519 -f ~/.ssh/id_github_actions -N ""
-
-这将生成两个文件：
-
-- **私钥** (`~/.ssh/id_github_actions`)：**绝密**，相当于你的“钥匙”。
-
-- **公钥** (`~/.ssh/id_github_actions.pub`)：可以公开，相当于“锁芯”。
-
 ```
 
-### 2.2 将公钥部署到服务器
+这将生成两个文件：
+- **私钥** (`~/.ssh/id_github_actions`)：**绝密**，相当于你的“钥匙”。
+- **公钥** (`~/.ssh/id_github_actions.pub`)：可以公开，相当于“锁芯”。
 
-未命名
+### 2.2 将公钥部署到服务器
 
 1. 复制公钥内容：
 
@@ -155,8 +146,10 @@ ssh-keygen -t ed25519 -f ~/.ssh/id_github_actions -N ""
 2. 进入你的 GitHub 仓库，点击 **Settings** → **Secrets and variables** → **Actions**。
 3. 点击 **New repository secret**，添加以下三个密钥：
    - **`SERVER_HOST`**：你的云服务器**公网 IP 地址**。
-   - **`SERVER_USER`**：用于 SSH 登录的用户名（例如 `root`、`ubuntu`）。
+   - **`SERVER_USER`**：用于 SSH 登录的用户名（例如 `root`、`ubuntu` 或你在服务器上使用的用户名）。
    - **`SSH_PRIVATE_KEY`**：粘贴你刚刚复制的**完整私钥内容**（包括 `-----BEGIN OPENSSH PRIVATE KEY-----` 和 `-----END OPENSSH PRIVATE KEY-----` 行）。
+
+> **提示**：如果你的网站构建时需要环境变量（如 `NUXT_PUBLIC_API_BASE`），请一并添加到 Secrets 中，后续会在构建步骤使用。
 
 ---
 
@@ -185,43 +178,41 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24' # 使用你项目所需的 Node 版本
-          cache: 'pnpm' # 如果用 npm 则改为 'npm'
+          cache: 'pnpm'       # 启用依赖缓存，加速构建
 
       # 3. 安装依赖
       - name: Install dependencies
         run: pnpm install
 
-	  # 4. 打包文件
+      # 4. 构建静态网站（如需环境变量，通过 env 传入）
       - name: Build
-        run: pnpm run build # 这会生成 .output 目录
+        run: pnpm run generate # 或 pnpm run build（取决于项目配置）
+        env:
+          # 从 GitHub Secrets 读取构建所需变量
+          NUXT_PUBLIC_API_BASE: ${{ secrets.NUXT_PUBLIC_API_BASE }}
+          # 可根据需要添加更多变量
 
-      # 4. 将构建产物同步到云服务器
+      # 5. 将构建产物同步到云服务器
       - name: Deploy to Server via Rsync
         uses: burnett01/rsync-deployments@7.0.1
         with:
           switches: -avz --delete # 递归、压缩、同步删除（保持两端完全一致）
-          path: .output/public/ # Nuxt 静态文件输出目录
+          path: .output/public/    # Nuxt 静态文件输出目录
           remote_path: /var/www/my-site/ # 服务器目标目录，必须与 Caddyfile 中配置一致
           remote_host: ${{ secrets.SERVER_HOST }}
           remote_user: ${{ secrets.SERVER_USER }}
           remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+```
 
 **关键配置说明**：
-
 - `path`: 你的静态网站构建输出目录。对于其他框架：
-
-    - VitePress: `docs/.vitepress/dist/`
-
-    - Next.js (SSG): `out/`
-
-    - Vue CLI: `dist/`
-
-    - Hugo: `public/`
-
+  - VitePress: `docs/.vitepress/dist/`
+  - Next.js (SSG): `out/`
+  - Vue CLI: `dist/`
+  - Hugo: `public/`
 - `remote_path`: 必须与服务器上 Caddy 配置的 `root` 目录完全一致。
-
 - `switches: --delete`: 确保服务器上的文件是构建结果的精确镜像，自动删除多余文件。
-```
+- 如果构建过程需要环境变量，务必在 `Build` 步骤的 `env` 中传入，并在 GitHub Secrets 中预先定义。
 
 ---
 
@@ -233,7 +224,7 @@ jobs:
 
 ```bash
 git add .github/workflows/deploy.yml
-git commit -m “feat: 添加自动化部署工作流”
+git commit -m "feat: 添加自动化部署工作流"
 git push origin main
 ```
 
