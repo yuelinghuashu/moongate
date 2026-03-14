@@ -224,29 +224,37 @@ jobs:
 通过 SSH 登录服务器，执行以下命令（基于 Ubuntu）：
 
 ```bash
-# 更新系统
-sudo apt update && sudo apt upgrade -y
+# 1. 卸载可能存在的旧版本（避免冲突）
+sudo apt remove docker.io docker-compose docker-compose-v2 docker-doc podman-docker containerd runc
 
-# 安装依赖
+# 2. 更新包索引并安装依赖
+sudo apt update
 sudo apt install ca-certificates curl
 
-# 添加 Docker 官方 GPG 密钥
+# 3. 创建 keyrings 目录并添加 Docker 官方 GPG 密钥
 sudo install -m 0755 -d /etc/apt/keyrings
 sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
 sudo chmod a+r /etc/apt/keyrings/docker.asc
 
-# 添加 Docker 仓库
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+# 4. 添加 Docker 仓库（使用官方推荐的 deb822 格式）
+sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
 
+# 5. 更新包索引并安装 Docker 引擎及相关组件
 sudo apt update
 sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-# 将当前用户加入 docker 组（避免每次 sudo）
+# 6. 验证安装（运行 hello-world 容器）
+sudo docker run hello-world
+
+# 7. 将当前用户加入 docker 组（避免每次使用 sudo）
 sudo usermod -aG docker $USER
-# 重新登录或执行 newgrp docker 使生效
+# 注意：需要重新登录或执行 newgrp docker 使组变更生效
 ```
 
 验证安装：`docker --version` 和 `docker compose version`。
