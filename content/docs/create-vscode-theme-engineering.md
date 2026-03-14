@@ -314,6 +314,63 @@ console.log("✅ 主题构建完成！");
 
 🔍 检查：确保 `js-yaml` 在 `devDependencies` 中，而不是 `dependencies`。因为它是构建工具，不应随主题发布。
 
+---
+
+## ✨ 开发体验优化：实时预览与自动构建
+
+手动运行 `npm run build` 每次修改后都很繁琐。我们可以添加一个 **watch 模式**，让构建脚本在源码文件变化时自动执行，实现“修改即预览”的高效工作流。
+
+### 1. 安装 nodemon
+
+`nodemon` 是一个常用的工具，可以监视文件变化并自动重启命令。将它安装为开发依赖：
+
+```bash
+npm install --save-dev nodemon
+# 或者使用 pnpm
+pnpm add -D nodemon
+```
+
+### 2. 添加 watch 脚本
+
+在 `package.json` 的 `scripts` 中添加以下两个命令：
+
+```json
+{
+  "scripts": {
+    "build": "node scripts/build.js",
+    "watch": "nodemon --watch src -e yaml --exec \"npm run build\"",
+    "dev": "npm run watch",
+    "prepublishOnly": "npm run build"
+  }
+}
+```
+
+- `--watch src`：监视 `src` 目录下的所有文件变化。
+- `-e yaml`：只监视扩展名为 `.yaml` 的文件（可根据需要添加其他扩展名，如 `yml`）。
+- `--exec "npm run build"`：文件变化时执行构建命令。
+
+`dev` 脚本是 `watch` 的别名，方便记忆。
+
+### 3. 使用 watch 模式
+
+在开发过程中，打开终端运行：
+
+```bash
+npm run watch
+# 或
+npm run dev
+```
+
+终端会保持运行状态，每当你在 `src/` 下修改并保存任何 YAML 文件时，构建脚本会自动执行，重新生成 `themes/` 下的 JSON 文件。
+
+配合 VS Code 的调试功能，你只需按 `F5` 启动扩展开发宿主，然后保持 watch 运行。修改源码后，在开发宿主中执行 `Developer: Reload Window` 即可立即看到效果，无需手动重新构建。
+
+### 4. 注意事项
+
+- `nodemon` 只是开发时的辅助工具，不需要随主题发布，因此务必安装在 `devDependencies` 中。
+- 如果你的项目结构复杂，可以自定义 `--watch` 参数监视更多目录（如同时监视 `scripts` 目录下的构建脚本本身）。
+- 如果不想安装额外依赖，也可以使用 Node.js 自带的 `fs.watch` 编写简单的监视脚本，但 `nodemon` 更成熟易用。
+
 ## 📦 第六步：更新 .vscodeignore
 
 确保发布时只包含最终产物，不包含源码和依赖。一个典型的 `.vscodeignore` 内容如下：
@@ -375,3 +432,7 @@ npm run build
 ## 📝 总结
 
 通过工程化重构，你从一个难以维护的 JSON 单体进化到了一个清晰、可扩展的设计系统。这不仅提高了开发效率，也为未来贡献者铺平了道路。现在你可以更自信地迭代你的主题，甚至开发出属于你自己的主题家族。
+
+但当你想要为你的主题提供深色和浅色两种版本，甚至更多变体时，如何确保它们之间保持视觉上的一致性和高质量？这正是扩展篇要带你探索的领域——**构建多主题变体，并引入“重力补偿”原则，让深浅主题在视觉重量上对等，切换时无需重新适应**。
+
+[**扩展篇：构建深色/浅色双主题及多主题变体**](./create-vscode-theme-multi-theme.md)

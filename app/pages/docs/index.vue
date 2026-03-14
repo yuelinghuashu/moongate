@@ -312,6 +312,16 @@ useEventListener("keydown", (e) => {
     page.value += 1; // 自动触发数据刷新
   }
 });
+
+// 设置 SEO 元信息
+
+useSeoMeta({
+  title: "所有文档 | Moongate",
+  description:
+    "探索 Moongate 的所有技术文档，涵盖 Nuxt、Vue、数据库等前沿技术。",
+  ogTitle: "Moongate 文档库",
+  ogDescription: "免费学习最新的 Web 开发技术，从入门到实践。",
+});
 </script>
 
 <style scoped>

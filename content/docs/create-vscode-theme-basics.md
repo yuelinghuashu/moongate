@@ -3,12 +3,13 @@ permalink: zHv-nnnTcn4_3ZqoB8tC2
 title: 基础篇：从博客配色到 VS Code 主题：基础开发指南
 description: 从零开始，快速掌握 VS Code 主题开发的核心流程。学习如何创建颜色定义、配置语法高亮、调试主题，并将你的第一个主题发布到市场。
 date: 2026-02-25
-tags: [VSCode, Theme, Beginner, Tutorial, Extension]
+tags: [VSCode, Theme, Beginner, Tutorial]
 ---
 
 # 基础篇：从博客配色到 VS Code 主题：基础开发指南
 
 > **系列导航**
+>
 > - **基础篇**：从零创建并发布你的第一个 VS Code 主题
 > - [进阶篇：从单体 JSON 到模块化 YAML 工程重构](./create-vscode-theme-engineering.md)
 > - [扩展篇：构建深色/浅色双主题及多主题变体](./create-vscode-theme-multi-theme.md)
@@ -48,7 +49,7 @@ yo code
 3. 填写信息：
    - Extension name：`你的主题名`（如 `moongate-theme`）
    - Description：简短介绍，如 `🌙 Where Moon Meets Code - 极简科幻终端主题`
-   - Publisher name：**你的发布者ID**（需提前在 VS Code 市场注册，见后文）
+   - Publisher name：**你的发布者ID**（需提前在 VS Code 市场注册，见后文。如果尚未注册，可以先随便填一个占位符（如 your-name），等发布前注册后，再回来修改 package.json 中的 publisher 字段。）
 4. 选择基础主题：Dark 或 Light
 5. 主题显示名称：如 `Moongate Dark`
 
@@ -77,7 +78,7 @@ your-theme/
 
 VS Code 提供了两个超实用工具：
 
-1. **界面颜色**：按下 `Ctrl+Shift+P`，运行 **`Developer: Generate Color Theme From Current Settings`**。它会生成当前主题所用所有颜色键名的 JSON，你可以直接复制需要的键名（如 `editor.background`）。
+1. **界面颜色**：按下 `Ctrl+Shift+P`，运行 **`Developer: Generate Color Theme From Current Settings`**。这个命令会输出当前主题所用所有 UI 颜色键名的 JSON，你可以直接复制需要的键名（如 `editor.background`），避免手动查找。
 
 2. **语法作用域（scope）**：打开一个代码文件，把光标放在你想着色的元素上，运行 **`Developer: Inspect Editor Tokens and Scopes`**。弹出的窗口会显示该元素的 `textmate scopes` 列表，**选择最具体的那一个**用于 `tokenColors` 规则。
 
@@ -141,7 +142,11 @@ VS Code 提供了两个超实用工具：
 
 ### 3. 语义高亮进阶
 
-VS Code 支持语义高亮（Semantic Highlighting），它能让你根据语义（如只读变量、函数定义）而非简单语法规则来着色。在你的主题中启用语义高亮后，可以在 `semanticTokenColors` 中为不同语义角色指定样式：
+VS Code 支持语义高亮（Semantic Highlighting），它能让你根据语义（如只读变量、函数定义）而非简单语法规则来着色。
+
+要使用语义高亮，你的主题需要在 package.json 中设置 "semanticHighlighting": true，并在主题文件中提供 semanticTokenColors 对象。
+
+在你的主题中启用语义高亮后，可以在 `semanticTokenColors` 中为不同语义角色指定样式：
 
 ```json
 "semanticTokenColors": {
@@ -214,6 +219,31 @@ node_modules
 
 ---
 
+在“打包与发布”之前，可以插入以下检查清单段落，格式清晰易用：
+
+---
+
+## 发布前检查清单
+
+在运行 `vsce package` 之前，花两分钟核对以下事项，可以避免大部分常见的发布错误：
+
+- **`package.json` 信息**  
+      确保 `publisher`、`name`、`version` 字段正确无误（`publisher` 必须与你在市场注册的 ID 完全一致）。
+
+- **图标文件**  
+      确认 `icon` 路径指向一个 **128×128 像素的 PNG 图片**，且文件确实存在于该位置。
+
+- **预览图**  
+      检查 `README.md` 中是否包含了至少一张主题预览图（建议使用 `images/` 文件夹内的截图），没有预览图的主题很难吸引用户。
+
+- **`.vscodeignore` 配置**  
+      确认已排除不必要的文件（如 `.vscode`、`node_modules`、`src` 等），但**务必保留 `images/` 文件夹**，否则截图无法随扩展一起发布。
+
+- **本地打包测试**  
+      运行 `vsce package` 命令，若能成功生成 `.vsix` 文件，说明配置基本正确。如果失败，仔细阅读错误提示——最常见的原因是 `icon` 路径错误或 `publisher` 未设置。
+
+核对完毕后再进行发布，成功率会大大提高。如果使用命令行发布遇到困难，也可以直接上传 `.vsix` 文件（见下一节）。
+
 ## 七、打包与发布
 
 ### 1. 安装发布工具
@@ -259,18 +289,12 @@ vsce publish
 
 如果你在命令行方式中遇到困难，完全可以通过浏览器手动上传：
 
-1. **确保你已经打包生成了 `.vsix` 文件**。
-    
+1. 首先确保你已经运行 `vsce package` 成功生成了 `.vsix` 文件。
 2. 访问 [VS Code 市场管理页](https://marketplace.visualstudio.com/manage)，用你的微软账号登录。
-    
 3. 在页面中点击你的发布者名称，进入发布者管理界面。
-    
 4. 点击右上角的 **Publish extension** 按钮。
-    
 5. 选择你的 `.vsix` 文件上传。
-    
 6. 几分钟后主题就会出现在市场中。
-    
 
 **优点**：完全绕过命令行 token 验证，过程可视化。
 
@@ -289,6 +313,8 @@ vsce publish
 
 你可以在 `extras/` 目录中放置这份指南，并在 README 中推荐用户阅读。
 
+这只是一个开始，更完整的品牌体系（包括视觉契约、协议索引等）将在系统篇中展开。
+
 ---
 
 ## 九、设计哲学：从“好看”到“好用”
@@ -296,13 +322,9 @@ vsce publish
 很多新手以为主题就是配几个好看的颜色。但真正优秀的主题，能让代码的结构自己“浮现”出来。这就是 **“视觉远近法”** 的理念：
 
 - 操作符、标点应该**退后**（亮度低一些），不干扰阅读；
-    
 - 函数名应该**发光**（亮度高一些），成为视觉锚点；
-    
 - 只读变量应该用**斜体**暗示“不可变”；
-    
 - 废弃代码应该加上**删除线**，一眼识别。
-    
 
 你可以基于这些原则，为你自己的配色赋予语义，让用户不仅仅是“看代码”，而是“读代码”。
 
@@ -319,3 +341,9 @@ vsce publish
 从自己的配色到可分享的 VS Code 主题，整个过程并不复杂，核心就是理解 `colors` 和 `tokenColors` 的结构，并善用 VS Code 自带的开发者工具。遇到问题时，多看错误提示，多查官方文档。如果一种方法卡住，试试另一种——就像手动上传一样，总有路可走。
 
 如果你也做出了自己的主题，欢迎分享。代码世界那么大，总有人和你喜欢同一片月光。
+
+---
+
+恭喜你，现在你已经拥有一个可以发布的 VS Code 主题了。但当你想要增加更多语言支持、调整颜色时，可能会发现直接修改 JSON 变得越来越吃力。这正是我们进阶篇要解决的问题——**如何用工程化的方式，让主题维护变得轻松优雅**。
+
+[**进阶篇：从单体 JSON 到模块化 YAML 工程重构**](./create-vscode-theme-engineering.md)
