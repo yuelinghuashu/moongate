@@ -13,7 +13,6 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
     'nuxt-auth-utils',
-    'nuxt-umami',
   ],
   ssr: true,
   devtools: {

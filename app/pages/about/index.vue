@@ -19,6 +19,14 @@ const localePath = useLocalePath();
 const { data: page } = await useAsyncData("about-list", () => {
   return queryCollection("about").order("date", "ASC").all();
 });
+
+useSeoMeta({
+  title: "关于 Moongate | 品牌故事与技术哲学",
+  description:
+    "了解 Moongate 的诞生故事：从月灵花束的诗意起源，到月球与门的意象融合，再到极简科幻终端的视觉设计。这里记录着一个技术博客的创作理念与文化沉淀。",
+  ogTitle: "关于 Moongate：当月亮与代码交汇",
+  ogDescription: "探索 Moongate 背后的设计哲学、词源考据与技术情怀。",
+});
 </script>
 
 <style></style>

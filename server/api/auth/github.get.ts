@@ -3,6 +3,8 @@ import { users } from '~~/server/db/schema'
 import { eq } from 'drizzle-orm'
 import { useDB } from '~~/server/db'
 
+const config = useRuntimeConfig()
+
 
 export default defineOAuthGitHubEventHandler({
   async onSuccess(event, { user }) {
@@ -10,6 +12,7 @@ export default defineOAuthGitHubEventHandler({
     const session = await getUserSession(event)
     const redirect = (session.redirect as string) || '/'
 
+    console.log(config.databaseUrl)
 
     // 清理 session 中的 redirect
     await setUserSession(event, { ...session, redirect: undefined })

@@ -9,7 +9,7 @@ const dir = computed(() => allLocale[locale.value].dir);
 useHead({
   meta: [{ name: "viewport", content: "width=device-width, initial-scale=1" }],
   link: [
-    { rel: "icon", href: "/favicon.svg" },
+    { rel: "icon", href: "/favicon.png" },
     {
       rel: "alternate",
       type: "application/rss+xml",

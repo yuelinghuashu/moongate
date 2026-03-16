@@ -45,6 +45,15 @@ const { t } = useI18n();
 const { tm } = useI18nSafe();
 
 const { settings, setTheme, setLanguage } = useSettingStore();
+
+// pages/settings.vue 或对应的路由文件
+useSeoMeta({
+  title: "博客设置 | Moongate",
+  description: "管理主题、语言及进入偏好，定制你的 Moongate 阅读体验。",
+  robots: "noindex, follow", // 不索引此页，但继续跟踪页面链接
+  ogTitle: "博客设置",
+  ogDescription: "个性化你的 Moongate 浏览方式。"
+});
 </script>
 
 <style scoped>

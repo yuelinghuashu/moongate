@@ -25,8 +25,6 @@ WORKDIR /app
 
 # 复制构建产物
 COPY --from=builder /app/.output /app/.output
-COPY --from=builder /app/node_modules /app/node_modules
-COPY --from=builder /app/package.json /app/package.json
 
 EXPOSE 3000
 

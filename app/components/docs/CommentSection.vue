@@ -29,13 +29,15 @@
           <SharedLogin />
         </div>
       </div>
-    </ClientOnly>
 
-    <div class="mt-4 min-h-50">
-      <!-- 评论列表 -->
-      <DocsCommentList v-if="commentStore.commentList" />
-      <div v-else class="text-center">{{ t("comment.status.noComments") }}</div>
-    </div>
+      <div class="mt-4 min-h-50">
+        <!-- 评论列表 -->
+        <DocsCommentList v-if="commentStore.commentList" />
+        <div v-else class="text-center">
+          {{ t("comment.status.noComments") }}
+        </div>
+      </div>
+    </ClientOnly>
   </details>
 </template>
 

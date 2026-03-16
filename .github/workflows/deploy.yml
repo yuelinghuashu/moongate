@@ -34,6 +34,9 @@ jobs:
           tags: |
             ${{ secrets.ACR_REGISTRY }}/moongate/moongate-blog:latest
             ${{ secrets.ACR_REGISTRY }}/moongate/moongate-blog:${{ github.sha }}
+          # 利用 BuildKit 缓存加速构建
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Deploy to Server via SSH
         uses: appleboy/ssh-action@v1.0.0
@@ -41,34 +44,64 @@ jobs:
           NUXT_SESSION_PASSWORD: ${{ secrets.NUXT_SESSION_PASSWORD }}
           NUXT_OAUTH_GITHUB_CLIENT_ID: ${{ secrets.NUXT_OAUTH_GITHUB_CLIENT_ID }}
           NUXT_OAUTH_GITHUB_CLIENT_SECRET: ${{ secrets.NUXT_OAUTH_GITHUB_CLIENT_SECRET }}
-          NUXT_DATABASE_URL: ${{ secrets.NUXT_DATABASE_URL }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          ACR_REGISTRY: ${{ secrets.ACR_REGISTRY }}
+          ACR_USERNAME: ${{ secrets.ACR_USERNAME }}
+          ACR_PASSWORD: ${{ secrets.ACR_PASSWORD }}
           NUXT_PUBLIC_SITE_URL: ${{ env.NUXT_PUBLIC_SITE_URL }}
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: NUXT_PUBLIC_SITE_URL, NUXT_DATABASE_URL, NUXT_SESSION_PASSWORD, NUXT_OAUTH_GITHUB_CLIENT_ID, NUXT_OAUTH_GITHUB_CLIENT_SECRET
+          envs: >-
+            NUXT_PUBLIC_SITE_URL,
+            NUXT_SESSION_PASSWORD,
+            NUXT_OAUTH_GITHUB_CLIENT_ID,
+            NUXT_OAUTH_GITHUB_CLIENT_SECRET,
+            POSTGRES_DB,
+            POSTGRES_USER,
+            POSTGRES_PASSWORD,
+            ACR_REGISTRY,
+            ACR_USERNAME,
+            ACR_PASSWORD,
           script: |
             # 进入项目目录
             cd /var/www/my-site
 
-            # 写入环境变量（供容器使用）
+            # 2. 写入环境变量
             cat > .env << EOF
             NUXT_PUBLIC_SITE_URL=$NUXT_PUBLIC_SITE_URL
-            NUXT_DATABASE_URL=$NUXT_DATABASE_URL
             NUXT_SESSION_PASSWORD=$NUXT_SESSION_PASSWORD
             NUXT_OAUTH_GITHUB_CLIENT_ID=$NUXT_OAUTH_GITHUB_CLIENT_ID
             NUXT_OAUTH_GITHUB_CLIENT_SECRET=$NUXT_OAUTH_GITHUB_CLIENT_SECRET
+            POSTGRES_DB=$POSTGRES_DB
+            POSTGRES_USER=$POSTGRES_USER
+            POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+            NUXT_DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+            ACR_REGISTRY=$ACR_REGISTRY
             EOF
 
-            # 登录 ACR（确保能拉取私有镜像）
-            echo "${{ secrets.ACR_PASSWORD }}" | docker login ${{ secrets.ACR_REGISTRY }} -u "${{ secrets.ACR_USERNAME }}" --password-stdin
+            # 4. 确保 .env 文件权限
+            chmod 600 .env
 
-            # 拉取最新镜像
-            docker compose pull nuxt-app
+            # 5. 手动加载环境变量（确保后续命令可见）
+            set -a
+            source .env
+            set +a
 
-            # 重启服务
-            docker compose up -d --no-deps nuxt-app
+            # 6. 登录 ACR
+            echo "$ACR_PASSWORD" | docker login "$ACR_REGISTRY" -u "$ACR_USERNAME" --password-stdin
 
-            # 清理旧镜像
-            docker image prune -f
+            # 7. 拉取镜像（显式指定 .env 文件）
+            docker compose --env-file .env pull nuxt-app
+
+            # 停止并移除旧的 nuxt-app 容器（确保彻底清理）
+            docker compose --env-file .env down nuxt-app || true
+
+            # 启动新容器
+            docker compose --env-file .env up -d --no-deps --wait nuxt-app
+
+            # 8. 清理
+            docker image prune -f --filter "until=24h"

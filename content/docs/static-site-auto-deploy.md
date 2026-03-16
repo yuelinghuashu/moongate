@@ -3,14 +3,45 @@ permalink: 2Z9mH-AF90AuFuyI
 date: 2026-01-22
 title: GitHub Actions + Caddy 静态网站自动化部署（静态篇）
 description: 专注于纯前端资源的自动化发布，利用 Caddy 自动 HTTPS 和 SPA 路由支持，实现“推送即发布”。
-tags: [GitHub, Actions, Caddy, 静态网站]
+tags: [GitHub Actions, Caddy, 静态网站, 自动化部署]
 ---
 
 # GitHub Actions + Caddy 静态网站自动化部署（静态篇）
 
+## 📚 系列导航
+
+本系列共四篇，覆盖从静态网站到生产级 Docker 部署的全流程，建议按顺序阅读：
+
+1. **静态网站自动化部署（静态篇）**  
+   —— 纯前端资源的自动化发布，Caddy 自动 HTTPS 和 SPA 路由支持。
+2. [**动态网站自动化部署（动态篇）**](dynamic-site-auto-deploy)  
+   —— 后端服务进程管理、环境变量注入、数据库迁移，结合 Caddy 反向代理。
+3. [**Docker 极简入门（入门篇）**](docker-quickstart-auto-deploy)  
+   —— 从零开始用 Docker + GitHub Actions 实现 CI/CD 流水线。
+4. [**Docker 生产级部署（进阶篇）**](docker-production-auto-deploy)  
+   —— 多容器编排、健康检查、数据库迁移、自动 HTTPS，打造可靠的生产环境。
+
+---
+
 本教程将完整复现一个现代化静态网站从本地开发到自动化部署的全流程。你将搭建一套 **“Git推送即发布”** 的自动化系统，无需手动操作服务器。教程基于 **Nuxt.js** 静态生成，但核心流程适用于任何静态网站（如VitePress、Next.js SSG、Hugo等）。
 
 > **最终效果**：本地 `git push` → 自动构建、测试 → 安全同步至云服务器 → 网站即刻更新（HTTPS自动启用）。
+
+---
+
+## 📌 版本声明
+
+本文档所有工具均采用 **2026 年最新稳定版**，具体版本如下：
+
+| 工具           | 版本 | 说明                                                                                 |
+| -------------- | ---- | ------------------------------------------------------------------------------------ |
+| Node.js        | 24.x | 最新的主要版本，支持所有现代 JavaScript 特性                                         |
+| pnpm           | 10.x | 高性能包管理器，与 Node.js 24 完美兼容                                               |
+| Caddy          | 2.8+ | 自动 HTTPS 的反向代理服务器                                                          |
+| GitHub Actions | 最新 | CI/CD 平台，所有 Action 均为当前最新版本（如 `checkout@v4`、`ssh-action@v1.0.0` 等） |
+| 阿里云 ACR     | –    | 容器镜像服务，需使用固定密码进行认证                                                 |
+
+> **注意**：请根据你的项目实际需求调整具体版本号。若使用其他技术栈（如 Python、Java 等），请替换对应的运行时版本。
 
 ---
 
@@ -114,6 +145,7 @@ ssh-keygen -t ed25519 -f ~/.ssh/id_github_actions -N ""
 ```
 
 这将生成两个文件：
+
 - **私钥** (`~/.ssh/id_github_actions`)：**绝密**，相当于你的“钥匙”。
 - **公钥** (`~/.ssh/id_github_actions.pub`)：可以公开，相当于“锁芯”。
 
@@ -162,7 +194,7 @@ name: Deploy to Production
 
 on:
   push:
-    branches: [ main ] # 仅在推送到 main 分支时触发
+    branches: [main] # 仅在推送到 main 分支时触发
 
 jobs:
   build-and-deploy:
@@ -177,8 +209,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24' # 使用你项目所需的 Node 版本
-          cache: 'pnpm'       # 启用依赖缓存，加速构建
+          node-version: "24" # 使用你项目所需的 Node 版本
+          cache: "pnpm" # 启用依赖缓存，加速构建
 
       # 3. 安装依赖
       - name: Install dependencies
@@ -197,7 +229,7 @@ jobs:
         uses: burnett01/rsync-deployments@7.0.1
         with:
           switches: -avz --delete # 递归、压缩、同步删除（保持两端完全一致）
-          path: .output/public/    # Nuxt 静态文件输出目录
+          path: .output/public/ # Nuxt 静态文件输出目录
           remote_path: /var/www/my-site/ # 服务器目标目录，必须与 Caddyfile 中配置一致
           remote_host: ${{ secrets.SERVER_HOST }}
           remote_user: ${{ secrets.SERVER_USER }}
@@ -205,6 +237,7 @@ jobs:
 ```
 
 **关键配置说明**：
+
 - `path`: 你的静态网站构建输出目录。对于其他框架：
   - VitePress: `docs/.vitepress/dist/`
   - Next.js (SSG): `out/`
