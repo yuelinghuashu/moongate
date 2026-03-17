@@ -316,7 +316,7 @@ useEventListener("keydown", (e) => {
 // 设置 SEO 元信息
 
 useSeoMeta({
-  title: "所有文档 | Moongate",
+  title: "所有文档 | All Docs",
   description:
     "探索 Moongate 的所有技术文档，涵盖 Nuxt、Vue、数据库等前沿技术。",
   ogTitle: "Moongate 文档库",

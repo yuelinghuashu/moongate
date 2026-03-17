@@ -13,6 +13,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
     'nuxt-auth-utils',
+    'nuxt-umami',
   ],
   ssr: true,
   devtools: {
@@ -100,6 +101,12 @@ export default defineNuxtConfig({
     defaultLocale: 'zh_cn',
     // 路由策略
     strategy: 'prefix_except_default', // 推荐：默认语言无前缀
+  },
+  umami: {
+    enabled: process.env.NODE_ENV !== 'development', // 开发环境禁用
+    id: process.env.NUXT_PUBLIC_UMAMI_ID,
+    host: process.env.NUXT_PUBLIC_UMAMI_HOST,
+    autoTrack: true,
   },
   routeRules: {
     '/': { prerender: true }

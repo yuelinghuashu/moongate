@@ -27,17 +27,17 @@ tags: [GitHub Actions, Docker, 容器化, 生产环境, 自动化部署]
 
 本文档所有工具均采用 **2026 年最新稳定版**：
 
-| 工具 | 版本 | 说明 |
-|------|------|------|
-| Node.js | 24.x | 最新 LTS 版本 |
-| pnpm | 10.x | 高性能包管理器 |
-| Docker Engine | 29.x | 支持 BuildKit 和多阶段构建 |
-| Docker Compose | v5 | 新版 Compose 规范，支持 `name` 项目和健康检查依赖 |
-| Caddy | 2.8+ | 自动 HTTPS 的反向代理 |
-| PostgreSQL | 17 (alpine) | 轻量级数据库 |
-| Drizzle ORM | 0.30+ | TypeScript ORM，支持迁移 |
-| PM2 | 5+ | 进程守护工具 |
-| GitHub Actions | 最新 | CI/CD 平台（`checkout@v4`, `ssh-action@v1.0.0` 等） |
+| 工具           | 版本        | 说明                                                |
+| -------------- | ----------- | --------------------------------------------------- |
+| Node.js        | 24.x        | 最新 LTS 版本                                       |
+| pnpm           | 10.x        | 高性能包管理器                                      |
+| Docker Engine  | 29.x        | 支持 BuildKit 和多阶段构建                          |
+| Docker Compose | v5          | 新版 Compose 规范，支持 `name` 项目和健康检查依赖   |
+| Caddy          | 2.8+        | 自动 HTTPS 的反向代理                               |
+| PostgreSQL     | 17 (alpine) | 轻量级数据库                                        |
+| Drizzle ORM    | 0.30+       | TypeScript ORM，支持迁移                            |
+| PM2            | 5+          | 进程守护工具                                        |
+| GitHub Actions | 最新        | CI/CD 平台（`checkout@v4`, `ssh-action@v1.0.0` 等） |
 
 ---
 
@@ -105,8 +105,11 @@ tags: [GitHub Actions, Docker, 容器化, 生产环境, 自动化部署]
 
 ### 1.2 编写生产级 docker-compose.yml
 
+<details>
+<summary>点击展开完整代码</summary>
+
 ```yaml
-name: my-app  # 固定项目名，避免网络混乱
+name: my-app # 固定项目名，避免网络混乱
 
 services:
   postgres:
@@ -150,7 +153,13 @@ services:
     networks:
       - app-network
     healthcheck:
-      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://localhost:3000', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})",
+        ]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -193,7 +202,10 @@ networks:
     driver: bridge
 ```
 
+</details>
+
 **关键点**：
+
 - `name` 固定项目名，避免因目录名变化导致网络不一致。
 - 所有服务在同一网络，通过服务名通信。
 - 应用容器不暴露端口，流量全走 Caddy，提升安全性。
@@ -227,21 +239,21 @@ your-domain.com {
 
 ### 2.1 GitHub Secrets 完整列表
 
-| Secret 名称 | 说明 |
-|------------|------|
-| `ACR_REGISTRY` | 阿里云镜像仓库地址（如 `crpi-xxx.cn-beijing.personal.cr.aliyuncs.com`） |
-| `ACR_USERNAME` | 阿里云账号邮箱 |
-| `ACR_PASSWORD` | ACR 固定密码 |
-| `SERVER_HOST` | 服务器 IP |
-| `SERVER_USER` | SSH 用户名 |
-| `SSH_PRIVATE_KEY` | SSH 私钥（包含 `BEGIN` 和 `END` 行，保持完整换行） |
-| `POSTGRES_DB` | 数据库名 |
-| `POSTGRES_USER` | 数据库用户 |
-| `POSTGRES_PASSWORD` | 数据库密码 |
-| `NUXT_PUBLIC_SITE_URL` | 网站域名（如 `https://your-domain.com`） |
-| `NUXT_SESSION_PASSWORD` | 会话加密密钥（至少 32 位） |
-| `NUXT_OAUTH_GITHUB_CLIENT_ID` | GitHub OAuth Client ID |
-| `NUXT_OAUTH_GITHUB_CLIENT_SECRET` | GitHub OAuth Client Secret |
+| Secret 名称                       | 说明                                                                    |
+| --------------------------------- | ----------------------------------------------------------------------- |
+| `ACR_REGISTRY`                    | 阿里云镜像仓库地址（如 `crpi-xxx.cn-beijing.personal.cr.aliyuncs.com`） |
+| `ACR_USERNAME`                    | 阿里云账号邮箱                                                          |
+| `ACR_PASSWORD`                    | ACR 固定密码                                                            |
+| `SERVER_HOST`                     | 服务器 IP                                                               |
+| `SERVER_USER`                     | SSH 用户名                                                              |
+| `SSH_PRIVATE_KEY`                 | SSH 私钥（包含 `BEGIN` 和 `END` 行，保持完整换行）                      |
+| `POSTGRES_DB`                     | 数据库名                                                                |
+| `POSTGRES_USER`                   | 数据库用户                                                              |
+| `POSTGRES_PASSWORD`               | 数据库密码                                                              |
+| `NUXT_PUBLIC_SITE_URL`            | 网站域名（如 `https://your-domain.com`）                                |
+| `NUXT_SESSION_PASSWORD`           | 会话加密密钥（至少 32 位）                                              |
+| `NUXT_OAUTH_GITHUB_CLIENT_ID`     | GitHub OAuth Client ID                                                  |
+| `NUXT_OAUTH_GITHUB_CLIENT_SECRET` | GitHub OAuth Client Secret                                              |
 
 ### 2.2 服务器 `.env` 文件权限
 
@@ -252,6 +264,7 @@ chmod 600 /var/www/my-app/.env
 ```
 
 内容示例（请替换为实际值）：
+
 ```env
 POSTGRES_DB=myapp
 POSTGRES_USER=postgres
@@ -267,13 +280,16 @@ NUXT_OAUTH_GITHUB_CLIENT_SECRET=xxxxxxxxxxxxxxxxxxxxxxxx
 
 ## ⚙️ 第三部分：GitHub Actions 工作流（进阶版）
 
+<details>
+<summary>点击展开完整代码</summary>
+
 ```yaml
 name: Production Deploy
 
 on:
   push:
-    branches: [ main ]
-  workflow_dispatch:  # 允许手动触发
+    branches: [main]
+  workflow_dispatch: # 允许手动触发
 
 jobs:
   deploy:
@@ -354,7 +370,10 @@ jobs:
             docker image prune -f --filter "until=24h"
 ```
 
+</details>
+
 **进阶要点**：
+
 - 使用 `cache-from` 加速构建。
 - 远程脚本中执行数据库迁移（使用 `npm install -g` 确保有 `drizzle-kit`，避免依赖缺失）。
 - `--force-recreate` 确保旧容器被完全替换，解决端口残留问题。
@@ -366,6 +385,8 @@ jobs:
 ## 🧪 第四部分：服务器初始化（生产准备）
 
 ### 4.1 安装 Docker 并配置镜像加速器
+
+若加速器无效，可使用 ACR 的海外源镜像同步功能或自行推送镜像至私有仓库。
 
 ```bash
 curl -fsSL https://get.docker.com | sh
@@ -417,18 +438,18 @@ curl -I https://your-domain.com # 应返回 200（通过 Caddy）
 
 ## 🔧 第五部分：深度问题排查手册
 
-| 现象 | 可能原因 | 解决方案 |
-|------|----------|----------|
-| **Actions 中 SSH 连接失败** | 私钥格式错误 / 安全组未开放 22 端口 | 检查 Secrets 中的私钥是否包含完整换行；检查安全组入方向规则 |
-| **Caddy 容器无法启动，端口 80/443 被占用** | 宿主机有其他 Web 服务（如系统级 Caddy、Nginx） | `sudo lsof -i :80 -i :443` 找到并停止进程；或修改端口映射 |
-| **应用无法连接数据库，日志显示 `getaddrinfo EAI_AGAIN postgres`** | 容器间网络问题 / 数据库服务名错误 | 确认 `app` 和 `postgres` 在同一网络；检查 `DATABASE_URL` 中的主机名是否为 `postgres` |
-| **数据库迁移失败，提示 `drizzle-kit: not found`** | 容器内未安装 drizzle-kit | 已改为使用 `npm install -g drizzle-kit`，确保网络通畅；也可在 Dockerfile 中预装 |
-| **应用容器不断重启** | 健康检查失败 / 依赖服务未就绪 | 查看日志：`docker logs my-app --tail 50`；检查 `depends_on` 条件 |
-| **HTTPS 证书未自动生成** | 域名解析未生效 / 80 端口未开放 | 检查 DNS 解析；确保 Caddy 能访问外网 |
-| **镜像拉取慢** | 未配置镜像加速器 | 按 4.1 配置加速器并重启 Docker |
-| **部署后网站未更新** | 容器未重启 / 镜像标签未更新 | 检查 Actions 日志；手动执行 `docker compose pull && docker compose up -d` |
-| **宿主机重启后容器未自动恢复** | 未设置 Docker 开机自启 | `sudo systemctl enable docker`；容器已设置 `restart: always`，会自动启动 |
-| **`.env` 文件权限导致 Secrets 泄露风险** | 权限设置不当 | 确保 `.env` 权限为 `600`，属主为运行 Docker 的用户 |
+| 现象                                                              | 可能原因                                       | 解决方案                                                                             |
+| ----------------------------------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------ |
+| **Actions 中 SSH 连接失败**                                       | 私钥格式错误 / 安全组未开放 22 端口            | 检查 Secrets 中的私钥是否包含完整换行；检查安全组入方向规则                          |
+| **Caddy 容器无法启动，端口 80/443 被占用**                        | 宿主机有其他 Web 服务（如系统级 Caddy、Nginx） | `sudo lsof -i :80 -i :443` 找到并停止进程；或修改端口映射                            |
+| **应用无法连接数据库，日志显示 `getaddrinfo EAI_AGAIN postgres`** | 容器间网络问题 / 数据库服务名错误              | 确认 `app` 和 `postgres` 在同一网络；检查 `DATABASE_URL` 中的主机名是否为 `postgres` |
+| **数据库迁移失败，提示 `drizzle-kit: not found`**                 | 容器内未安装 drizzle-kit                       | 已改为使用 `npm install -g drizzle-kit`，确保网络通畅；也可在 Dockerfile 中预装      |
+| **应用容器不断重启**                                              | 健康检查失败 / 依赖服务未就绪                  | 查看日志：`docker logs my-app --tail 50`；检查 `depends_on` 条件                     |
+| **HTTPS 证书未自动生成**                                          | 域名解析未生效 / 80 端口未开放                 | 检查 DNS 解析；确保 Caddy 能访问外网                                                 |
+| **镜像拉取慢**                                                    | 未配置镜像加速器                               | 按 4.1 配置加速器并重启 Docker                                                       |
+| **部署后网站未更新**                                              | 容器未重启 / 镜像标签未更新                    | 检查 Actions 日志；手动执行 `docker compose pull && docker compose up -d`            |
+| **宿主机重启后容器未自动恢复**                                    | 未设置 Docker 开机自启                         | `sudo systemctl enable docker`；容器已设置 `restart: always`，会自动启动             |
+| **`.env` 文件权限导致 Secrets 泄露风险**                          | 权限设置不当                                   | 确保 `.env` 权限为 `600`，属主为运行 Docker 的用户                                   |
 
 ---
 

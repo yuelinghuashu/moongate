@@ -50,6 +50,7 @@
     "eslint": "^9.39.2",
     "nuxt": "^4.2.2",
     "nuxt-auth-utils": "0.5.28",
+    "nuxt-umami": "3.2.1",
     "shiki": "^3.22.0",
     "typescript": "^5.9.3",
     "vite-plugin-remove-console": "^2.2.0",
