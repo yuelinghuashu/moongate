@@ -103,7 +103,7 @@ export default defineNuxtConfig({
     strategy: 'prefix_except_default', // 推荐：默认语言无前缀
   },
   umami: {
-    enabled: process.env.NODE_ENV !== 'development', // 开发环境禁用
+    enabled: true,
     id: process.env.NUXT_PUBLIC_UMAMI_ID,
     host: process.env.NUXT_PUBLIC_UMAMI_HOST,
     autoTrack: true,
@@ -111,5 +111,5 @@ export default defineNuxtConfig({
   routeRules: {
     '/': { prerender: true }
   },
-  compatibilityDate: '2024-11-01',
+  compatibilityDate: '2025-07-15',
 })

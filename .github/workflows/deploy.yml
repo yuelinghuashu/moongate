@@ -31,6 +31,8 @@ jobs:
           push: true
           build-args: |
             NUXT_PUBLIC_SITE_URL=${{ env.NUXT_PUBLIC_SITE_URL }}
+            NUXT_PUBLIC_UMAMI_ID=${{ secrets.NUXT_PUBLIC_UMAMI_ID }}
+            NUXT_PUBLIC_UMAMI_HOST=${{ secrets.NUXT_PUBLIC_UMAMI_HOST }}
           tags: |
             ${{ secrets.ACR_REGISTRY }}/moongate/moongate-blog:latest
             ${{ secrets.ACR_REGISTRY }}/moongate/moongate-blog:${{ github.sha }}
@@ -55,6 +57,8 @@ jobs:
           UMAMI_DB_USER: ${{ secrets.UMAMI_DB_USER }}
           UMAMI_DB_PASSWORD: ${{ secrets.UMAMI_DB_PASSWORD }}
           UMAMI_APP_SECRET: ${{ secrets.UMAMI_APP_SECRET }}
+          NUXT_PUBLIC_UMAMI_ID: ${{ secrets.NUXT_PUBLIC_UMAMI_ID }}
+          NUXT_PUBLIC_UMAMI_HOST: ${{ secrets.NUXT_PUBLIC_UMAMI_HOST }}
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
@@ -73,7 +77,9 @@ jobs:
             UMAMI_DB_NAME,
             UMAMI_DB_USER, 
             UMAMI_DB_PASSWORD, 
-            UMAMI_APP_SECRET
+            UMAMI_APP_SECRET,
+            NUXT_PUBLIC_UMAMI_ID,
+            NUXT_PUBLIC_UMAMI_HOST
           script: |
             # 如果发生错误，则退出
             set -e
@@ -96,6 +102,8 @@ jobs:
             UMAMI_DB_USER=$UMAMI_DB_USER
             UMAMI_DB_PASSWORD=$UMAMI_DB_PASSWORD
             UMAMI_APP_SECRET=$UMAMI_APP_SECRET
+            NUXT_PUBLIC_UMAMI_ID=$NUXT_PUBLIC_UMAMI_ID
+            NUXT_PUBLIC_UMAMI_HOST=$NUXT_PUBLIC_UMAMI_HOST
             EOF
 
             # 4. 确保 .env 文件权限

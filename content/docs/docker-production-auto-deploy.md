@@ -10,16 +10,27 @@ tags: [GitHub Actions, Docker, 容器化, 生产环境, 自动化部署]
 
 ## 📚 系列导航
 
-本系列共四篇，覆盖从静态网站到生产级 Docker 部署的全流程，建议按顺序阅读：
+本系列共五篇，覆盖从静态网站到生产级 Docker 部署及服务集成的全流程，建议按顺序阅读：
 
 1. [**静态网站自动化部署（静态篇）**](./static-site-auto-deploy)  
+
    —— 纯前端资源的自动化发布，Caddy 自动 HTTPS 和 SPA 路由支持。
+
 2. [**动态网站自动化部署（动态篇）**](dynamic-site-auto-deploy)  
+
    —— 后端服务进程管理、环境变量注入、数据库迁移，结合 Caddy 反向代理。
+
 3. [**Docker 极简入门（入门篇）**](docker-quickstart-auto-deploy)  
+
    —— 从零开始用 Docker + GitHub Actions 实现 CI/CD 流水线。
+
 4. **Docker 生产级部署（进阶篇）**  
+
    —— 多容器编排、健康检查、数据库迁移、自动 HTTPS，打造可靠的生产环境。
+
+5. [**自托管 Umami 分析服务与 Nuxt 4 项目集成指南（扩展篇）**](./umami-integration-auto-deploy)
+
+   —— 在现有 Docker 生产环境中集成 Umami 分析服务，实现自动化数据跟踪与安全加固。
 
 ---
 
