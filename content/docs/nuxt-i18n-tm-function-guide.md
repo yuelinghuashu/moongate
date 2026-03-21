@@ -3,14 +3,14 @@ permalink: 9W589TkBclZrLrk9
 title: Nuxt i18n 的 `$tm` 函数：环境差异问题与解决方案
 description: 介绍了 Nuxt.js 项目中使用 @nuxtjs/i18n 模块的 $tm 函数（或组合式 API 中的 tm()）时，一个常见的问题是：在开发环境 (nuxt dev) 下运行正常的代码，在生产环境构建 (nuxt build) 后运行会报错或渲染异常。
 date: 2026-01-21
-tags: [Nuxt, i18n]
+tags: [Nuxt, i18n, Configuration, Performance]
+level: P1
 ---
-
 
 # Nuxt i18n 的 `$tm` 函数：环境差异问题与解决方案（v10 适用）
 
 > **适用版本**：`@nuxtjs/i18n` v10.x  
-> *如果你使用其他版本，核心思路仍可参考，但具体行为可能略有差异。*
+> _如果你使用其他版本，核心思路仍可参考，但具体行为可能略有差异。_
 
 ## 核心问题
 
@@ -37,15 +37,18 @@ tags: [Nuxt, i18n]
 ```vue
 <template>
   <div v-for="item in tm('navigationBar')" :key="item.id">
-    <NuxtLink :to="isDev ? item.link?.loc?.source : item.link" rel="noopener noreferrer">
+    <NuxtLink
+      :to="isDev ? item.link?.loc?.source : item.link"
+      rel="noopener noreferrer"
+    >
       {{ isDev ? item.name?.loc?.source : item.name }}
     </NuxtLink>
   </div>
 </template>
 
 <script setup>
-const isDev = import.meta.env.DEV
-const { tm } = useI18n()
+const isDev = import.meta.env.DEV;
+const { tm } = useI18n();
 </script>
 ```
 
@@ -60,45 +63,45 @@ const { tm } = useI18n()
 
 ```ts
 // composables/useI18nSafe.ts
-import { useI18n } from 'vue-i18n'
+import { useI18n } from "vue-i18n";
 
 /**
  * 递归提取开发环境下的实际值（移除 loc.source 包装）
  */
 function extractValue(value: any): any {
-  if (!value || typeof value !== 'object') return value
+  if (!value || typeof value !== "object") return value;
 
   // 处理被包装的字符串（开发环境特有）
   if (value.loc?.source !== undefined) {
-    return value.loc.source
+    return value.loc.source;
   }
 
   // 处理数组
   if (Array.isArray(value)) {
-    return value.map(extractValue)
+    return value.map(extractValue);
   }
 
   // 处理对象
-  const result: Record<string, any> = {}
+  const result: Record<string, any> = {};
   for (const key in value) {
-    result[key] = extractValue(value[key])
+    result[key] = extractValue(value[key]);
   }
-  return result
+  return result;
 }
 
 export function useI18nSafe() {
-  const { tm: originalTm, ...rest } = useI18n()
-  
+  const { tm: originalTm, ...rest } = useI18n();
+
   const tm = (key: string) => {
-    const value = originalTm(key)
+    const value = originalTm(key);
     // 仅开发环境需要提取，生产环境直接返回
     if (import.meta.env.DEV) {
-      return extractValue(value)
+      return extractValue(value);
     }
-    return value
-  }
-  
-  return { tm, ...rest }
+    return value;
+  };
+
+  return { tm, ...rest };
 }
 ```
 
@@ -106,12 +109,14 @@ export function useI18nSafe() {
 
 ```vue
 <script setup>
-const { tm } = useI18nSafe()
+const { tm } = useI18nSafe();
 </script>
 
 <template>
   <div v-for="item in tm('navigationBar')" :key="item.id">
-    <NuxtLink :to="item.link" rel="noopener noreferrer">{{ item.name }}</NuxtLink>
+    <NuxtLink :to="item.link" rel="noopener noreferrer">{{
+      item.name
+    }}</NuxtLink>
   </div>
 </template>
 ```

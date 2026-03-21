@@ -3,7 +3,8 @@ permalink: 2Z9mH-AF90AuFuyI
 date: 2026-01-22
 title: GitHub Actions + Caddy 静态网站自动化部署（静态篇）
 description: 专注于纯前端资源的自动化发布，利用 Caddy 自动 HTTPS 和 SPA 路由支持，实现“推送即发布”。
-tags: [GitHub Actions, Caddy, 静态网站, 自动化部署]
+tags: [GitHub Actions, Caddy, Deployment,  CI/CD]
+level: P4
 ---
 
 # GitHub Actions + Caddy 静态网站自动化部署（静态篇）
@@ -12,19 +13,19 @@ tags: [GitHub Actions, Caddy, 静态网站, 自动化部署]
 
 本系列共五篇，覆盖从静态网站到生产级 Docker 部署及服务集成的全流程，建议按顺序阅读：
 
-1. **静态网站自动化部署（静态篇）**  
+1. **静态网站自动化部署（静态篇）**
 
    —— 纯前端资源的自动化发布，Caddy 自动 HTTPS 和 SPA 路由支持。
 
-2. [**动态网站自动化部署（动态篇）**](dynamic-site-auto-deploy)  
+2. [**动态网站自动化部署（动态篇）**](dynamic-site-auto-deploy)
 
    —— 后端服务进程管理、环境变量注入、数据库迁移，结合 Caddy 反向代理。
 
-3. [**Docker 极简入门（入门篇）**](docker-quickstart-auto-deploy)  
+3. [**Docker 极简入门（入门篇）**](docker-quickstart-auto-deploy)
 
    —— 从零开始用 Docker + GitHub Actions 实现 CI/CD 流水线。
 
-4. [**Docker 生产级部署（进阶篇）**](docker-production-auto-deploy)  
+4. [**Docker 生产级部署（进阶篇）**](docker-production-auto-deploy)
 
    —— 多容器编排、健康检查、数据库迁移、自动 HTTPS，打造可靠的生产环境。
 

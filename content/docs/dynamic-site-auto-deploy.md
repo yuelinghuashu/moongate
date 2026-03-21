@@ -3,7 +3,8 @@ permalink: sA2qPU6rJ1do_b-i
 title: GitHub Actions + Caddy 全自动部署动态网站（动态篇）
 description: 深入后端服务的进程管理、环境变量注入、数据库迁移，结合 Caddy 反向代理，打造完整的动态应用部署流水线。
 date: 2026-01-23
-tags: [GitHub Actions, Caddy, 动态网站, 自动化部署]
+tags: [GitHub Actions, Caddy, Deployment, CI/CD]
+level: P4
 ---
 
 # GitHub Actions + Caddy 全自动部署动态网站（动态篇）
@@ -12,19 +13,19 @@ tags: [GitHub Actions, Caddy, 动态网站, 自动化部署]
 
 本系列共五篇，覆盖从静态网站到生产级 Docker 部署及服务集成的全流程，建议按顺序阅读：
 
-1. [**静态网站自动化部署（静态篇）**](./static-site-auto-deploy)  
+1. [**静态网站自动化部署（静态篇）**](./static-site-auto-deploy)
 
    —— 纯前端资源的自动化发布，Caddy 自动 HTTPS 和 SPA 路由支持。
 
-2. **动态网站自动化部署（动态篇）**  
+2. **动态网站自动化部署（动态篇）**
 
    —— 后端服务进程管理、环境变量注入、数据库迁移，结合 Caddy 反向代理。
 
-3. [**Docker 极简入门（入门篇）**](docker-quickstart-auto-deploy)  
+3. [**Docker 极简入门（入门篇）**](docker-quickstart-auto-deploy)
 
    —— 从零开始用 Docker + GitHub Actions 实现 CI/CD 流水线。
 
-4. [**Docker 生产级部署（进阶篇）**](docker-production-auto-deploy)  
+4. [**Docker 生产级部署（进阶篇）**](docker-production-auto-deploy)
 
    —— 多容器编排、健康检查、数据库迁移、自动 HTTPS，打造可靠的生产环境。
 
@@ -44,16 +45,16 @@ tags: [GitHub Actions, Caddy, 动态网站, 自动化部署]
 
 本文档所有工具均采用 **2026 年最新稳定版**，具体版本如下：
 
-| 工具 | 版本 | 说明 |
-|------|------|------|
-| Node.js | 24.x | 最新的主要版本，支持所有现代 JavaScript 特性 |
-| pnpm | 10.x | 高性能包管理器，与 Node.js 24 完美兼容 |
-| Caddy | 2.8+ | 自动 HTTPS 的反向代理服务器 |
-| PostgreSQL | 17 (alpine) | 轻量级关系型数据库，alpine 版本镜像小巧 |
-| Drizzle ORM | 0.30+ | TypeScript 原生 ORM，支持迁移和类型安全查询 |
-| PM2 | 5+ | 生产级 Node.js 进程管理工具 |
-| GitHub Actions | 最新 | CI/CD 平台，所有 Action 均为当前最新版本（如 `checkout@v4`、`ssh-action@v1.0.0` 等） |
-| 阿里云 ACR | – | 容器镜像服务，需使用固定密码进行认证 |
+| 工具           | 版本        | 说明                                                                                 |
+| -------------- | ----------- | ------------------------------------------------------------------------------------ |
+| Node.js        | 24.x        | 最新的主要版本，支持所有现代 JavaScript 特性                                         |
+| pnpm           | 10.x        | 高性能包管理器，与 Node.js 24 完美兼容                                               |
+| Caddy          | 2.8+        | 自动 HTTPS 的反向代理服务器                                                          |
+| PostgreSQL     | 17 (alpine) | 轻量级关系型数据库，alpine 版本镜像小巧                                              |
+| Drizzle ORM    | 0.30+       | TypeScript 原生 ORM，支持迁移和类型安全查询                                          |
+| PM2            | 5+          | 生产级 Node.js 进程管理工具                                                          |
+| GitHub Actions | 最新        | CI/CD 平台，所有 Action 均为当前最新版本（如 `checkout@v4`、`ssh-action@v1.0.0` 等） |
+| 阿里云 ACR     | –           | 容器镜像服务，需使用固定密码进行认证                                                 |
 
 > **注意**：请根据你的项目实际需求调整具体版本号。若使用其他技术栈（如 Python、Java 等），请替换对应的运行时版本。
 
@@ -62,6 +63,7 @@ tags: [GitHub Actions, Caddy, 动态网站, 自动化部署]
 ## 🎯 系统架构与核心理念
 
 动态网站部署需要处理：
+
 1. 运行时环境安装
 2. 项目依赖安装
 3. 数据库迁移（使用 Drizzle ORM）
@@ -182,11 +184,13 @@ sudo systemctl status caddy
 ### 1.3 准备数据库连接
 
 无论数据库在服务器本地还是云端，你都需要一个有效的连接字符串，格式如：
+
 ```
 postgresql://用户名:密码@主机:端口/数据库名
 ```
 
 - **如果数据库在服务器本地**（通过 apt 安装）：
+
   ```bash
   sudo apt install -y postgresql
   sudo systemctl start postgresql
@@ -198,6 +202,7 @@ postgresql://用户名:密码@主机:端口/数据库名
   GRANT ALL PRIVILEGES ON DATABASE mydb TO myuser;
   \q
   ```
+
   此时连接字符串为 `postgresql://myuser:mypassword@localhost:5432/mydb`。
 
 - **如果使用云数据库**（如阿里云 RDS），直接在控制台获取连接串。
@@ -242,13 +247,13 @@ cat ~/.ssh/id_github_actions_dynamic
 
 进入 GitHub 仓库 → **Settings** → **Secrets and variables** → **Actions**，点击 **New repository secret**，添加以下 Secrets：
 
-| Secret 名称 | 说明 |
-|------------|------|
-| `SERVER_HOST` | 服务器公网 IP |
-| `SERVER_USER` | SSH 用户名（如 `ubuntu`） |
-| `SSH_PRIVATE_KEY` | 上面复制的私钥全文（保持换行） |
-| `DATABASE_URL` | 数据库连接字符串 |
-| 其他环境变量 | 如 `NUXT_SESSION_PASSWORD`、`NUXT_OAUTH_GITHUB_CLIENT_ID` 等 |
+| Secret 名称       | 说明                                                         |
+| ----------------- | ------------------------------------------------------------ |
+| `SERVER_HOST`     | 服务器公网 IP                                                |
+| `SERVER_USER`     | SSH 用户名（如 `ubuntu`）                                    |
+| `SSH_PRIVATE_KEY` | 上面复制的私钥全文（保持换行）                               |
+| `DATABASE_URL`    | 数据库连接字符串                                             |
+| 其他环境变量      | 如 `NUXT_SESSION_PASSWORD`、`NUXT_OAUTH_GITHUB_CLIENT_ID` 等 |
 
 > **💡 提示**：如果私钥内容在 GitHub Secrets 中粘贴后丢失换行，会导致 SSH 连接失败。请确保原样粘贴。
 
@@ -263,7 +268,7 @@ name: Deploy Dynamic App to Production
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   deploy:
@@ -277,8 +282,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'        # 使用 Node.js 24
-          cache: 'pnpm'              # 启用 pnpm 缓存
+          node-version: "24" # 使用 Node.js 24
+          cache: "pnpm" # 启用 pnpm 缓存
 
       # 启用 corepack 并安装 pnpm 10
       - name: Install pnpm
@@ -311,7 +316,7 @@ jobs:
         uses: burnett01/rsync-deployments@7.0.1
         with:
           switches: -avz --delete --exclude='.env' --exclude='node_modules' --exclude='.git'
-          path: ./                   # 同步整个项目（.output 是构建产物，需要同步）
+          path: ./ # 同步整个项目（.output 是构建产物，需要同步）
           remote_path: /var/www/my-dynamic-app/
           remote_host: ${{ secrets.SERVER_HOST }}
           remote_user: ${{ secrets.SERVER_USER }}
@@ -332,7 +337,7 @@ jobs:
           envs: DATABASE_URL, NUXT_SESSION_PASSWORD, NUXT_OAUTH_GITHUB_CLIENT_ID, NUXT_OAUTH_GITHUB_CLIENT_SECRET
           script: |
             set -e  # 遇到任何错误立即退出
-            
+
             cd /var/www/my-dynamic-app
 
             # 创建环境变量文件（一次性写入，注意不要用单引号，否则变量不会展开）
@@ -427,16 +432,17 @@ git push origin main
 ### 5.2 Nuxt 应用监听地址
 
 确保 Nuxt 应用监听 `127.0.0.1` 而非 `0.0.0.0`。可以通过以下方式之一实现：
+
 - 在启动命令中指定：`pm2 start .output/server/index.mjs --name "nuxt-app" -- --host 127.0.0.1`
 - 或在 `nuxt.config.ts` 中配置：
   ```ts
   export default defineNuxtConfig({
     nitro: {
       devServer: {
-        host: '127.0.0.1'
-      }
-    }
-  })
+        host: "127.0.0.1",
+      },
+    },
+  });
   ```
 
 ### 5.3 环境变量安全
@@ -453,16 +459,16 @@ git push origin main
 
 ### 5.5 关键问题排查清单
 
-| 现象                                  | 可能原因                                                                 | 解决方案                                                                                                                                                   |
-| ------------------------------------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Actions 日志卡在 SSH 连接**         | SSH 密钥格式错误、安全组未开放 22 端口、服务器 `sshd_config` 限制        | 检查 Secrets 中的私钥是否包含完整换行；检查安全组入方向规则；查看服务器 `/var/log/auth.log` 寻找原因                                                      |
-| **Caddy 返回 502 Bad Gateway**        | 后端应用未运行、Caddy 配置端口错误、应用绑定地址不是 127.0.0.1           | 检查 `pm2 status`；确认 Caddyfile 中的端口；确保应用监听 `127.0.0.1`                                                                                       |
-| **应用启动失败**                      | 依赖未安装、环境变量缺失、端口被占用、入口文件路径错误                   | 登录服务器手动运行 `pnpm install`；检查 `.env` 文件；`netstat -tlnp | grep 3000` 查看端口占用；确认 `.output/server/index.mjs` 是否存在                        |
-| **数据库迁移失败**                    | 数据库连接串错误、迁移文件缺失、数据库服务未启动、drizzle-kit 未安装     | 检查 `DATABASE_URL` 是否正确；确认迁移目录（如 `.drizzle`）存在；检查数据库服务状态；确保 `drizzle-kit` 已安装                                          |
-| **迁移目录找不到**                    | rsync 排除了点开头的目录                                                | 检查 rsync 命令的 `--exclude` 参数，确保没有排除 `.drizzle` 或你的自定义迁移目录                                                                           |
-| **pnpm 命令未找到**                   | 服务器未安装 pnpm，或 PATH 未设置                                        | 检查远程脚本中是否正确安装了 pnpm，并设置了 `PATH`                                                                                                        |
-| **网站 HTTPS 证书未自动生成**         | 域名 DNS 未生效、Caddy 版本过旧、80/443 端口未开放                       | 检查 DNS 解析；升级 Caddy 到最新版；检查安全组端口                                                                                                        |
-| **PM2 进程在服务器重启后未恢复**       | 未执行 `pm2 startup` 后的 sudo 命令                                      | 登录服务器，重新执行 `pm2 startup` 并根据提示运行 sudo 命令                                                                                              |
+| 现象                             | 可能原因                                                             | 解决方案                                                                                                       |
+| -------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| **Actions 日志卡在 SSH 连接**    | SSH 密钥格式错误、安全组未开放 22 端口、服务器 `sshd_config` 限制    | 检查 Secrets 中的私钥是否包含完整换行；检查安全组入方向规则；查看服务器 `/var/log/auth.log` 寻找原因           |
+| **Caddy 返回 502 Bad Gateway**   | 后端应用未运行、Caddy 配置端口错误、应用绑定地址不是 127.0.0.1       | 检查 `pm2 status`；确认 Caddyfile 中的端口；确保应用监听 `127.0.0.1`                                           |
+| **应用启动失败**                 | 依赖未安装、环境变量缺失、端口被占用、入口文件路径错误               | 登录服务器手动运行 `pnpm install`；检查 `.env` 文件；`netstat -tlnp                                            | grep 3000`查看端口占用；确认`.output/server/index.mjs` 是否存在 |
+| **数据库迁移失败**               | 数据库连接串错误、迁移文件缺失、数据库服务未启动、drizzle-kit 未安装 | 检查 `DATABASE_URL` 是否正确；确认迁移目录（如 `.drizzle`）存在；检查数据库服务状态；确保 `drizzle-kit` 已安装 |
+| **迁移目录找不到**               | rsync 排除了点开头的目录                                             | 检查 rsync 命令的 `--exclude` 参数，确保没有排除 `.drizzle` 或你的自定义迁移目录                               |
+| **pnpm 命令未找到**              | 服务器未安装 pnpm，或 PATH 未设置                                    | 检查远程脚本中是否正确安装了 pnpm，并设置了 `PATH`                                                             |
+| **网站 HTTPS 证书未自动生成**    | 域名 DNS 未生效、Caddy 版本过旧、80/443 端口未开放                   | 检查 DNS 解析；升级 Caddy 到最新版；检查安全组端口                                                             |
+| **PM2 进程在服务器重启后未恢复** | 未执行 `pm2 startup` 后的 sudo 命令                                  | 登录服务器，重新执行 `pm2 startup` 并根据提示运行 sudo 命令                                                    |
 
 ### 5.6 查看日志
 

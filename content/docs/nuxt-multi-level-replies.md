@@ -3,7 +3,8 @@ permalink: ex1jDiPxiGbTqSuEKhHg6
 title: 从零到一：为 Moongate 博客打造一个支持多级引用的评论区
 description: 介绍了 Moongate 博客的评论区设计和实现，包括多级引用、扁平时间线、引用块跳转、用户认证、响应式设计等。
 date: 2026-03-08
-tags: [Nuxt, Vue, Pinia, Drizzle, PostgreSQL, Nuxt UI, 评论区]
+tags: [Nuxt, Content Rendering, Security]
+level: P3
 ---
 
 # 从零到一：为 Moongate 博客打造一个支持多级引用的评论区

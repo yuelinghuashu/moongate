@@ -3,7 +3,8 @@ permalink: 0OOT_YDYAxbKF8gIppVa3
 title: 系统篇：从设计系统到视觉契约：打造完整的主题品牌体系
 description: 将主题升华为设计系统——定义设计哲学、建立视觉契约、提供显示器校准指南。让主题不仅好用，更成为你技术品牌的核心资产。
 date: 2026-03-11 13:00:00
-tags: [VSCode, Theme, Design System, Branding, Visual Contract, Ecosystem]
+tags: [Design System, Theme, Engineering, Architecture]
+level: P3
 ---
 
 # 系统篇：从设计系统到视觉契约：打造完整的主题品牌体系

@@ -3,7 +3,8 @@ permalink: zHv-nnnTcn4_3ZqoB8tC2
 title: 基础篇：从博客配色到 VS Code 主题：基础开发指南
 description: 从零开始，快速掌握 VS Code 主题开发的核心流程。学习如何创建颜色定义、配置语法高亮、调试主题，并将你的第一个主题发布到市场。
 date: 2026-02-25
-tags: [VSCode, Theme, Beginner, Tutorial]
+tags: [VSCode, Theme, Configuration]
+level: P3
 ---
 
 # 基础篇：从博客配色到 VS Code 主题：基础开发指南
@@ -228,19 +229,19 @@ node_modules
 在运行 `vsce package` 之前，花两分钟核对以下事项，可以避免大部分常见的发布错误：
 
 - **`package.json` 信息**  
-      确保 `publisher`、`name`、`version` 字段正确无误（`publisher` 必须与你在市场注册的 ID 完全一致）。
+   确保 `publisher`、`name`、`version` 字段正确无误（`publisher` 必须与你在市场注册的 ID 完全一致）。
 
 - **图标文件**  
-      确认 `icon` 路径指向一个 **128×128 像素的 PNG 图片**，且文件确实存在于该位置。
+   确认 `icon` 路径指向一个 **128×128 像素的 PNG 图片**，且文件确实存在于该位置。
 
 - **预览图**  
-      检查 `README.md` 中是否包含了至少一张主题预览图（建议使用 `images/` 文件夹内的截图），没有预览图的主题很难吸引用户。
+   检查 `README.md` 中是否包含了至少一张主题预览图（建议使用 `images/` 文件夹内的截图），没有预览图的主题很难吸引用户。
 
 - **`.vscodeignore` 配置**  
-      确认已排除不必要的文件（如 `.vscode`、`node_modules`、`src` 等），但**务必保留 `images/` 文件夹**，否则截图无法随扩展一起发布。
+   确认已排除不必要的文件（如 `.vscode`、`node_modules`、`src` 等），但**务必保留 `images/` 文件夹**，否则截图无法随扩展一起发布。
 
 - **本地打包测试**  
-      运行 `vsce package` 命令，若能成功生成 `.vsix` 文件，说明配置基本正确。如果失败，仔细阅读错误提示——最常见的原因是 `icon` 路径错误或 `publisher` 未设置。
+   运行 `vsce package` 命令，若能成功生成 `.vsix` 文件，说明配置基本正确。如果失败，仔细阅读错误提示——最常见的原因是 `icon` 路径错误或 `publisher` 未设置。
 
 核对完毕后再进行发布，成功率会大大提高。如果使用命令行发布遇到困难，也可以直接上传 `.vsix` 文件（见下一节）。
 

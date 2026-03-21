@@ -3,7 +3,8 @@ permalink: LKzthCwXxpVvXQpXQLXST
 title: 自托管 Umami 分析服务与 Nuxt 4 项目集成指南（扩展篇）
 description: 在现有 Docker 生产环境中集成自托管的 Umami 分析服务，通过 Caddy 自动 HTTPS 和 GitHub Actions 实现 Nuxt 4 项目的自动化数据跟踪。
 date: 2026-03-18
-tags: [Umami, Nuxt 4, Docker, GitHub Actions, 生产环境, 自动化部署]
+tags: [Umami, Nuxt, Docker, Caddy, Monitoring]
+level: P4
 ---
 
 # 自托管 Umami 分析服务与 Nuxt 4 项目集成指南（扩展篇）
@@ -22,7 +23,7 @@ tags: [Umami, Nuxt 4, Docker, GitHub Actions, 生产环境, 自动化部署]
 3. [**Docker 极简入门（入门篇）**](./docker-quickstart-auto-deploy)  
    —— 从零开始用 Docker + GitHub Actions 实现 CI/CD 流水线。
 
-4. [**Docker 生产级自动化部署（进阶篇）**](./docker-production-auto-deploy)  
+4. [**Docker 生产级自动化部署（进阶篇）**](./docker-production-auto-deploy)
 
    —— 多容器编排、健康检查、数据库迁移、自动 HTTPS，打造可靠的生产环境。
 

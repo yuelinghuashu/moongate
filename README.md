@@ -108,15 +108,3 @@ moongate/
 ## 📄 协议
 
 MIT © yuelinghuashu
-
-<details>
-<summary>🧪 想本地跑起来？</summary>
-
-```bash
-git clone https://github.com/yuelinghuashu/moongate.git
-cd moongate
-pnpm install
-pnpm run dev
-```
-
-</details>

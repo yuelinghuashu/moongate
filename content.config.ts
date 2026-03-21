@@ -13,6 +13,7 @@ export default defineContentConfig({
         description: z.string(),
         date: z.date(),
         tags: z.array(z.string()),
+        level: z.string()
       })
     }),
     about: defineCollection({
