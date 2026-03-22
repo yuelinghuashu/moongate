@@ -5,7 +5,7 @@
   >
     <UInput
       :model-value="search"
-      :placeholder="t('search.inputPlaceholder')"
+      :placeholder="t('docs.inputPlaceholder')"
       size="lg"
       class="w-full"
       @update:model-value="$emit('update:search', $event)"
@@ -26,29 +26,29 @@
       :class="isDesktop ? 'ml-2 flex-1' : 'mt-2'"
     >
       <USelect
+        :ui="{ base: 'w-full truncate' }"
         :model-value="option"
-        :items="tm('search.option')"
+        :items="tm('docs.option')"
         label-key="name"
         value-key="id"
         size="lg"
-        :placeholder="t('search.optionPlaceholder')"
-        class="flex-1"
+        :placeholder="t('docs.optionPlaceholder')"
         @update:model-value="$emit('update:option', $event)"
       />
 
       <USelect
         :model-value="viewMode"
-        :items="tm('search.viewMode')"
+        :items="tm('docs.viewMode')"
         label-key="name"
         value-key="id"
         size="lg"
-        :placeholder="t('search.viewModePlaceholder')"
+        :placeholder="t('docs.viewModePlaceholder')"
         class="ml-2"
         @update:model-value="$emit('update:viewMode', $event)"
       />
 
       <UButton
-        label="筛选"
+        :label="t('docs.filter')"
         size="lg"
         variant="solid"
         class="ml-2"
@@ -61,6 +61,7 @@
 <script setup>
 const { t } = useI18n();
 const { tm } = useI18nSafe();
+const { isMobile } = useResponsive();
 
 defineProps({
   search: { type: String, default: "" },

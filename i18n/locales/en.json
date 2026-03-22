@@ -16,7 +16,7 @@
     "title": "Access Terminal",
     "description": "One-click login with GitHub account to unlock comments and interactions"
   },
-  "search": {
+  "docs": {
     "inputPlaceholder": "Search Docs",
     "optionPlaceholder": "Search options",
     "viewModePlaceholder": "View mode",
@@ -28,6 +28,20 @@
       { "id": 1, "name": "Detailed" },
       { "id": 2, "name": "Compact" }
     ],
+    "levels": {
+      "P1": "Ecosystem Adaptation",
+      "P2": "Module Integration",
+      "P3": "Logic Refactoring",
+      "P4": "Delivery Automation",
+      "P5": "Low‑level Drivers"
+    },
+    "filter": "Filter",
+    "ctrlMultiSelect": "Ctrl+Click to multi-select",
+    "multiSelectMode": "Multi-select mode",
+    "exitMultiSelect": "Exit multi-select",
+    "noDocuments": "No documents",
+    "emptyMessage": "No documents found. Try adjusting your filters.",
+    "clearAllFilters": "Clear all filters",
     "findCount": "Found {count} documents"
   },
   "settings": {

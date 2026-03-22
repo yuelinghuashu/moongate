@@ -4,11 +4,22 @@ title: 从零到一：构建一个功能完备的文档列表页
 description: 手把手教你用 Nuxt 4 构建一个支持 URL 状态同步、多维度筛选、移动端无限滚动、键盘翻页的文档列表页。包含手写状态管理、SSR 水合问题排查、组件拆分陷阱、标签多选（桌面端 Ctrl/移动端开关）等完整实现，附可复用代码。
 date: 2026-03-21
 tags: [Nuxt, Vue, State Management, Hydration]
+level: P3
 ---
 
 # 从零到一：构建一个功能完备的文档列表页
 
 > 本文完整记录了我在 Nuxt 4 中构建一个功能完备的文档列表页的全过程，涵盖 URL 状态同步、SSR 水合问题、移动端适配、标签多选、键盘翻页等 20+ 细节。包含可直接复用的代码片段和踩坑总结，适合正在构建类似页面的开发者。
+
+---
+
+> 📚 **系列导航**  
+> 本文是 **Nuxt 状态同步三部曲** 的第三篇，综合运用前两篇的知识。
+>
+> - 第一篇：[《Nuxt 中 URL 与状态双向绑定的终极指南》](./nuxt-url-state-guide.md) —— 原理与手写方案。
+> - 第二篇：[《手写一个更适合 Nuxt 的 useRouteQuery》](./nuxt-use-route-query-composables.md) —— 封装为可复用的 composable。
+
+---
 
 ## 一、需求与挑战
 
@@ -16,7 +27,7 @@ tags: [Nuxt, Vue, State Management, Hydration]
 
 - **桌面端**：分页 + 键盘左右键翻页，支持 **Ctrl/⌘ + 点击** 多选标签。
 
-<img src="../../images/desktop-demo.gif" style="width: 100%; max-width: 800px;" alt="移动端综合演示" />
+<img src="../../images/desktop-demo.gif" style="width: 100%; max-width: 800px;" alt="桌面端综合演示" />
 
 - **移动端**：无限滚动 + 下滑刷新，支持 **“多选模式”开关** 进行标签多选（无需键盘）。
 
@@ -114,7 +125,7 @@ function pushQuery() {
   if (searchInput.value) query.search = searchInput.value;
   if (searchOption.value !== 1) query.option = String(searchOption.value);
   if (page.value !== 1) query.page = String(page.value);
-  if (size.value !== 5) query.size = String(size.value);
+  if (size.value !== 10) query.size = String(size.value);
   if (viewMode.value !== 1) query.viewMode = String(viewMode.value);
   if (level.value) query.level = level.value;
   if (tags.value.length) query.tag = tags.value.join(",");
@@ -464,7 +475,7 @@ const clearAllFilters = () => {
 
 **相关链接**：
 
-- [Nuxt 中 URL 与状态双向绑定的终极指南](./nuxt-url-state-guide)
+- [Nuxt 中 URL 与状态双向绑定指南](./nuxt-url-state-guide)
 - [Nuxt 4 中安全实现状态持久化：根治水合失败指南](./nuxt-state-persistence-guide)
 
 ---

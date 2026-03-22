@@ -9,12 +9,14 @@
       :ui="{
         body: 'sm:p-4',
         description: viewMode === 1 ? 'line-clamp-2' : '',
-        title: viewMode === 1 ? '' : 'line-clamp-1',
+        title: viewMode === 1 ? '' : 'line-clamp-1 text-md font-normal',
         footer: 'px-4 w-full flex flex-wrap',
+        meta: 'flex justify-between items-center',
       }"
       :title="item.title"
       :description="props.viewMode === 2 || isMobile ? '' : item.description"
       :date="item.date"
+      :badge="route.query.level === undefined ? { label: item.level } : ''"
       :to="localePath(item.path)"
       class="card"
       :class="
@@ -33,7 +35,7 @@
           :class="{ active: props.isTagSelected(tag) }"
           @click.prevent="emit('tag-click', tag, $event)"
         >
-           <em>#{{ tag }}</em>
+          <em>#{{ tag }}</em>
         </NuxtLink>
       </template>
     </UBlogPost>
@@ -43,6 +45,9 @@
 <script lang="ts" setup>
 const localePath = useLocalePath();
 const { isDesktop, isMobile } = useResponsive();
+const route = useRoute();
+
+console.log(route.query.level);
 
 const props = defineProps({
   docs: { type: Array, required: true },

@@ -1,7 +1,7 @@
 <template>
   <div>
     <DocsSearchHeader
-      v-model:search="searchInput"
+      v-model:search="searchInputDebounced"
       v-model:option="searchOption"
       v-model:view-mode="viewMode"
       :is-desktop="isDesktop"
@@ -26,9 +26,10 @@
       :is-tag-selected="isTagSelected"
       @tag-click="handleTagClick"
     />
+
     <div v-else class="text-center py-12 px-4">
       <div class="text-gray-400 text-6xl mb-4">📭</div>
-      <h3 class="text-gray-500 text-lg mb-2">暂无文档</h3>
+      <h3 class="text-gray-500 text-lg mb-2">{{ t("docs.noDocuments") }}</h3>
       <p class="text-gray-400 text-sm mb-4">
         {{ emptyStateMessage }}
       </p>
@@ -38,7 +39,7 @@
         class="cursor-pointer"
         @click="clearAllFilters"
       >
-        清除所有筛选
+        {{ t("docs.clearAllFilters") }}
       </UButton>
     </div>
 
@@ -62,45 +63,19 @@ import { useSwipe } from "~/composables/useSwipe";
 
 // ---------- 响应式工具 ----------
 const { isMobile, isDesktop } = useResponsive();
-
+const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 const { y } = useScroll(window); // 滚动距离（用于检测底部/顶部）
 
 // ---------- 状态定义（全部从 URL 初始化，保证 SSR 一致）----------
-const searchInput = ref(route.query.search?.toString() || ""); // 搜索关键词
-const searchOption = ref(Number(route.query.option) || 1); // 搜索范围：1=标题+描述，2=仅标题
-const page = ref(Number(route.query.page) || 1); // 当前页码
-const size = ref(Number(route.query.size) || 10); // 每页条数
-const viewMode = ref(Number(route.query.viewMode) || 1); // 显示模式：1=详细，2=简洁
-const level = ref(route.query.level?.toString() || ""); // 等级筛选（空字符串表示无筛选）
-const tags = ref<string[]>([]); // 标签筛选数组
-
-// ---------- 标签解析：从 URL 中读取 tag 参数（支持逗号分隔）----------
-const parseTagsFromQuery = () => {
-  const tagParam = route.query.tag;
-  tags.value = tagParam
-    ? Array.isArray(tagParam)
-      ? tagParam
-      : tagParam.split(",")
-    : [];
-};
-parseTagsFromQuery();
-
-// ---------- 监听路由变化（用户点击后退/前进时同步状态）----------
-watch(
-  () => route.query,
-  (newValue) => {
-    searchInput.value = newValue.search?.toString() || "";
-    searchOption.value = Number(newValue.option) || 1;
-    page.value = Number(newValue.page) || 1;
-    size.value = Number(newValue.size) || 10;
-    viewMode.value = Number(newValue.viewMode) || 1;
-    level.value = newValue.level?.toString() || "";
-    parseTagsFromQuery();
-  },
-  { immediate: true }, // 立即执行一次，确保组件初始化时状态正确
-);
+const searchInput = useRouteQueryString("search", { defaultValue: "" }); // 搜索关键词
+const searchOption = useRouteQueryNumber("option", { defaultValue: 1 }); // 搜索范围：1=标题+描述，2=仅标题
+const page = useRouteQueryNumber("page", { defaultValue: 1 }); // 当前页码
+const size = useRouteQueryNumber("size", { defaultValue: 10 }); // 每页条数
+const viewMode = useRouteQueryNumber("viewMode", { defaultValue: 1 }); // 显示模式：1=详细，2=简洁
+const level = useRouteQueryString("level", { defaultValue: "" }); // 等级筛选（空字符串表示无筛选）
+const tags = useRouteQueryArray("tag"); // 自动处理逗号分隔与数组
 
 // ---------- 标签辅助函数 ----------
 // 判断某个标签是否已被选中
@@ -155,35 +130,25 @@ const handleTagClick = (tag: string, event: MouseEvent) => {
   router.push({ query });
 };
 
-// ---------- 推路由：将当前状态同步到 URL ----------
-function pushQuery() {
-  const query: Record<string, string> = {};
-  if (searchInput.value) query.search = searchInput.value;
-  if (searchOption.value !== 1) query.option = String(searchOption.value);
-  if (page.value !== 1) query.page = String(page.value);
-  if (size.value !== 5) query.size = String(size.value);
-  if (viewMode.value !== 1) query.viewMode = String(viewMode.value);
-  if (level.value) query.level = level.value; // 只有非空时才添加
-  if (tags.value.length) query.tag = tags.value.join(",");
+// 创建用于防抖的搜索输入中间变量，初始值与实际搜索词相同
+const searchInputDebounced = ref(searchInput.value);
 
-  // 避免无意义的重复跳转（例如连续两次相同状态）
-  if (JSON.stringify(route.query) !== JSON.stringify(query)) {
-    router.push({ query });
-  }
-}
-
-// ---------- 监听状态变化，自动更新 URL ----------
-watch([page, size, viewMode, level, tags], () => pushQuery()); // 分页、显示模式、等级、标签变化立即更新
+// 监听防抖变量的变化，延迟 500ms 后再更新实际搜索词和页码
 watchDebounced(
-  searchInput,
-  () => {
-    // 搜索输入防抖更新
+  searchInputDebounced,
+  (val) => {
+    // 用户停止输入 500ms 后，将防抖变量的值同步到实际搜索词
+    searchInput.value = val;
+    // 搜索词变化时，重置页码到第一页
     page.value = 1;
-    pushQuery();
   },
-  { debounce: 500 },
+  { debounce: 500 }, // 防抖延迟时间 500 毫秒
 );
-watch(searchOption, () => pushQuery()); // 搜索范围变化立即更新
+
+// 反向同步：URL 变化时（后退/前进）更新防抖变量
+watch(searchInput, (val) => {
+  searchInputDebounced.value = val;
+});
 
 // ---------- 数据获取（自动响应所有筛选状态）----------
 const { data: docsData, pending } = await useAsyncData(
@@ -297,6 +262,7 @@ const isInputFocused = computed(() => {
   return active?.tagName === "INPUT" || active?.tagName === "TEXTAREA";
 });
 
+// 监听键盘事件
 useEventListener("keydown", (e) => {
   if (e.key === "Escape" && isInputFocused.value) {
     (document.activeElement as HTMLElement)?.blur();
@@ -323,7 +289,7 @@ const emptyStateMessage = computed(() => {
   const hasTags = tags.value.length;
 
   if (hasSearch || hasLevel || hasTags) {
-    return "没有找到符合条件的文档，试试调整筛选条件吧";
+    return t("docs.emptyMessage");
   }
   return "还没有文档，请稍后再来";
 });

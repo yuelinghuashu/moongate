@@ -16,7 +16,7 @@
     "profile": "プロフィール",
     "description": "GitHubアカウントでワンクリックログインし、コメントやインタラクションを利用可能"
   },
-  "search": {
+  "docs": {
     "inputPlaceholder": "ドキュメントを検索",
     "optionPlaceholder": "検索オプション",
     "viewModePlaceholder": "表示モード",
@@ -28,6 +28,20 @@
       { "id": 1, "name": "詳細" },
       { "id": 2, "name": "シンプル" }
     ],
+    "levels": {
+      "P1": "エコシステム適応",
+      "P2": "モジュール統合",
+      "P3": "ロジックリファクタリング",
+      "P4": "デリバリー自動化",
+      "P5": "低レイヤードライバ"
+    },
+    "filter": "フィルター",
+    "ctrlMultiSelect": "Ctrl+クリックで複数選択",
+    "multiSelectMode": "複数選択モード",
+    "exitMultiSelect": "複数選択を終了",
+    "noDocuments": "ドキュメントがありません",
+    "emptyMessage": "条件に一致するドキュメントが見つかりませんでした。フィルターを調整してみてください。",
+    "clearAllFilters": "すべてのフィルターをクリア",
     "findCount": "{count} 件の文書が見つかりました"
   },
   "settings": {

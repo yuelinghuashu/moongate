@@ -16,7 +16,7 @@
     "title": "接入终端",
     "description": "使用 GitHub 账号一键登录，解锁评论与互动权限"
   },
-  "search": {
+  "docs": {
     "inputPlaceholder": "搜索文档",
     "optionPlaceholder": "搜索选项",
     "viewModePlaceholder": "视图模式",
@@ -28,6 +28,20 @@
       { "id": 1, "name": "详细" },
       { "id": 2, "name": "简洁" }
     ],
+    "levels": {
+      "P1": "生态适配",
+      "P2": "模组接入",
+      "P3": "逻辑重构",
+      "P4": "交付自动化",
+      "P5": "底层驱动"
+    },
+    "filter": "筛选",
+    "ctrlMultiSelect": "Ctrl+点击多选",
+    "multiSelectMode": "多选模式",
+    "exitMultiSelect": "退出多选",
+    "noDocuments": "暂无文档",
+    "emptyMessage": "没有找到符合条件的文档，试试调整筛选条件吧",
+    "clearAllFilters": "清除所有筛选",
     "findCount": "已查询到 {count} 条文档"
   },
   "settings": {

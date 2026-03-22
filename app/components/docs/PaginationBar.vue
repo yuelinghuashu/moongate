@@ -9,7 +9,7 @@
     <USelect v-model="sizeModel" :items="sizeOptions" class="ml-4" />
 
     <span class="ml-4">
-      {{ t("search.findCount", { count: total }) }}
+      {{ t("docs.findCount", { count: total }) }}
     </span>
   </div>
 </template>

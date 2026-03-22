@@ -2,7 +2,7 @@
   <div>
     <!-- 桌面端提示 -->
     <span v-if="isDesktop" class="ml-2 text-xs text-gray-500">
-      Ctrl+点击多选
+      {{ t("docs.ctrlMultiSelect") }}
     </span>
 
     <!-- 移动端多选模式开关 -->
@@ -12,7 +12,11 @@
         :class="{ 'bg-blue-600 text-white': multiSelectMode }"
         @click="multiSelectMode = !multiSelectMode"
       >
-        {{ multiSelectMode ? "退出多选" : "多选模式" }}
+        {{
+          multiSelectMode
+            ? t("docs.exitMultiSelect")
+            : t("docs.multiSelectMode")
+        }}
       </button>
     </div>
 
@@ -34,6 +38,7 @@
 <script setup>
 import { ALLOWED_TAGS } from "~/utils/tags";
 
+const { t } = useI18n();
 const { isDesktop, isMobile } = useResponsive();
 const multiSelectMode = ref(false);
 
