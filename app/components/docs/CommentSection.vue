@@ -11,6 +11,11 @@
         :permalink="prop.permalink"
         storage-type="none"
       />
+
+      <!-- 主评论验证错误提示 -->
+      <div v-if="commentError" class="mt-2 text-xs font-mono text-ui-error">
+        // {{ commentError }}
+      </div>
     </ClientOnly>
 
     <!-- 评论按钮 -->
@@ -21,7 +26,7 @@
           :disabled="isCommentDisabled"
           :label="t('comment.actions.send')"
           size="lg"
-          @click="commentStore.submitComment()"
+          @click="handleSubmitComment"
         />
 
         <div v-else class="flex items-center gap-2">
@@ -31,8 +36,8 @@
       </div>
 
       <div class="mt-4 min-h-50">
-        <!-- 评论列表 -->
-        <DocsCommentList v-if="commentStore.commentList" />
+        <!-- 评论列表（已集成回复功能） -->
+        <DocsCommentList v-if="commentStore.commentList?.length" />
         <div v-else class="text-center">
           {{ t("comment.status.noComments") }}
         </div>
@@ -42,7 +47,9 @@
 </template>
 
 <script lang="ts" setup>
+import { watchDebounced } from "@vueuse/core";
 import useCommentStore from "~/stores/comment";
+
 const commentStore = useCommentStore();
 const { t } = useI18n();
 const { containerRef, onDetailsToggle } = useDetailsScroll();
@@ -55,16 +62,55 @@ const prop = defineProps({
   },
 });
 
-const _ = containerRef;
+// ==================== 状态 ====================
+/** 主评论验证错误信息 */
+const commentError = ref("");
 
-const isCommentDisabled = computed(() => (commentStore.comment ? false : true));
+// ==================== 计算属性 ====================
+/** 主评论按钮是否可用 */
+const isCommentDisabled = computed(() => {
+  const content = commentStore.comment;
+  if (!content?.trim()) return true;
+  const { valid } = commentStore.validateContent(content);
+  return !valid || commentStore.submitting;
+});
 
-// 当 permalink 变化时重新获取评论
+// ==================== 事件处理 ====================
+/** 提交主评论 */
+const handleSubmitComment = async () => {
+  const { valid, message } = commentStore.validateContent(commentStore.comment);
+  if (!valid) {
+    commentError.value = message;
+    return;
+  }
+  commentError.value = "";
+  await commentStore.submitComment();
+};
+
+// ==================== 实时验证主评论 ====================
+/** 监听主评论内容变化，实时更新错误提示 */
+watchDebounced(
+  () => commentStore.comment,
+  (content) => {
+    if (!content?.trim()) {
+      commentError.value = "";
+      return;
+    }
+    const { message } = commentStore.validateContent(content);
+    commentError.value = message;
+  },
+  { debounce: 300, immediate: true }
+);
+
+// ==================== 生命周期 ====================
+/** 当 permalink 变化时重新获取评论 */
 watch(
   () => prop.permalink,
   (newPermalink) => {
     commentStore.getCommentList(newPermalink);
   },
-  { immediate: true },
+  { immediate: true }
 );
+
+const _ = containerRef;
 </script>

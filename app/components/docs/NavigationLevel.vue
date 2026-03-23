@@ -23,8 +23,6 @@
 </template>
 
 <script setup>
-import { useLocalStorage } from "@vueuse/core";
-
 const route = useRoute();
 const { t } = useI18n();
 const { tm } = useI18nSafe();
@@ -33,8 +31,6 @@ const { isMobile } = useResponsive();
 const props = defineProps({
   level: { type: String, default: "" }, // 默认空字符串，表示无选中
 });
-
-const isFilterVisible = useLocalStorage("isFilterVisible", false);
 
 // 生成链接：如果当前等级等于点击的等级，则移除 level 参数；否则添加
 const getLink = (item) => {

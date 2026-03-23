@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm"
 import { useDB } from "~~/server/db"
 import { replies, users, comments } from "~~/server/db/schema"
+import { validateComment } from '~/../utils/commentValidator'
 
 
 export default defineEventHandler(async (event) => {
@@ -23,13 +24,18 @@ export default defineEventHandler(async (event) => {
     where: eq(users.id, session.user.id)
   })
 
-  // 如果用户不存在，则清理 session 并返回 401
-  if (!user) {
-    await clearUserSession(event);
-    throw createError({ status: 401, statusText: '用户不存在' })
+  // 4. 验证回复内容
+  const content = body.content?.trim();
+  if (!content) {
+    return { success: false, status: 400, message: '回复内容不能为空' };
   }
 
-  // 4. 验证目标是否存在（并可选检查是否属于当前文档）
+  const { valid, message } = validateComment(content);
+  if (!valid) {
+    return { success: false, status: 400, message: message || '回复包含敏感词' };
+  }
+
+  // 5. 验证目标是否存在（并可选检查是否属于当前文档）
   if (body.target_type === 'comment') {
     const comment = await useDB().select().from(comments).where(eq(comments.id, body.target_id)).limit(1);
     if (!comment.length) throw createError({ status: 404, statusText: '评论不存在' });
@@ -38,7 +44,7 @@ export default defineEventHandler(async (event) => {
     if (!reply.length) throw createError({ status: 404, statusText: '回复不存在' });
   }
 
-  // 5. 保存评论到数据库
+  // 6. 保存评论到数据库
   try {
     const [newReply] = await useDB().insert(replies).values({
       user_id: user.id, // 用数据库里查到的 user.id，不是 session 的

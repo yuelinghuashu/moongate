@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import { useDB } from "~~/server/db";
 import { comments, users } from "~~/server/db/schema";
+import { validateComment } from '~/../utils/commentValidator'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
@@ -25,10 +26,23 @@ export default defineEventHandler(async (event) => {
   }
 
   // 3. 验证评论内容
-  if (!body.content?.trim()) return { success: false, status: 400, message: '评论内容不能为空' }
+  const content = body.content?.trim();
+  if (!content) return { success: false, status: 400, message: '评论内容不能为空' };
 
-  // 4. 查询永久链接是否存在
+  const { valid, message } = validateComment(content);
+  if (!valid) return { success: false, status: 400, message: message || "评论包含敏感词" };
+
+  // 4. 查询文档是否存在
   if (!body.permalink) return { success: false, status: 400, message: '永久链接不能为空' }
+
+  // 验证文档是否真实存在
+  const doc = await queryCollection(event, 'docs')
+    .where('permalink', '=', body.permalink)
+    .first()
+
+  if (!doc) {
+    return { success: false, status: 404, message: '文档不存在' }
+  }
 
   // 5. 保存评论到数据库
   try {

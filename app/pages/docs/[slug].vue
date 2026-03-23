@@ -3,10 +3,11 @@
     <!-- 文档区 -->
     <main class="flex">
       <div class="flex-1 min-w-0">
-        <UBadge
-          class="mb-4"
-          variant="outline"
-          :label="`// Created At ${dayjs(page.date).format('YYYY-MM-DD')}`"
+        <!-- 元数据区 -->
+        <DocsMeta
+          :date="page.date"
+          :level="page.level"
+          :tags="page.tags"
         />
 
         <!-- 文档内容 -->
@@ -38,7 +39,6 @@
 
 <script lang="ts" setup>
 import { withLeadingSlash } from "ufo";
-import dayjs from "dayjs";
 import { useLocalStorage } from "@vueuse/core";
 
 // ==================== 组合式函数 ====================
