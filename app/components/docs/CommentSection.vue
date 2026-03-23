@@ -11,27 +11,31 @@
         :permalink="prop.permalink"
         storage-type="none"
       />
-
-      <!-- 主评论验证错误提示 -->
-      <div v-if="commentError" class="mt-2 text-xs font-mono text-ui-error">
-        // {{ commentError }}
-      </div>
     </ClientOnly>
 
     <!-- 评论按钮 -->
     <ClientOnly>
-      <div class="flex justify-end mb-8">
-        <UButton
-          v-if="loggedIn"
-          :disabled="isCommentDisabled"
-          :label="t('comment.actions.send')"
-          size="lg"
-          @click="handleSubmitComment"
-        />
+      <div class="flex items-start">
+        <!-- 错误信息区域，占据弹性空间，内部内容为错误信息或空 -->
+        <div class="flex-1">
+          <div v-if="commentError" class="mt-2 text-xs font-mono text-ui-error">
+            // {{ commentError }}
+          </div>
+        </div>
 
-        <div v-else class="flex items-center gap-2">
-          <p>{{ t("comment.status.login_to_comment") }}</p>
-          <SharedLogin />
+        <!-- 右侧按钮区域，始终右对齐 -->
+        <div class="flex justify-end mb-8">
+          <UButton
+            v-if="loggedIn"
+            :disabled="isCommentDisabled"
+            :label="t('comment.actions.send')"
+            size="lg"
+            @click="handleSubmitComment"
+          />
+          <div v-else class="flex items-center gap-2">
+            <p>{{ t("comment.status.login_to_comment") }}</p>
+            <SharedLogin />
+          </div>
         </div>
       </div>
 
@@ -99,7 +103,7 @@ watchDebounced(
     const { message } = commentStore.validateContent(content);
     commentError.value = message;
   },
-  { debounce: 300, immediate: true }
+  { debounce: 300, immediate: true },
 );
 
 // ==================== 生命周期 ====================
@@ -109,7 +113,7 @@ watch(
   (newPermalink) => {
     commentStore.getCommentList(newPermalink);
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 const _ = containerRef;
