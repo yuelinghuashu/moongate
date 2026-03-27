@@ -29,6 +29,17 @@ const items = computed<DropdownMenuItem[]>(() => [
       navigateTo(localePath(`/${user.value?.login}/profile`));
     },
   },
+  // {
+  //   label: t("user.myComments"),
+  //   icon: "lucide-message-square",
+  //   active:
+  //     user && user.value?.login
+  //       ? route.path === localePath(`/${user.value.login}/comments`)
+  //       : false,
+  //   onSelect() {
+  //     navigateTo(localePath(`/${user.value?.login}/comments`));
+  //   },
+  // },
   {
     label: t("user.logout"),
     icon: "i-lucide-log-out",

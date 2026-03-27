@@ -1,10 +1,12 @@
 ---
-permalink: Re_6lKyahpgE7O1a
 title: Nuxt 4 博客 Sitemap 配置完整指南
 description: 介绍了 Nuxt 4 博客 Sitemap 配置的基础知识、静态 Sitemap 和动态 Sitemap 的实现方法，并提供了生产环境部署要点。
 date: 2026-02-04
-tags: [Nuxt, SEO, Configuration]
+permalink: Re_6lKyahpgE7O1a
+series: ecosystem
+platform: nuxt
 level: P1
+tags: [Nuxt, SEO, Configuration]
 ---
 
 # Nuxt 4 博客 Sitemap 配置完整指南
@@ -63,9 +65,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     // 1. 获取文档数据
-    const docs = await queryCollection(event, "docs")
-      .select("path")
-      .all();
+    const docs = await queryCollection(event, "docs").select("path").all();
     const about = await queryCollection(event, "about").select("path").all();
 
     // 2. 构建URL数组

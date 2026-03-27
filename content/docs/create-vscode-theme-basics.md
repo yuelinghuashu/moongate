@@ -1,10 +1,12 @@
 ---
-permalink: zHv-nnnTcn4_3ZqoB8tC2
 title: 基础篇：从博客配色到 VS Code 主题：基础开发指南
 description: 从零开始，快速掌握 VS Code 主题开发的核心流程。学习如何创建颜色定义、配置语法高亮、调试主题，并将你的第一个主题发布到市场。
 date: 2026-02-25
-tags: [VSCode, Theme, Configuration]
+permalink: zHv-nnnTcn4_3ZqoB8tC2
 level: P3
+series: design-system
+platform: vscode
+tags: [VSCode, Theme, Configuration]
 ---
 
 # 基础篇：从博客配色到 VS Code 主题：基础开发指南

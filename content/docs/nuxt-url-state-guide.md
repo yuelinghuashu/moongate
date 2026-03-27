@@ -1,10 +1,12 @@
 ---
-permalink: zoWBqWIonE4PM-UE
 title: Nuxt 中 URL 与状态双向绑定指南：从原理到实践
-description: 深入探讨 Nuxt 中 URL 与状态双向绑定的原理，解决后退按钮数据不刷新、输入框与 URL 不一致等常见问题。从错误尝试到正确实践，提供手写 watch 和 Pinia 两种稳定可靠的 SSR 安全方案，并对比与 localStorage 的适用场景。同时分享一次生产环境调试的真实经历，帮助读者避开第三方库的潜在陷阱，构建可分享、可回溯的列表页。
+description: 深入探讨 Nuxt 中 URL 与状态双向绑定的原理，解决后退按钮数据不刷新、输入框与 URL 不一致等常见问题。从错误尝试到正确实践，提供手写 watch 和 Pinia 两种稳定可靠的 SSR 安全方案，并对比与 localStorage 的适用场景。
 date: 2026-02-19
-tags: [Nuxt, Vue, State Management]
+permalink: zoWBqWIonE4PM-UE
+series: url-state
+platform: nuxt
 level: P3
+tags: [Nuxt, Vue, State Management]
 ---
 
 # Nuxt 中 URL 与状态双向绑定指南：从原理到实践
@@ -14,9 +16,9 @@ level: P3
 ---
 
 > ## 系列导航
-> 
+>
 > 本文是 **Nuxt 状态同步三部曲** 的第一篇，主要讲解 URL 与状态双向同步的原理与手写方案。
-> 
+>
 > - **第二篇**：[《手写一个更适合 Nuxt 的 useRouteQuery》](./nuxt-use-route-query-composables.md) —— 将重复逻辑封装成开箱即用的 composable，大幅简化代码。
 > - **第三篇**：[《从零到一：构建一个功能完备的文档列表页》](./nuxt-docs-list-page-complete-guide.md) —— 综合运用前两篇的知识，实现一个包含分页、搜索、多标签筛选的完整列表页。
 
@@ -72,7 +74,7 @@ watch: [() => pagination.page, () => pagination.size]; // 漏了 searchValue
 
 ```ts
 // 假设 URL 中有 ?tag=Nuxt,Vue
-const tags = ref(route.query.tag?.split(','))  // 如果 tag 不存在，会报错
+const tags = ref(route.query.tag?.split(",")); // 如果 tag 不存在，会报错
 ```
 
 **问题**：没有处理 `undefined` 或数组格式（如 `?tag=Nuxt&tag=Vue`），且序列化时未考虑数组。
@@ -135,7 +137,9 @@ const tags = ref<string[]>([]);
 const parseTagsFromQuery = () => {
   const tagParam = route.query.tag;
   tags.value = tagParam
-    ? (Array.isArray(tagParam) ? tagParam : tagParam.split(","))
+    ? Array.isArray(tagParam)
+      ? tagParam
+      : tagParam.split(",")
     : [];
 };
 parseTagsFromQuery();
@@ -152,7 +156,7 @@ watch(
     viewMode.value = Number(q.viewMode) || 1;
     parseTagsFromQuery();
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 // 3. Watch 2：内部状态 → URL（用户操作时同步）
@@ -178,22 +182,28 @@ const { data } = useAsyncData(
   async () => {
     // 使用当前状态构建查询
     let query = queryCollection("docs").order("date", "DESC");
-    if (searchInput.value) { /* ... */ }
+    if (searchInput.value) {
+      /* ... */
+    }
     if (level.value) query = query.where("level", "=", level.value);
     if (tags.value.length) {
-      tags.value.forEach(tag => {
+      tags.value.forEach((tag) => {
         query = query.where("tags", "LIKE", `%${tag}%`);
       });
     }
-    return query.skip((page.value - 1) * size.value).limit(size.value).all();
+    return query
+      .skip((page.value - 1) * size.value)
+      .limit(size.value)
+      .all();
   },
   {
-    watch: [searchInput, searchOption, page, size, level, viewMode, tags] // 直接监听 ref
-  }
+    watch: [searchInput, searchOption, page, size, level, viewMode, tags], // 直接监听 ref
+  },
 );
 ```
 
 **关键点**：
+
 - 数组参数（`tags`）在解析时兼容逗号分隔和重复键名，序列化时统一用逗号分隔。
 - `watch` 中直接使用 ref 本身，确保数组内部变化（如 `push`/`pop`）能被正确捕获。
 - 只将非默认值的参数写入 URL，保持 URL 简洁。
@@ -223,7 +233,7 @@ Invalid value used as weak map key
 
 这个经历让我意识到：**在生产环境中，稳定可控的方案往往比“看起来简洁”的方案更重要**。手写方案虽然代码稍多，但每一行都在自己的掌控之中，排查问题也更容易。
 
-> **后续思考**：官方 `useRouteQuery` 的 `WeakMap` 批量更新机制在 SSR 中可能引发跨请求污染，而手写方案完全避免了全局状态。后来我封装了一套更适合自己项目的 `useRouteQueryString`、`useRouteQueryNumber` 等函数，具体见 [另一篇文章](#)。
+> **后续思考**：官方 `useRouteQuery` 的 `WeakMap` 批量更新机制在 SSR 中可能引发跨请求污染，而手写方案完全避免了全局状态。后来我封装了一套更适合自己项目的 `useRouteQueryString`、`useRouteQueryNumber` 等函数，具体见 [手写一个更适合 Nuxt 的 useRouteQuery：简化 URL 状态同步](./nuxt-use-route-query-composables.md)。
 
 ---
 
@@ -250,6 +260,7 @@ Invalid value used as weak map key
 当你将页面拆分为多个子组件时，如果某个子组件需要 `isDesktop` 值，请务必从父组件传入，而不是在子组件内部再次调用 `useResponsive`。例如：
 
 **父组件（index.vue）**
+
 ```vue
 <template>
   <TagFilter :is-desktop="isDesktop" ... />
@@ -260,9 +271,10 @@ const { isDesktop } = useResponsive();
 ```
 
 **子组件（TagFilter.vue）**
+
 ```vue
 <script setup>
-const props = defineProps(['isDesktop']);
+const props = defineProps(["isDesktop"]);
 // 内部使用 props.isDesktop，不再调用 useResponsive
 </script>
 ```
@@ -276,22 +288,24 @@ const props = defineProps(['isDesktop']);
 URL 状态同步不仅适用于分页、搜索等基础操作，还能与用户交互无缝结合。
 
 ### 6.1 键盘左右键翻页
+
 ```ts
 useEventListener("keydown", (e) => {
   if (e.key === "ArrowLeft" && hasPrevPage.value) {
     e.preventDefault();
-    page.value -= 1;  // page 变化会自动触发 URL 更新和数据刷新
+    page.value -= 1; // page 变化会自动触发 URL 更新和数据刷新
   }
   // ...
 });
 ```
 
 ### 6.2 移动端无限滚动
+
 ```ts
 useSwipe({
   onUp: () => {
     if (hasNextPage.value) page.value += 1;
-  }
+  },
 });
 ```
 
@@ -308,6 +322,7 @@ useSwipe({
 | `useRouteQuery` | 最少   | 一般     | ⚠️需验证 | **简单场景，但建议先测试** |
 
 ### Pinia 封装示例（可折叠）
+
 <details>
 <summary>点击展开 Pinia 方案代码</summary>
 
@@ -330,20 +345,25 @@ export const useUrlQueryStore = defineStore("urlQuery", () => {
   const parseTags = () => {
     const tagParam = route.query.tag;
     tags.value = tagParam
-      ? (Array.isArray(tagParam) ? tagParam : tagParam.split(","))
+      ? Array.isArray(tagParam)
+        ? tagParam
+        : tagParam.split(",")
       : [];
   };
   parseTags();
 
-  watch(() => route.query, (q) => {
-    search.value = q.search?.toString() || "";
-    option.value = Number(q.option) || 1;
-    page.value = Number(q.page) || 1;
-    size.value = Number(q.size) || 10;
-    level.value = q.level?.toString() || "";
-    viewMode.value = Number(q.viewMode) || 1;
-    parseTags();
-  });
+  watch(
+    () => route.query,
+    (q) => {
+      search.value = q.search?.toString() || "";
+      option.value = Number(q.option) || 1;
+      page.value = Number(q.page) || 1;
+      size.value = Number(q.size) || 10;
+      level.value = q.level?.toString() || "";
+      viewMode.value = Number(q.viewMode) || 1;
+      parseTags();
+    },
+  );
 
   const pushQuery = () => {
     const query: Record<string, string> = {};
@@ -365,6 +385,7 @@ export const useUrlQueryStore = defineStore("urlQuery", () => {
   return { search, option, page, size, level, viewMode, tags };
 });
 ```
+
 </details>
 
 ---

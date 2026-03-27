@@ -1,7 +1,7 @@
 <template>
   <div class="max-h-150 overflow-y-auto mt-4 space-y-4">
     <div
-      v-for="item in commentStore.commentList"
+      v-for="item in props.items"
       :id="`${item.type}-${item.id}`"
       :key="item.id"
       class="group relative py-6 border-b border-ui-border/30 hover:bg-ui-bg-hover transition-all"
@@ -12,7 +12,8 @@
         class="mb-2 pl-3 text-sm text-ui-text-muted border-l-2 border-ui-border/50 cursor-pointer"
         @click="scrollToElement(item.reply_to.id, item.reply_to.type)"
       >
-        <span class="font-medium">@{{ item.reply_to.username }}</span>：
+        <span class="font-medium">@{{ item.reply_to.username }}</span
+        >：
         <span class="italic">{{ item.reply_to.excerpt }}</span>
       </div>
 
@@ -59,7 +60,9 @@
               :class="isOwnComment(item) ? 'text-right' : ''"
               style="max-width: 80%; min-width: 200px"
             >
-              <div class="[&_pre]:text-left [&_code]:text-left [&_pre_code]:text-left">
+              <div
+                class="[&_pre]:text-left [&_code]:text-left [&_pre_code]:text-left"
+              >
                 <DocsMarkdownRenderer :content="item.content" />
               </div>
             </div>
@@ -87,7 +90,10 @@
               v-model="replyLocal"
               :permalink="commentStore.permalink"
             />
-            <div v-if="commentStore.replyError" class="mt-2 text-xs font-mono text-ui-error">
+            <div
+              v-if="commentStore.replyError"
+              class="mt-2 text-xs font-mono text-ui-error"
+            >
               // {{ commentStore.replyError }}
             </div>
             <div class="text-right mt-2">
@@ -114,6 +120,10 @@ const commentStore = useCommentStore();
 const { user, loggedIn } = useUserSession();
 const { t } = useI18n();
 
+const props = defineProps({
+  items: { type: Array, required: true },
+});
+
 // 本地绑定回复内容
 const replyLocal = computed({
   get: () => commentStore.replyContent,
@@ -123,7 +133,9 @@ const replyLocal = computed({
 // 计算属性：回复按钮是否可用
 const isReplyDisabled = computed(() => {
   const { valid } = commentStore.getReplyValidation();
-  return !commentStore.replyContent?.trim() || !valid || commentStore.submitting;
+  return (
+    !commentStore.replyContent?.trim() || !valid || commentStore.submitting
+  );
 });
 
 // 工具函数

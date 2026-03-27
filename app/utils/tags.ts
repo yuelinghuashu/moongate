@@ -1,7 +1,7 @@
 // app/utils/tags.ts
 export const ALLOWED_TAGS = [
   // 技术栈
-  'Nuxt', 'Vue', 'Docker', 'Caddy', 'GitHub Actions', 'Drizzle', 'PostgreSQL', 'VSCode',
+  'HTML', 'CSS', 'JavaScript', 'Nuxt', 'Vue', 'Docker', 'Caddy', 'GitHub Actions', 'Drizzle', 'PostgreSQL', 'VSCode',
 
   // 领域概念
   'CI/CD', 'ORM', 'OAuth', 'i18n', 'SEO', 'RSS',

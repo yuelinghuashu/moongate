@@ -1,10 +1,12 @@
 ---
-permalink: ISTbvcgsVmosY61O
 title: 解决Nuxt Content渲染问题：从基础配置到渲染显示完整指南
 description: 记录了我从零开始配置 @nuxt/content 模块，渲染 Markdown 内容的完整过程。
 date: 2025-12-28
-tags: [Nuxt, Content Rendering, Configuration, Performance]
+permalink: ISTbvcgsVmosY61O
+series: performance
+platform: nuxt
 level: P2
+tags: [Nuxt, Content Rendering, Configuration, Performance]
 ---
 
 # 解决Nuxt Content渲染问题：从基础配置到优雅显示完整指南

@@ -6,6 +6,6 @@
 const route = useRoute();
 
 definePageMeta({
-  requiresAuth: true  // 标记需要保护
-})
+  requiresAuth: true, // 标记需要保护
+});
 </script>

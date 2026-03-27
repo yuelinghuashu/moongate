@@ -3,9 +3,10 @@
   "description": "月の門を押し開け、コードで築かれた探求の空間へと足を踏み入れましょう。ここには、フルスタック開発、システム思考、そして複雑な問題を優雅に解きほぐす技術に関する思索と記録が綴られています。",
   "coffeeTip": "この記事が役に立ったら、コーヒーをごちそうしてください ☕️",
   "navigationBar": [
-    { "id": 1, "name": "ドキュメント", "link": "/ja/docs" },
-    { "id": 2, "name": "概要", "link": "/ja/about" },
-    { "id": 3, "name": "設定", "link": "/ja/settings" }
+    { "id": 1, "name": "ドキュメント", "link": "/docs" },
+    { "id": 2, "name": "シリーズ", "link": "/series" },
+    { "id": 3, "name": "概要", "link": "/about" },
+    { "id": 4, "name": "設定", "link": "/settings" }
   ],
   "user": {
     "login": "GitHubでログイン",
@@ -14,6 +15,7 @@
     "username": "ユーザー名",
     "title": "端末に接続",
     "profile": "プロフィール",
+    "myComments": "自分のコメント",
     "description": "GitHubアカウントでワンクリックログインし、コメントやインタラクションを利用可能"
   },
   "docs": {
@@ -43,6 +45,16 @@
     "emptyMessage": "条件に一致するドキュメントが見つかりませんでした。フィルターを調整してみてください。",
     "clearAllFilters": "すべてのフィルターをクリア",
     "findCount": "{count} 件の文書が見つかりました"
+  },
+  "series": {
+    "url-state": "URL状態同期",
+    "design-system": "デザインシステム",
+    "comment": "コメント",
+    "deployment": "デプロイ自動化",
+    "i18n": "国際化",
+    "backend": "バックエンド統合",
+    "performance": "パフォーマンス最適化",
+    "ecosystem": "エコシステム適応"
   },
   "settings": {
     "theme": {

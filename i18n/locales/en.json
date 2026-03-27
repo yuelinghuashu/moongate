@@ -2,17 +2,19 @@
   "title": "Where Moon Meets Code",
   "description": "Push open the Moon Gate, and step into an exploratory space built with code. Here lie contemplations and notes on full-stack development, systems thinking, and the art of elegantly untangling complexity.",
   "coffeeTip": "If this article helped you, you can buy me a coffee ☕️",
-  "navigationBar": [
-    { "id": 1, "name": "Docs", "link": "/en/docs" },
-    { "id": 2, "name": "About", "link": "/en/about" },
-    { "id": 3, "name": "Settings", "link": "/en/settings" }
-  ],
+"navigationBar": [
+  { "id": 1, "name": "Docs", "link": "/docs" },
+  { "id": 2, "name": "Series", "link": "/series" },
+  { "id": 3, "name": "About", "link": "/about" },
+  { "id": 4, "name": "Settings", "link": "/settings" }
+],
   "user": {
     "login": "Sign in with GitHub",
     "logout": "Logout",
     "loggingIn": "Loading...",
     "username": "Username",
     "profile": "Profile",
+    "myComments": "My Comments",
     "title": "Access Terminal",
     "description": "One-click login with GitHub account to unlock comments and interactions"
   },
@@ -43,6 +45,16 @@
     "emptyMessage": "No documents found. Try adjusting your filters.",
     "clearAllFilters": "Clear all filters",
     "findCount": "Found {count} documents"
+  },
+  "series": {
+    "url-state": "URL State Sync",
+    "design-system": "Design System",
+    "comment": "Comments",
+    "deployment": "Deployment Automation",
+    "i18n": "Internationalization",
+    "backend": "Backend Integration",
+    "performance": "Performance Optimization",
+    "ecosystem": "Ecosystem Adaptation"
   },
   "settings": {
     "theme": {

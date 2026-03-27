@@ -1,4 +1,4 @@
-import { pgTable, serial, timestamp, integer, text } from 'drizzle-orm/pg-core'
+import { pgTable, serial, timestamp, integer, text, varchar } from 'drizzle-orm/pg-core'
 import { users } from './users'
 import { targetTypeEnum } from './enums';
 
@@ -9,6 +9,7 @@ export const replies = pgTable('replies', {
   target_type: targetTypeEnum('target_type').notNull().default('comment'),
   user_id: integer('user_id').references(() => users.id, { onDelete: 'set null' }),
   content: text('content').notNull(),
+  permalink: varchar('permalink', { length: 255 }).notNull(),
   created_at: timestamp('created_at', { withTimezone: true }).defaultNow(),
 })
 

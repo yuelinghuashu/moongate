@@ -1,10 +1,12 @@
 ---
-permalink: ex1jDiPxiGbTqSuEKhHg6
 title: 从零到一：为 Moongate 博客打造一个支持多级引用的评论区
 description: 介绍了 Moongate 博客的评论区设计和实现，包括多级引用、扁平时间线、引用块跳转、用户认证、响应式设计等。
 date: 2026-03-08
-tags: [Nuxt, Content Rendering, Security]
+permalink: ex1jDiPxiGbTqSuEKhHg6
+series: comment
+platform: nuxt
 level: P3
+tags: [Nuxt, Content Rendering, Security]
 ---
 
 # 从零到一：为 Moongate 博客打造一个支持多级引用的评论区
@@ -14,12 +16,9 @@ level: P3
 
 如果你一路跟随我的系列教程，现在已经拥有了一个坚实的 Nuxt 4 项目基础：
 
-- 通过[《Nuxt 4 集成 Drizzle ORM (PostgreSQL) 完整教程》](./nuxt-drizzle-postgresql)，你掌握了数据库的连接、模型定义与查询，为数据持久化铺平了道路。
-    
-- 在[《Nuxt 评论区完美支持 Markdown：从解析、高亮到安全渲染全攻略》](./nuxt-comment-markdown-guide)中，你学会了如何让用户输入的内容安全地支持 Markdown 和代码高亮。
-    
-- 而[《Nuxt 4 集成 GitHub 登录：从原理到实践》](./Nuxt-oauth-github)则为你的应用添加了可靠的用户认证系统，确保只有真实用户才能参与互动。
-    
+- 通过[《Nuxt 4 集成 Drizzle ORM (PostgreSQL) 完整教程》](./nuxt-drizzle-postgresql.md)，你掌握了数据库的连接、模型定义与查询，为数据持久化铺平了道路。
+- 在[《Nuxt 评论区完美支持 Markdown：从解析、高亮到安全渲染全攻略》](./nuxt-comment-markdown-guide.md)中，你学会了如何让用户输入的内容安全地支持 Markdown 和代码高亮。
+- 而[《Nuxt 4 集成 GitHub 登录：从原理到实践》](./nuxt-oauth-github.md)则为你的应用添加了可靠的用户认证系统，确保只有真实用户才能参与互动。
 
 现在，是时候将这些模块组合起来，打造一个真正**可用的、支持多级引用的评论区**了。本篇将基于上述基础，从数据库多态关联设计、后端 API 开发，到前端 Pinia 状态管理、组件交互打磨，一步步构建一个简洁但功能完备的评论系统。它不仅能处理常规的评论与回复，还支持**多级引用（引用的引用）**、**扁平时间线展示**、**点击引用块跳转并高亮**等实用功能，最终为你博客的读者提供一个沉浸式的讨论体验。
 
@@ -30,7 +29,6 @@ level: P3
 ## 📌 代码说明
 
 本文所有代码均基于作者的项目环境编写，旨在清晰展示设计思路与核心实现。由于不同项目的配置（如数据库连接、环境变量、文件路径等）可能存在差异，请根据实际情况灵活调整。**直接复制粘贴可能无法运行，理解原理后再动手，才是最高效的学习方式。**
-
 
 ## 1. 背景与需求
 
@@ -90,17 +88,25 @@ CREATE INDEX idx_replies_target ON replies(target_id, target_type);
 **`server/db/schema/comments.ts`**
 
 ```ts
-import { pgTable, serial, varchar, timestamp, integer, text } from 'drizzle-orm/pg-core'
-import { users } from './users'
+import {
+  pgTable,
+  serial,
+  varchar,
+  timestamp,
+  integer,
+  text,
+} from "drizzle-orm/pg-core";
+import { users } from "./users";
 
-
-export const comments = pgTable('comments', {
-  id: serial('id').primaryKey(),
-  user_id: integer('user_id').references(() => users.id, { onDelete: 'set null' }),
-  content: text('content').notNull(),
-  permalink: varchar('permalink', { length: 255 }).notNull(),
-  created_at: timestamp('created_at', { withTimezone: true }).defaultNow(),
-})
+export const comments = pgTable("comments", {
+  id: serial("id").primaryKey(),
+  user_id: integer("user_id").references(() => users.id, {
+    onDelete: "set null",
+  }),
+  content: text("content").notNull(),
+  permalink: varchar("permalink", { length: 255 }).notNull(),
+  created_at: timestamp("created_at", { withTimezone: true }).defaultNow(),
+});
 
 export type CommentSelect = typeof comments.$inferSelect;
 export type CommentInsert = typeof comments.$inferInsert;
@@ -139,16 +145,21 @@ export type ReplyInsert = typeof replies.$inferInsert;
 **`server/db/schema/users.ts`**
 
 ```ts
-import { pgTable, serial, varchar, boolean, timestamp } from 'drizzle-orm/pg-core'
+import {
+  pgTable,
+  serial,
+  varchar,
+  boolean,
+  timestamp,
+} from "drizzle-orm/pg-core";
 
-
-export const users = pgTable('users', {
-  id: serial('id').primaryKey(),
-  github_id: varchar('github_id', { length: 39 }).notNull().unique(),
-  username: varchar('username', { length: 100 }).notNull(),
-  is_admin: boolean('is_admin').default(false),
-  created_at: timestamp('created_at', { withTimezone: true }).defaultNow(),
-})
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  github_id: varchar("github_id", { length: 39 }).notNull().unique(),
+  username: varchar("username", { length: 100 }).notNull(),
+  is_admin: boolean("is_admin").default(false),
+  created_at: timestamp("created_at", { withTimezone: true }).defaultNow(),
+});
 
 export type UserSelect = typeof users.$inferSelect;
 export type UserInsert = typeof users.$inferInsert;

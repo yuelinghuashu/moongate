@@ -47,8 +47,6 @@ const localePath = useLocalePath();
 const { isDesktop, isMobile } = useResponsive();
 const route = useRoute();
 
-console.log(route.query.level);
-
 const props = defineProps({
   docs: { type: Array, required: true },
   viewMode: { type: Number, required: true },

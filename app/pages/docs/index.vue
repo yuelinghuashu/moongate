@@ -191,6 +191,17 @@ const { data: docsData, pending } = await useAsyncData(
       query
         .skip((page.value - 1) * size.value)
         .limit(size.value)
+        .select(
+          "id",
+          "title",
+          "description",
+          "level",
+          "tags",
+          "permalink",
+          "date",
+          "level",
+          "path",
+        )
         .all(),
     ]);
 

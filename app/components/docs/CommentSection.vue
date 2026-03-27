@@ -15,16 +15,16 @@
 
     <!-- 评论按钮 -->
     <ClientOnly>
-      <div class="flex items-start">
-        <!-- 错误信息区域，占据弹性空间，内部内容为错误信息或空 -->
+      <div class="flex items-center">
+        <!-- 左侧占位区域：始终存在，占据剩余空间，内容为错误信息或空 -->
         <div class="flex-1">
-          <div v-if="commentError" class="mt-2 text-xs font-mono text-ui-error">
+          <div v-if="commentError" class="text-xs font-mono text-ui-error">
             // {{ commentError }}
           </div>
         </div>
 
-        <!-- 右侧按钮区域，始终右对齐 -->
-        <div class="flex justify-end mb-8">
+        <!-- 右侧按钮区域 -->
+        <div class="flex justify-end">
           <UButton
             v-if="loggedIn"
             :disabled="isCommentDisabled"
@@ -41,7 +41,10 @@
 
       <div class="mt-4 min-h-50">
         <!-- 评论列表（已集成回复功能） -->
-        <DocsCommentList v-if="commentStore.commentList?.length" />
+        <DocsCommentList
+          v-if="commentStore.commentList?.length"
+          :items="commentStore.commentList"
+        />
         <div v-else class="text-center">
           {{ t("comment.status.noComments") }}
         </div>

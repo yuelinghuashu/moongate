@@ -1,10 +1,13 @@
 ---
-permalink: WutORfLnei7KkITU6m5sz
 title: GitHub Actions + Docker 极简自动化部署教程（入门篇）
 description: 从零开始，用最简洁的方式将你的应用打包成 Docker 镜像，并通过 GitHub Actions 实现自动构建、推送和服务器部署。适合 Docker 新手快速上手 CI/CD 流水线。
 date: 2026-03-16 22:00:00
-tags: [GitHub Actions, Caddy, Docker, CI/CD, Deployment]
+permalink: WutORfLnei7KkITU6m5sz
+series: deployment
+platform: github-actions
 level: P4
+tags: [GitHub Actions, Caddy, Docker, CI/CD, Deployment]
+
 ---
 
 # GitHub Actions + Docker 极简自动化部署教程（入门篇）

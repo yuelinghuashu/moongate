@@ -1,10 +1,12 @@
 ---
-permalink: AFuADwcr7A3kuZyPRt9-f
 title: 进阶篇：从单体到工程化：VS Code 主题进阶构建指南
 description: 告别动辄上千行的 JSON 文件，通过 YAML 拆分和构建脚本实现主题的模块化管理。让颜色变量可复用、语言规则可维护，为多主题扩展打下坚实基础。
 date: 2026-03-10
-tags: [VSCode, Theme, Engineering]
+permalink: AFuADwcr7A3kuZyPRt9-f
+series: design-system
+platform: vscode
 level: P3
+tags: [VSCode, Theme, Engineering]
 ---
 
 # 进阶篇：从单体到工程化：VS Code 主题进阶构建指南

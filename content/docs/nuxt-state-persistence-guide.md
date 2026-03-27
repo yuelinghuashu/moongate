@@ -1,20 +1,22 @@
 ---
-permalink: pLxgQb94hJ-Wjq93
 title: Nuxt 4 中安全实现状态持久化：根治水合失败指南
 description: 介绍 Nuxt 4 中安全实现状态持久化的原理，以及如何用 useLocalStorage 解决 Nuxt 4 的 SSR 水合失败问题。
 date: 2026-02-11
-tags: [Nuxt, State Management, Hydration, Performance]
+permalink: pLxgQb94hJ-Wjq93
+series: performance
+platform: nuxt
 level: P1
+tags: [Nuxt, State Management, Hydration, Performance]
 ---
 
 # Nuxt 4 中安全实现状态持久化：根治水合失败指南
 
 > ## 前言
-> 
+>
 > 我打算给博客加“视图模式”切换——让读者在“详细模式”（显示摘要）和“简洁模式”（只显示标题）间切换。功能很简单：用 `USelect` 绑定 Pinia 的 `viewMode`，再用 `v-if` 控制摘要显示。
-> 
+>
 > 本地开发一切正常。部署后却出现诡异现象：刷新页面时下拉菜单总是跳回“详细模式”，控制台报了一堆 `Hydration mismatch` 错误。我用过 `ClientOnly`，虽然不报错了，但刷新时出现短暂空白。我试过在 `onMounted` 里延迟读取，试过 `isHydrated` 标志，代码越来越复杂，bug 却还在。
-> 
+>
 > 直到我重新理解了 Nuxt 的 SSR 机制和 `useLocalStorage` 的原理，才真正解决了问题。
 
 ## 问题根源：两个世界的状态冲突
