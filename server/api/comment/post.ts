@@ -7,8 +7,8 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   const session = await getUserSession(event);
 
-  console.log('body', body);
-  console.log('session', session);
+  // console.log('body', body);
+  // console.log('session', session);
 
   // 1. 验证 session
   if (!session.user?.id) return { success: false, status: 401, message: '请先登录' };
