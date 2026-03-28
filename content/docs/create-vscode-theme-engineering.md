@@ -2,7 +2,7 @@
 title: 进阶篇：从单体到工程化：VS Code 主题进阶构建指南
 description: 告别动辄上千行的 JSON 文件，通过 YAML 拆分和构建脚本实现主题的模块化管理。让颜色变量可复用、语言规则可维护，为多主题扩展打下坚实基础。
 date: 2026-03-10
-permalink: AFuADwcr7A3kuZyPRt9-f
+permalink: 7199f437-f5ae-40e9-b08b-fba6968205b5
 series: design-system
 platform: vscode
 level: P3
@@ -17,6 +17,7 @@ tags: [VSCode, Theme, Engineering]
 > - **进阶篇**：从单体 JSON 到模块化 YAML 工程重构
 > - [扩展篇：构建深色/浅色双主题及多主题变体](./create-vscode-theme-multi-theme.md)
 > - [系统篇：从设计系统到视觉契约，打造完整的主题品牌体系](./create-vscode-theme-design-system.md)
+> - [工程深化篇：工业级构建脚本与 DTCG 完整实现](./create-vscode-theme-engineering-deep.md)
 
 在[基础篇](./create-vscode-theme-basics.md)中，你已经学会了如何从零创建并发布一个 VS Code 主题。但随着主题功能越来越丰富，你可能遇到了以下痛点：
 
@@ -298,6 +299,7 @@ console.log("✅ 主题构建完成！");
 - `order` 数组的顺序很重要，后合并的规则会覆盖前面相同作用域的规则，因此请按你希望的优先级排列。
 - 如果颜色变量未定义，脚本会给出警告，生成的 JSON 中会保留 `${var}` 占位符，导致主题无效。务必确保所有变量均已定义。
 - 透明度后缀只支持两位十六进制（如 `20` 表示 12.5% 透明度），如果你的颜色值本身已包含 alpha 通道（如 `#3b82f620`），请将其拆分为基础色 + 后缀，不要在变量中预置 alpha。
+- **透明度后缀格式**：透明度后缀使用两位十六进制数（00–FF），其中 `20` 对应约 12.5% 透明度，`80` 对应 50%，`FF` 对应完全不透明。这种表示法直接对应 CSS 的 `#RRGGBBAA` 格式，便于构建脚本直接拼接
 
 ---
 

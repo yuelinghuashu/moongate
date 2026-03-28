@@ -2,7 +2,7 @@
 title: Nuxt 评论区完美支持 Markdown：从解析、高亮到安全渲染
 description: 手把手教你为 Nuxt 博客评论区添加安全、美观、功能完整的 Markdown 渲染支持，代码块配色与文档（Nuxt Content）自动统一，深浅色模式无缝切换。
 date: 2026-02-21
-permalink: AzbFPaOyjlexV3z7sr506
+permalink: 85853cc1-2371-4b61-a6ef-90fda07a3116
 series: comment
 platform: nuxt
 level: P3

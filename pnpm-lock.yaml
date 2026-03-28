@@ -71,9 +71,6 @@ importers:
       moon-gate:
         specifier: 'link:'
         version: 'link:'
-      nanoid:
-        specifier: ^5.1.6
-        version: 5.1.6
       pg:
         specifier: ^8.18.0
         version: 8.18.0

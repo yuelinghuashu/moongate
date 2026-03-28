@@ -1,7 +1,7 @@
 ---
 title: GitHub Actions + Caddy 全自动部署动态网站（动态篇）
 description: 深入后端服务的进程管理、环境变量注入、数据库迁移，结合 Caddy 反向代理，打造完整的动态应用部署流水线。
-permalink: sA2qPU6rJ1do_b-i
+permalink: 051f1e4a-1151-49c2-b61b-e3c43859332b
 date: 2026-01-23
 series: deployment
 platform: github-actions

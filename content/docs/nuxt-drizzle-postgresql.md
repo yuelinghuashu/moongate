@@ -1,12 +1,12 @@
 ---
-permalink: An5ylDpTQGyKXIJb
 title: "Nuxt 4 集成 Drizzle ORM (PostgreSQL) 完整教程"
 description: "本教程专注于 Drizzle ORM 在 PostgreSQL 数据库上的 Nuxt 4 集成。如果您使用的是 MySQL、SQLite 等其他数据库，部分配置（如连接驱动、数据类型）会有所不同，请参考 Drizzle 官方文档相应部分。"
 date: 2026-02-16
+permalink: 9f906ca5-0c33-4467-ac12-092e5e204a99
 series: backend
 platform: nuxt
-tags: [Nuxt, Drizzle, PostgreSQL, ORM]
 level: P2
+tags: [Nuxt, Drizzle, PostgreSQL, ORM]
 ---
 
 # 🚀 Nuxt 4 集成 Drizzle ORM (PostgreSQL) 完整教程
@@ -351,7 +351,6 @@ export default defineEventHandler(async (event) => {
 ## 🐛 常见错误与解决方案
 
 ### 错误 1：`Cannot read properties of undefined (reading 'referencedTable')`
-
 
 **原因**：初始化 `drizzle` 时没有传入完整 schema（缺少 relations）。
 **解决**：确保 `useDB()` 中 `drizzle(pool, { schema })` 的 `schema` 对象包含了 `relations` 导出。

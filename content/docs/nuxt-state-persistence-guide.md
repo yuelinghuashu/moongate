@@ -2,7 +2,7 @@
 title: Nuxt 4 中安全实现状态持久化：根治水合失败指南
 description: 介绍 Nuxt 4 中安全实现状态持久化的原理，以及如何用 useLocalStorage 解决 Nuxt 4 的 SSR 水合失败问题。
 date: 2026-02-11
-permalink: pLxgQb94hJ-Wjq93
+permalink: d455ccf1-d190-44a4-a1ce-e30feb3cca3f
 series: performance
 platform: nuxt
 level: P1

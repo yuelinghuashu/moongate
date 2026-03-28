@@ -32,7 +32,6 @@
     "isomorphic-dompurify": "^2.36.0",
     "marked": "^17.0.3",
     "moon-gate": "link:",
-    "nanoid": "^5.1.6",
     "pg": "^8.18.0",
     "pinia": "^3.0.4",
     "pinia-plugin-persistedstate": "^4.7.1",

@@ -2,7 +2,7 @@
 title: 从零到一：为 Moongate 博客打造一个支持多级引用的评论区
 description: 介绍了 Moongate 博客的评论区设计和实现，包括多级引用、扁平时间线、引用块跳转、用户认证、响应式设计等。
 date: 2026-03-08
-permalink: ex1jDiPxiGbTqSuEKhHg6
+permalink: 2f14097a-5218-4adb-8204-fca2f2eddc85
 series: comment
 platform: nuxt
 level: P3

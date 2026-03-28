@@ -2,7 +2,7 @@
 title: 用原生 <details> 实现系列折叠页：从“点两次”到“稳定可控”
 description: 本文记录了在博客系列页面中使用原生 `<details>` 实现折叠列表时，添加“全部折叠/展开”按钮遇到的“点两次”问题，通过放弃 `toggle` 事件监听、直接同步状态变量和使用 `setTimeout` 等待 DOM 更新，最终实现稳定可控的全局控制功能。包含完整代码和原理分析。
 date: 2026-03-24
-permalink: Hx9kHD-WTmt9z2Pij-F9n
+permalink: 566b3b37-191a-4423-9dd6-1f6a97c571c4
 series:
 platform: nuxt
 level: P3

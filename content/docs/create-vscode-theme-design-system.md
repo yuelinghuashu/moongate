@@ -2,7 +2,7 @@
 title: 系统篇：从设计系统到视觉契约：打造完整的主题品牌体系
 description: 将主题升华为设计系统——定义设计哲学、建立视觉契约、提供显示器校准指南。让主题不仅好用，更成为你技术品牌的核心资产。
 date: 2026-03-11 13:00:00
-permalink: 0OOT_YDYAxbKF8gIppVa3
+permalink: 50fad7d3-a637-4908-87f6-e74f2ac069b2
 level: P3
 series: design-system
 platform: vscode
@@ -15,7 +15,8 @@ tags: [Design System, Theme, Engineering, Architecture]
 > - [基础篇：从零创建并发布你的第一个 VS Code 主题](./create-vscode-theme-basics.md)  
 > - [进阶篇：从单体 JSON 到模块化 YAML 工程重构](./create-vscode-theme-engineering.md)  
 > - [扩展篇：构建深色/浅色双主题及多主题变体](./create-vscode-theme-multi-theme.md)  
-> - **系统篇**：从设计系统到视觉契约，打造完整的主题品牌体系
+> - **系统篇**：从设计系统到视觉契约，打造完整的主题品牌体系  
+> - [工程深化篇：工业级构建脚本与 DTCG 完整实现](./create-vscode-theme-engineering-deep.md)
 
 ---
 
@@ -83,18 +84,19 @@ v2.2.0 引入了业界标准的 **DTCG（Design Tokens Community Group）设计�
 
 | 层级 | 职责 | 示例 |
 |------|------|------|
-| **原始值层** | 按色相-明度命名的基础色值 | `blue-500: "#3b82f6"` |
-| **语义层** | 定义角色，引用原始值 | `primary: "{blue-500}"` |
-| **组件层** | 直接映射 UI 元素 | `sideBar.background: "${surfaceRaised}"` |
+| **原始值层** | 按色相-明度命名的基础色值 | `blue-500`、`gray-900` |
+| **语义层** | 定义角色，引用原始值 | `primary`、`bg`、`surfaceRaised` |
+| **组件层** | 直接映射 UI 元素 | `sideBar.background`、`button.background` |
 
-这种分离让颜色修改影响可控：调整 `blue-500`，所有引用它的语义色（如 `primary`）自动同步；修改 `surfaceRaised`，所有 UI 组件同步更新。
+这种分离让颜色修改影响可控：调整原始值，所有引用它的语义色自动同步；修改语义层，所有 UI 组件同步更新。
 
 ### 2.2 自动化资产生成
 
 构建脚本自动输出：
 
-- **`moongate-tokens.css`**：CSS 变量文件，供博客、UI 组件库直接引用，实现深浅模式无缝切换。
-- **`DESIGN_SYSTEM.md`**：完整的设计系统文档，包含色板预览、海拔系统说明、语义层对比度数据，作为团队协作的真理来源。
+- **`moongate-colors.css`**：颜色变量文件，包含深浅模式下的所有语义色，供博客、UI 组件库直接引用。
+- **`moongate-layout.css`**：布局变量文件，包含间距、圆角、阴影、排版、响应式断点、z-index 等非颜色令牌。
+- **`DESIGN_SYSTEM.md`**：完整的设计系统文档，包含色板预览、海拔系统说明、语义层对比度数据、变量选择协议，作为团队协作的真理来源。
 
 ### 2.3 工业级质检
 
@@ -186,85 +188,23 @@ v2.2.0 引入了业界标准的 **DTCG（Design Tokens Community Group）设计�
 
 - **README**：中英双语，包含预览图、设计理念、优化项清单、推荐配置。
 - **CHANGELOG**：按版本记录所有变更，折叠旧版本，突出当前亮点。
-- **视觉契约**：独立文档，作为主题附件提供。
-- **设计系统文档**：自动生成的 `DESIGN_SYSTEM.md`，包含完整色板、海拔系统说明、WCAG 对比度数据，是设计系统的真理来源。
+- **视觉契约**：独立文档，作为主题附件提供，指导用户校准显示器。
+- **设计系统文档**：自动生成的 `DESIGN_SYSTEM.md`，包含完整色板、海拔系统说明、WCAG 对比度数据，以及 **“变量选择协议”**——明确原始值、语义层、组件层的引用规范，是设计系统的“宪法”。
 
 ### 5.2 社区互动
 
 - **GitHub 开源**：公开源码，接受 PR，逐步扩展语言支持。
 - **反馈渠道**：鼓励用户反馈校准体验，持续优化视觉契约。
-- **生态集成**：深度整合周边工具，为用户提供一致体验。目前已实现以下两项集成：
+- **生态集成**：深度整合周边工具，为用户提供一致体验。目前已实现以下集成：
 
   **Better Comments 预设**  
-  Better Comments 是 VS Code 上一款流行的注释增强插件，它允许用不同颜色标记 `TODO`、`FIXME`、`NOTE` 等特殊注释。Moongate 为其设计了专属配色预设，确保这些注释标记与主题的语义色系统保持一致。用户只需在 `settings.json` 中引入以下配置，即可一键启用：
+  Better Comments 是 VS Code 上一款流行的注释增强插件，它允许用不同颜色标记 `TODO`、`FIXME`、`NOTE` 等特殊注释。Moongate 为其设计了专属配色预设，确保这些注释标记与主题的语义色系统保持一致。预设文件已包含在主题的 `extras/better-comments.json` 中，用户可直接导入。
 
-  <details>
-  <summary>查看 Better Comments 预设配置</summary>
+  **终端 ANSI 色同步**  
+  Moongate 将 16 色 ANSI 配色映射到主题的语义色系，确保在集成终端中运行的命令输出与编辑器内配色保持一致，消除视觉割裂感。
 
-  ```json
-  "better-comments.tags": [
-    {
-      "tag": "TODO",
-      "color": "#fbbf24",
-      "strikethrough": false,
-      "backgroundColor": "transparent",
-      "bold": true,
-      "italic": false
-    },
-    {
-      "tag": "FIXME",
-      "color": "#f87171",
-      "strikethrough": false,
-      "backgroundColor": "transparent",
-      "bold": true,
-      "italic": true
-    },
-    {
-      "tag": "NOTE",
-      "color": "#7dd3fc",
-      "strikethrough": false,
-      "backgroundColor": "transparent",
-      "bold": false,
-      "italic": true
-    },
-    {
-      "tag": "HACK",
-      "color": "#c084fc",
-      "strikethrough": false,
-      "backgroundColor": "transparent",
-      "bold": true,
-      "italic": false
-    },
-    {
-      "tag": "BUG",
-      "color": "#f87171",
-      "strikethrough": false,
-      "backgroundColor": "transparent",
-      "bold": true,
-      "underline": true
-    },
-    {
-      "tag": "XXX",
-      "color": "#fbbf24",
-      "strikethrough": false,
-      "backgroundColor": "transparent",
-      "bold": true,
-      "italic": false
-    }
-  ]
-  ```
-
-  </details>
-
-这套配色与 Moongate 的语义色完全对应（例如 `TODO` 使用月光黄 `#fbbf24`，`FIXME` 使用红月 `#f87171`），确保注释分类在深色和浅色主题下都能清晰可辨且风格统一。预设文件已包含在主题的 `extras/better-comments.json` 中，用户也可直接复制该文件内容。
-
-**终端 ANSI 色同步**  
- Moongate 将 16 色 ANSI 配色映射到主题的语义色系，确保在集成终端中运行的命令输出（如 `console.log` 的字符串、数字、错误等）与编辑器内配色保持一致，消除视觉割裂感。
-
-**设计资产统一**  
-通过构建脚本自动生成的 `moongate-tokens.css`，Moongate 的深浅色变量可被博客、文档站点、UI 组件库直接引用，确保所有数字产品共享同一套视觉语言。你可以在 [GitHub 仓库的 `themes/` 目录](https://github.com/yuelinghuashu/moongate-theme/tree/main/themes) 中找到生成的 CSS 文件，将其引入项目即可获得与 VS Code 主题完全一致的配色。
-
-未来，Moongate 还将探索与更多编辑器插件、CI 工具以及社区平台的集成，让“月光体验”贯穿整个开发生态。
+  **设计资产统一**  
+  通过构建脚本自动生成的 `moongate-colors.css` 和 `moongate-layout.css`，Moongate 的深浅色变量、布局令牌可被博客、文档站点、UI 组件库直接引用，确保所有数字产品共享同一套视觉语言。
 
 ### 5.3 从作品到品牌
 
@@ -281,12 +221,13 @@ Moongate 不再只是一个主题，它是：
 
 ## 📌 第六部分：总结与展望
 
-至此，我们的四部曲系列已接近尾声。回顾这段旅程：
+至此，我们的五部曲系列已走过大半。回顾这段旅程：
 
 - **基础篇**：你从零创建并发布了第一个 VS Code 主题，掌握了核心流程。
 - **进阶篇**：你通过工程化重构，让主题变得可维护、可扩展。
 - **扩展篇**：你构建了多主题变体，并引入重力补偿，实现了视觉一致性。
-- **系统篇**：你将主题升华为设计系统，用 DTCG 令牌、海拔系统、视觉契约、协议索引和自动生成资产建立了完整的品牌生态。**v2.2.0 正是这套系统的实践成果**——所有颜色经过工业级校验，CSS 变量可直接复用，设计文档自动生成。
+- **系统篇**：你将主题升华为设计系统，用 DTCG 令牌、海拔系统、视觉契约、协议索引和自动生成资产建立了完整的品牌生态。**v2.2.0 正是这套系统的实践成果**——所有颜色经过工业级校验，布局令牌导出为 CSS 变量，设计文档自动生成。
+- **工程深化篇**：如果你希望深入工业级构建脚本的完整实现，包括颜色标准化、对比度校验、循环检测、自动生成资产等细节，可以继续阅读 [工程深化篇](./create-vscode-theme-engineering-deep.md)。
 
 Moongate 主题正是这一系列理念的实践成果。如果你希望亲身体验这套设计哲学，欢迎在 VS Code 市场中搜索 **Moongate Theme**，或通过以下链接探索：
 
@@ -301,4 +242,4 @@ Moongate 主题正是这一系列理念的实践成果。如果你希望亲身�
 
 ---
 
-*本文是 VS Code 主题开发系列的完结篇。四篇连读，助你从零成长为设计系统工程师。**
+*本文是 VS Code 主题开发系列的系统篇。五篇连读，助你从零成长为设计系统工程师。*

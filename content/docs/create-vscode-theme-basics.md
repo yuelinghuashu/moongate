@@ -2,7 +2,7 @@
 title: 基础篇：从博客配色到 VS Code 主题：基础开发指南
 description: 从零开始，快速掌握 VS Code 主题开发的核心流程。学习如何创建颜色定义、配置语法高亮、调试主题，并将你的第一个主题发布到市场。
 date: 2026-02-25
-permalink: zHv-nnnTcn4_3ZqoB8tC2
+permalink: 7a7bec85-c90e-4770-92d3-4ef537ba2960
 level: P3
 series: design-system
 platform: vscode
@@ -17,6 +17,7 @@ tags: [VSCode, Theme, Configuration]
 > - [进阶篇：从单体 JSON 到模块化 YAML 工程重构](./create-vscode-theme-engineering.md)
 > - [扩展篇：构建深色/浅色双主题及多主题变体](./create-vscode-theme-multi-theme.md)
 > - [系统篇：从设计系统到视觉契约，打造完整的主题品牌体系](./create-vscode-theme-design-system.md)
+> - [工程深化篇：工业级构建脚本与 DTCG 完整实现](./create-vscode-theme-engineering-deep.md)
 
 如果你已经有一定的编程基础（熟悉 JavaScript、JSON、命令行），但对如何将自己的配色方案变成 VS Code 主题一无所知，这篇文章正是为你准备的。
 

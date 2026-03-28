@@ -2,7 +2,7 @@
 title: 扩展篇：从工程化到设计系统：构建深色/浅色双主题及多主题变体
 description: 在工程化基础上，通过变量分离和重力补偿原则，一键生成深色、浅色及高对比度等多主题变体。让所有主题共享同一套规则，维护成本趋近于零。
 date: 2026-03-11 12:00:00
-permalink: Z9-faV5kTiAL7WUlHFTCw
+permalink: 97e09fc8-13a0-4703-958d-44700fe20a62
 series: design-system
 platform: vscode
 level: P3
@@ -17,6 +17,7 @@ tags: [Design System, Theme, Modularization, Configuration]
 > - [进阶篇：从单体 JSON 到模块化 YAML 工程重构](./create-vscode-theme-engineering.md)
 > - **扩展篇**：构建深色/浅色双主题及多主题变体
 > - [系统篇：从主题到设计系统：视觉契约与协议](./create-vscode-theme-design-system.md)
+> - [工程深化篇：工业级构建脚本与 DTCG 完整实现](./create-vscode-theme-engineering-deep.md)
 
 ---
 
