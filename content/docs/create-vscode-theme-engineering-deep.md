@@ -6,7 +6,7 @@ permalink: ef9e2761-be41-4778-8552-22cb86ed3407
 level: P3
 series: design-system
 platform: vscode
-tags: [VSCode, Theme, Engineering, Design System, Modularization, Configuration]
+tags: [VSCode, Theme, Engineering, Design System, Configuration]
 ---
 
 # 工程深化篇：工业级构建脚本与 DTCG 完整实现
