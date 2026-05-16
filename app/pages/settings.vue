@@ -1,48 +1,60 @@
 <template>
   <ClientOnly>
-    <div class="flex justify-center">
-      <UForm class="space-y-6">
-        <UFormField :label="t('settings.theme.name')" class="text-xl">
-          <URadioGroup
+    <Container size="sm">
+      <div class="space-y-3!">
+        <h2 class="text-base font-medium">{{ t("settings.theme.name") }}</h2>
+        <div :class="['flex', isDesktop ? ' gap-2' : 'flex-col space-y-2']">
+          <Radio
+            v-for="item in tm('settings.theme.options')"
+            :key="item.id"
             v-model="settings.appearance.theme"
-            :items="tm('settings.theme.options')"
-            label-key="name"
-            value-key="name"
-            orientation="horizontal"
-            size="xl"
+            :label="item.name"
+            :value="item.name"
             @update:model-value="(theme) => setTheme(theme)"
           />
-        </UFormField>
-        <UFormField :label="t('settings.language.name')" class="text-xl">
-          <URadioGroup
+        </div>
+      </div>
+
+      <Divider class="my-6" />
+
+      <div class="space-y-3!">
+        <h2 class="text-base font-medium">{{ t("settings.language.name") }}</h2>
+        <div :class="['flex', isDesktop ? ' gap-2' : 'flex-col space-y-2']">
+          <Radio
+            v-for="item in tm('settings.language.options')"
+            :key="item.id"
             v-model="settings.appearance.language"
-            :items="tm('settings.language.options')"
-            label-key="name"
-            value-key="code"
-            orientation="horizontal"
-            size="xl"
+            :label="item.name"
+            :value="item.code"
             @update:model-value="(lang) => setLanguage(lang)"
           />
-        </UFormField>
-        <UFormField :label="t('settings.homePage.name')" class="text-xl">
-          <URadioGroup
+        </div>
+      </div>
+
+      <Divider class="my-6" />
+
+      <div class="space-y-3!">
+        <h2 class="text-base font-medium">{{ t("settings.homePage.name") }}</h2>
+        <div :class="['flex', isDesktop ? ' gap-2' : 'flex-col space-y-2']">
+          <Radio
+            v-for="item in tm('settings.homePage.options')"
+            :key="item.id"
             v-model="settings.homepageBehavior"
-            :items="tm('settings.homePage.options')"
-            label-key="name"
-            value-key="id"
-            orientation="horizontal"
-            size="xl"
+            :label="item.name"
+            :value="item.id"
           />
-        </UFormField>
-      </UForm>
-    </div>
+        </div>
+      </div>
+    </Container>
   </ClientOnly>
 </template>
 
 <script lang="ts" setup>
+import { Radio, Divider, Container } from "moongate-vue";
 import useSettingStore from "~/stores/setting";
 const { t } = useI18n();
 const { tm } = useI18nSafe();
+const { isDesktop } = useResponsive();
 
 const { settings, setTheme, setLanguage } = useSettingStore();
 
@@ -52,14 +64,8 @@ useSeoMeta({
   description: "管理主题、语言及进入偏好，定制你的 Moongate 阅读体验。",
   robots: "noindex, follow", // 不索引此页，但继续跟踪页面链接
   ogTitle: "博客设置",
-  ogDescription: "个性化你的 Moongate 浏览方式。"
+  ogDescription: "个性化你的 Moongate 浏览方式。",
 });
 </script>
 
-<style scoped>
-@media (max-width: 768px) {
-  :deep(fieldset) {
-    flex-direction: column;
-  }
-}
-</style>
+<style scoped></style>

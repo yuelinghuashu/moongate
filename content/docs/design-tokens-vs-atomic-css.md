@@ -3,7 +3,7 @@ title: 当设计令牌遇上原子化CSS：一次整合失败的反思与融合�
 description: 当个人开发者尝试用 UnoCSS 映射已有设计令牌失败后，反思工具迷信，提出设计令牌优先于原子化 CSS 的架构观点，并探索两者融合的务实边界。
 date: 2026-04-18
 permarlink:: 65f7b804-7301-401d-8461-b04913b29333
-series: moongate-ui
+series: moongate-vue
 platform: vue
 level: P3
 tags:
@@ -20,7 +20,7 @@ tags:
 
 ## 起点：我有一套完整的设计令牌
 
-我的个人项目 `moongate-ui` 一开始只有三份CSS文件：
+我的个人项目 `moongate-vue` 一开始只有三份CSS文件：
 
 - **`colors.css`**：浅色/深色双主题，40+语义化颜色变量（`--ui-primary`、`--ui-bg-muted`……）
 - **`layout.css`**：间距、圆角、阴影、动效、字体、断点等布局令牌

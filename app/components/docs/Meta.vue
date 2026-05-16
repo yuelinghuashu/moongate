@@ -5,9 +5,9 @@
         <span>// Created At {{ formattedDate }}</span>
         <span>// {{ level }}</span>
       </div>
-      <UButton
+      <Button
         :label="buttonText"
-        variant="link"
+        variant="outline"
         :class="copied ? 'text-primary' : 'text-muted hover:text-primary'"
         :disabled="copied"
         @click="handleShare"
@@ -18,6 +18,7 @@
 </template>
 
 <script lang="ts" setup>
+import { Button } from "moongate-vue";
 import dayjs from "dayjs";
 
 const props = defineProps({
@@ -33,9 +34,7 @@ const copied = ref(false);
 let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
 // 按钮文字：复制成功后临时切换为提示文案
-const buttonText = computed(() =>
-  copied.value ? "// Copied" : "// SHARE",
-);
+const buttonText = computed(() => (copied.value ? "// Copied" : "// SHARE"));
 
 // 点击分享按钮
 const handleShare = async () => {

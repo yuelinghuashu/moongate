@@ -4,6 +4,7 @@ import type { Ref } from 'vue'
 
 /**
  * 基础原始查询参数读写（不暴露给外部，仅内部使用）
+ * 负责核心的 URL 同步逻辑，使用 replace 避免产生多余历史记录
  */
 function useRouteQueryRaw(name: string) {
   const route = useRoute()
@@ -11,17 +12,19 @@ function useRouteQueryRaw(name: string) {
   const value = ref(route.query[name])
 
   // 监听路由变化，同步到内部 ref
-  watch(
-    () => route.query[name],
-    (v) => {
-      value.value = v
-    }
-  )
+  watch(() => route.query[name], (newVal) => {
+    value.value = newVal
+  })
 
   // 监听内部 ref 变化，同步到 URL
-  watch(value, (v) => {
-    const query = { ...route.query, [name]: v }
-    router.push({ query })
+  watch(value, (newVal) => {
+    const query = { ...route.query }
+    if (newVal !== undefined && newVal !== null && newVal !== '') {
+      query[name] = newVal
+    } else {
+      delete query[name]
+    }
+    router.replace({ query })
   })
 
   return value
@@ -31,11 +34,13 @@ function useRouteQueryRaw(name: string) {
  * 字符串类型查询参数
  * @param name 参数名
  * @param options.defaultValue 默认值（可选）
+ * @example
+ * const search = useRouteQueryString('search', { defaultValue: '' })
+ * search.value = 'vue'  // URL 变为 ?search=vue
  */
 export function useRouteQueryString(name: string, options?: { defaultValue?: string }) {
   const raw = useRouteQueryRaw(name)
   const defaultValue = options?.defaultValue ?? ''
-
   return computed({
     get: () => (raw.value?.toString() ?? defaultValue) as string,
     set: (v: string) => {
@@ -48,11 +53,13 @@ export function useRouteQueryString(name: string, options?: { defaultValue?: str
  * 数字类型查询参数
  * @param name 参数名
  * @param options.defaultValue 默认值（可选）
+ * @example
+ * const page = useRouteQueryNumber('page', { defaultValue: 1 })
+ * page.value = 2  // URL 变为 ?page=2
  */
 export function useRouteQueryNumber(name: string, options?: { defaultValue?: number }) {
   const raw = useRouteQueryRaw(name)
   const defaultValue = options?.defaultValue ?? 0
-
   return computed({
     get: () => {
       const val = raw.value
@@ -69,10 +76,12 @@ export function useRouteQueryNumber(name: string, options?: { defaultValue?: num
 /**
  * 字符串数组类型查询参数（URL 中用逗号分隔）
  * @param name 参数名
+ * @example
+ * const tags = useRouteQueryArray('tag')
+ * tags.value = ['vue', 'nuxt']  // URL 变为 ?tag=vue,nuxt
  */
 export function useRouteQueryArray(name: string) {
   const raw = useRouteQueryRaw(name)
-
   return computed({
     get: () => {
       const val = raw.value

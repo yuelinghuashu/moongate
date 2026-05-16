@@ -1,18 +1,14 @@
 <!-- 语言栏选项框组件 -->
 <template>
-  <UPopover mode="hover" arrow>
+  <Popover>
     <!-- 语言选项按钮 -->
-    <UButton
-      :ui="{ leadingIcon: 'toolbar-icon-btn' }"
-      icon="tabler:language"
-      variant="ghost"
-    />
+    <Icon name="tabler-language" class="cursor-pointer" />
     <template #content>
-      <ul class="w-25 text-center">
+      <ul class="flex flex-col">
         <li
           v-for="item in locales"
           :key="item.code"
-          class="p-2 nav-link"
+          class="p-2 nav-link text-center"
           :class="{ active: item.code === locale }"
         >
           <NuxtLink
@@ -25,10 +21,11 @@
         </li>
       </ul>
     </template>
-  </UPopover>
+  </Popover>
 </template>
 
 <script lang="ts" setup>
+import { Popover } from "moongate-vue";
 import useSettingStore from "~/stores/setting";
 
 const { locales, locale } = useI18n();

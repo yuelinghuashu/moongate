@@ -175,6 +175,7 @@ export const useCommentStore = defineStore("comment", () => {
           target_id: replyingTo.value.id,
           target_type: replyingTo.value.type,
           content: replyContent.value,
+          permalink: permalink.value,
         },
       });
 

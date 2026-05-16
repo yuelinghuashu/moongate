@@ -1,7 +1,7 @@
 <!-- components/docs/MarkdownRenderer.vue -->
 <template>
   <!-- eslint-disable-next-line vue/no-v-html -->
-  <div class="post-content markdown-body" v-html="renderedContent"  />
+  <div class="prose dark:prose-invert max-w-none" v-html="renderedContent" />
 </template>
 
 <script lang="ts" setup>
@@ -18,7 +18,7 @@ const renderedContent = ref("");
 const currentTheme = computed(() => {
   return colorMode.value === "dark"
     ? "material-theme-palenight" // 深色主题
-    : "material-theme-lighter"; // 浅色主题
+    : "github-light"; // 浅色主题
 });
 
 // 核心渲染函数：将用户输入的 Markdown 内容转换为安全的、高亮的 HTML

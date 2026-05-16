@@ -54,7 +54,8 @@
     "i18n": "国際化",
     "backend": "バックエンド統合",
     "performance": "パフォーマンス最適化",
-    "ecosystem": "エコシステム適応"
+    "ecosystem": "エコシステム適応",
+    "moongate-vue": "MoonGate UI コンポーネントライブラリ"
   },
   "settings": {
     "theme": {

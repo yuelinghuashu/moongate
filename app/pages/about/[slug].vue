@@ -1,22 +1,23 @@
 <template>
   <div v-if="page">
-    <main class="flex min-w-0">
-      <!-- 文档内容 -->
+    <!-- 文档内容 -->
+    <article
+      class="prose prose-sm dark:prose-invert max-w-none md:prose-base lg:prose-lg p-4 md:p-6 lg:p-8"
+    >
       <ContentRenderer :value="page" />
+    </article>
 
-      <UDrawer
-        v-model:open="isOutlineVisible"
-        :direction="isDesktop ? 'right' : 'bottom'"
+    <ClientOnly>
+      <Drawer
+        v-model="isOutlineVisible"
+        :placement="isDesktop ? 'right' : 'bottom'"
+        size="lg"
         :title="t('doc.title')"
-        :description="t('doc.description')"
-        :class="[isMobile ? 'max-h-[80%]' : '']"
+        :class="isMobile ? 'max-h-[80%]' : ''"
       >
-        <template #content>
-          <!-- 大纲目录 -->
-          <DocsTableOfContents :outline="page?.body.toc?.links" />
-        </template>
-      </UDrawer>
-    </main>
+        <DocsOutline :outline="page?.body.toc?.links" />
+      </Drawer>
+    </ClientOnly>
   </div>
   <div v-else>
     <ErrorPage />
@@ -24,6 +25,7 @@
 </template>
 
 <script lang="ts" setup>
+import { Drawer } from "moongate-vue";
 import { withLeadingSlash } from "ufo";
 const route = useRoute();
 const { locale, t } = useI18n();
@@ -67,5 +69,3 @@ if (page.value?.title && page.value?.description) {
   });
 }
 </script>
-
-<style scoped></style>

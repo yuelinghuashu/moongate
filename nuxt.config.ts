@@ -4,7 +4,7 @@ import removeConsole from 'vite-plugin-remove-console'
 export default defineNuxtConfig({
   modules: [
     '@nuxtjs/color-mode',
-    '@nuxt/ui',
+    '@unocss/nuxt',
     '@nuxtjs/i18n',
     '@nuxt/content',
     '@nuxt/image',
@@ -47,15 +47,15 @@ export default defineNuxtConfig({
           langs: ['json', 'js', 'ts', 'html', 'css', 'vue', 'shell', 'mdc', 'md', 'yaml', 'xml', 'mermaid', 'sql'],
         },
         theme: {
-          default: 'material-theme-lighter',
-          light: 'material-theme-lighter',
+          default: 'github-light',
+          light: 'github-light',
           dark: 'material-theme-palenight'
         }
       },
     },
     shiki: {
       // 配置你需要的主题和语言
-      bundledThemes: ['material-theme-lighter', 'material-theme-palenight'],
+      bundledThemes: ['github-light', 'material-theme-palenight'],
       bundledLangs: [
         'javascript', 'typescript', 'js', 'html', 'css',
         'vue', 'python', 'bash', 'json', 'markdown',
@@ -104,7 +104,7 @@ export default defineNuxtConfig({
   },
   umami: {
     enabled: true,
-    id: process.env.NUXT_PUBLIC_UMAMI_ID, 
+    id: process.env.NUXT_PUBLIC_UMAMI_ID,
     host: process.env.NUXT_PUBLIC_UMAMI_HOST,
     autoTrack: true,
   },

@@ -1,17 +1,18 @@
 <template>
   <div v-if="loggedIn">Welcome</div>
-  <UButton
+  <Button
     :label="isLoading ? t('user.loggingIn') : t('user.login')"
-    variant="solid"
-    icon="lucide-github"
-    size="lg"
     :loading="isLoading"
-    class="cursor-pointer"
     @click="loginWithGitHub()"
-  />
+  >
+    <template #icon>
+      <Icon name="lucide-github" />
+    </template>
+  </Button>
 </template>
 
 <script lang="ts" setup>
+import { Button } from "moongate-vue";
 const { loggedIn } = useUserSession();
 const route = useRoute();
 const { t } = useI18n();

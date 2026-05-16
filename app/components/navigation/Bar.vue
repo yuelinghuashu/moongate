@@ -1,13 +1,11 @@
-<!-- 导航栏组件 -->
 <template>
   <nav class="text-center">
-    <ul :class="props.orientation === 'horizontal' ? 'flex' : ''">
+    <ul :class="orientation === 'horizontal' ? 'flex justify-center' : ''">
       <li v-for="item in tm('navigationBar')" :key="item.id">
         <NuxtLink
-          :to="item.link"
-          class="block px-4 py-2 nav-link"
+          :to="localePath(item.link)"
+          class="mx-2 min-w-20 nav-link"
           rel="noopener noreferrer"
-          active-class="active"
         >
           {{ item.name }}
         </NuxtLink>
@@ -18,6 +16,7 @@
 
 <script lang="ts" setup>
 const { tm } = useI18nSafe();
+const localePath = useLocalePath();
 
 const props = defineProps({
   orientation: {

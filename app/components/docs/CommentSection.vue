@@ -8,8 +8,6 @@
       <DocsCommentInputPreview
         v-model="commentStore.comment"
         :debounce-time="500"
-        :permalink="prop.permalink"
-        storage-type="none"
       />
     </ClientOnly>
 
@@ -25,11 +23,10 @@
 
         <!-- 右侧按钮区域 -->
         <div class="flex justify-end">
-          <UButton
+          <Button
             v-if="loggedIn"
             :disabled="isCommentDisabled"
             :label="t('comment.actions.send')"
-            size="lg"
             @click="handleSubmitComment"
           />
           <div v-else class="flex items-center gap-2">
@@ -45,7 +42,7 @@
           v-if="commentStore.commentList?.length"
           :items="commentStore.commentList"
         />
-        <div v-else class="text-center">
+        <div v-else class="text-center text-dim py-8">
           {{ t("comment.status.noComments") }}
         </div>
       </div>
@@ -54,6 +51,7 @@
 </template>
 
 <script lang="ts" setup>
+import { Button } from "moongate-vue";
 import { watchDebounced } from "@vueuse/core";
 import useCommentStore from "~/stores/comment";
 
@@ -119,5 +117,5 @@ watch(
   { immediate: true },
 );
 
-const _ = containerRef;
+console.log(commentStore.commentList)
 </script>

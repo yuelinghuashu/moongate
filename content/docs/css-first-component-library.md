@@ -2,9 +2,9 @@
 title: CSS 优先 + 组件薄封装：一个 10KB 组件库的极简实践
 description: 从 UnoCSS 回归原生 CSS，一套设计令牌驱动的组件库方案。四层 CSS 架构、极简 Vue 组件、体积分析与维护性对比，展示如何用 500 行代码构建一个 10KB 的组件库。
 date: 2026-04-19
-permarlink:: 7b75c994-ce43-4f78-89e1-817c295f3f00
+permalink: 7b75c994-ce43-4f78-89e1-817c295f3f00
 level: P3
-series: moongate-ui
+series: moongate-vue
 platform: vue
 tags:
   - CSS

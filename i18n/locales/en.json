@@ -44,7 +44,8 @@
     "noDocuments": "No documents",
     "emptyMessage": "No documents found. Try adjusting your filters.",
     "clearAllFilters": "Clear all filters",
-    "findCount": "Found {count} documents"
+    "findCount": "Found {count} documents",
+    "moongate-vue": "MoonGate UI Component Library"
   },
   "series": {
     "url-state": "URL State Sync",

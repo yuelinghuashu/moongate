@@ -1,23 +1,29 @@
 <template>
-  <UDropdownMenu :items="items">
-    <UButton
-      :ui="{ leadingIcon: 'toolbar-icon-btn' }"
-      icon="lucide:user"
-      variant="ghost"
-      class="cursor-pointer"
-    />
-  </UDropdownMenu>
+  <Popover>
+    <Icon name="lucide:user" />
+    <template #content>
+      <div
+        v-for="item in items"
+        :key="item.label"
+        class="flex justify-evenly nav-link"
+        @click="item.onClick"
+      >
+        <Icon :name="item.icon" />
+        <span>{{ item.label }}</span>
+      </div>
+    </template>
+  </Popover>
 </template>
 
 <script lang="ts" setup>
-import type { DropdownMenuItem } from "@nuxt/ui";
+import { Popover } from "moongate-vue";
 const localePath = useLocalePath();
 const { user, clear } = useUserSession();
 const { t } = useI18n();
 const route = useRoute();
 
 // 用户下拉菜单列表
-const items = computed<DropdownMenuItem[]>(() => [
+const items = [
   {
     label: t("user.profile"),
     icon: "lucide-user",
@@ -25,7 +31,7 @@ const items = computed<DropdownMenuItem[]>(() => [
       user && user.value?.login
         ? route.path === localePath(`/${user.value.login}/profile`)
         : false,
-    onSelect() {
+    onClick() {
       navigateTo(localePath(`/${user.value?.login}/profile`));
     },
   },
@@ -43,9 +49,9 @@ const items = computed<DropdownMenuItem[]>(() => [
   {
     label: t("user.logout"),
     icon: "i-lucide-log-out",
-    onSelect() {
+    onClick() {
       clear();
     },
   },
-]);
+];
 </script>

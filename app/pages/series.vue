@@ -1,13 +1,15 @@
 <template>
-  <div class="max-w-3xl mx-auto">
-    <div class="flex justify-end items-center mb-6">
-      <UButton
-        :ui="{ leadingIcon: 'toolbar-icon-btn' }"
-        class="cursor-pointer"
-        variant="ghost"
-        :icon="isAnyExpanded ? 'lucide-chevrons-up' : 'lucide-chevrons-down'"
-        @click="toggleAll"
-      />
+  <Container size="sm">
+    <div class="flex justify-end items-center">
+      <Button @click="toggleAll">
+        <template #icon>
+          <Icon
+            :name="
+              isAnyExpanded ? 'lucide-chevrons-up' : 'lucide-chevrons-down'
+            "
+          />
+        </template>
+      </Button>
     </div>
 
     <div v-for="series in seriesList" :key="series.slug" class="mb-4">
@@ -21,7 +23,7 @@
         </summary>
         <div class="pl-4 mt-2 space-y-2">
           <div v-for="article in series.docs" :key="article.id">
-            <NuxtLink :to="article.path" class="text-blue-600 hover:underline">
+            <NuxtLink :to="article.path" class="text-primary">
               {{ article.title }}
             </NuxtLink>
             <div class="text-xs text-gray-500">
@@ -31,10 +33,11 @@
         </div>
       </details>
     </div>
-  </div>
+  </Container>
 </template>
 
 <script setup lang="ts">
+import { Button, Container } from "moongate-vue";
 import dayjs from "dayjs";
 
 const { tm } = useI18nSafe();

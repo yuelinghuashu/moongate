@@ -1,18 +1,22 @@
 <template>
-  <div>
-    <UBlogPost
+  <div class="flex flex-col gap-2">
+    <Card
       v-for="item in page"
       :key="item.id"
-      :title="item.title"
-      :description="item.description"
-      :date="item.date"
-      class="card cursor-pointer mb-4 last-of-type:mb-0"
-      :to="localePath(item.path)"
-    />
+      as="li"
+      hoverable
+      class="cursor-pointer"
+      @click="navigateTo(localePath(item.path))"
+    >
+      <template #header>{{ item.title }}</template>
+      <template #default>{{ item.description }}</template>
+    </Card>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { Card } from "moongate-vue";
+
 const localePath = useLocalePath();
 
 // 获取关于页面列表
@@ -28,5 +32,3 @@ useSeoMeta({
   ogDescription: "探索 Moongate 背后的设计哲学、词源考据与技术情怀。",
 });
 </script>
-
-<style></style>

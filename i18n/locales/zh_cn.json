@@ -54,7 +54,8 @@
     "i18n": "国际化",
     "backend": "后端集成",
     "performance": "性能优化",
-    "ecosystem": "生态适配"
+    "ecosystem": "生态适配",
+    "moongate-vue": "MoonGate UI 组件库"
   },
   "settings": {
     "theme": {

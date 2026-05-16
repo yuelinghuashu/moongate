@@ -1,32 +1,27 @@
 <template>
   <div v-if="page">
-    <!-- 文档区 -->
-    <main class="flex">
-      <div class="flex-1 min-w-0">
-        <!-- 元数据区 -->
-        <DocsMeta
-          :date="page.date"
-          :level="page.level"
-          :tags="page.tags"
-        />
+    <!-- 元数据区 -->
+    <DocsMeta :date="page.date" :level="page.level" :tags="page.tags" />
 
-        <!-- 文档内容 -->
-        <ContentRenderer :value="page" />
-      </div>
+    <!-- 文档内容 -->
+    <article
+      class="prose prose-sm dark:prose-invert max-w-none md:prose-base lg:prose-lg p-4 md:p-6 lg:p-8"
+    >
+      <ContentRenderer :value="page" />
+    </article>
 
-      <!-- 目录区 -->
-      <UDrawer
-        v-model:open="isOutlineVisible"
-        :direction="isDesktop ? 'right' : 'bottom'"
+    <!-- 目录区 -->
+    <ClientOnly>
+      <Drawer
+        v-model="isOutlineVisible"
+        :placement="isDesktop ? 'right' : 'bottom'"
+        size="lg"
         :title="t('doc.title')"
-        :description="t('doc.description')"
         :class="isMobile ? 'max-h-[80%]' : ''"
       >
-        <template #body>
-          <DocsTableOfContents :outline="page.body.toc?.links" />
-        </template>
-      </UDrawer>
-    </main>
+        <DocsOutline :outline="page.body.toc?.links" />
+      </Drawer>
+    </ClientOnly>
 
     <!-- 打赏区 -->
     <SharedBuyMeCoffee class="mt-8 mb-8" />
@@ -40,6 +35,7 @@
 <script lang="ts" setup>
 import { withLeadingSlash } from "ufo";
 import { useLocalStorage } from "@vueuse/core";
+import { Drawer } from "moongate-vue";
 
 // ==================== 组合式函数 ====================
 const { locale, t } = useI18n();

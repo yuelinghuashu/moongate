@@ -3,55 +3,42 @@
     class="flex items-center justify-between search"
     :class="isDesktop ? '' : 'flex-col'"
   >
-    <UInput
+    <Input
       :model-value="search"
       :placeholder="t('docs.inputPlaceholder')"
-      size="lg"
       class="w-full"
       @update:model-value="$emit('update:search', $event)"
-    >
-      <template v-if="search?.length" #trailing>
-        <UButton
-          color="neutral"
-          variant="ghost"
-          icon="lucide-circle-x"
-          aria-label="Clear input"
-          @click="$emit('update:search', '')"
-        />
-      </template>
-    </UInput>
+    />
 
     <div
       class="flex justify-between items-center w-full"
       :class="isDesktop ? 'ml-2 flex-1' : 'mt-2'"
     >
-      <USelect
-        :ui="{ base: 'w-full truncate' }"
+      <Select
         :model-value="option"
-        :items="tm('docs.option')"
+        :options="tm('docs.option')"
         label-key="name"
         value-key="id"
-        size="lg"
+        class="min-w-50"
         :placeholder="t('docs.optionPlaceholder')"
         @update:model-value="$emit('update:option', $event)"
       />
 
-      <USelect
+      <Select
         :model-value="viewMode"
-        :items="tm('docs.viewMode')"
+        :options="tm('docs.viewMode')"
         label-key="name"
         value-key="id"
-        size="lg"
         :placeholder="t('docs.viewModePlaceholder')"
-        class="ml-2"
+        class="ml-2! min-w-30"
         @update:model-value="$emit('update:viewMode', $event)"
       />
 
-      <UButton
+      <!-- 过滤按钮：触发筛选面板显示/隐藏 -->
+      <Button
+        type="button"
         :label="t('docs.filter')"
-        size="lg"
-        variant="solid"
-        class="ml-2"
+        class="ml-2!"
         @click="$emit('toggle-filter')"
       />
     </div>
@@ -59,11 +46,10 @@
 </template>
 
 <script setup>
-const { t } = useI18n();
-const { tm } = useI18nSafe();
-const { isMobile } = useResponsive();
+import { Button, Select, Input } from "moongate-vue";
+const { t, tm } = useI18nSafe();
 
-defineProps({
+const props = defineProps({
   search: { type: String, default: "" },
   option: { type: Number, default: 1 },
   viewMode: { type: Number, default: 1 },
