@@ -31,8 +31,6 @@ jobs:
           push: true
           build-args: |
             NUXT_PUBLIC_SITE_URL=${{ env.NUXT_PUBLIC_SITE_URL }}
-            NUXT_PUBLIC_UMAMI_ID=${{ secrets.NUXT_PUBLIC_UMAMI_ID }}
-            NUXT_PUBLIC_UMAMI_HOST=${{ secrets.NUXT_PUBLIC_UMAMI_HOST }}
           tags: |
             ${{ secrets.ACR_REGISTRY }}/moongate/moongate-blog:latest
             ${{ secrets.ACR_REGISTRY }}/moongate/moongate-blog:${{ github.sha }}
@@ -53,12 +51,6 @@ jobs:
           ACR_USERNAME: ${{ secrets.ACR_USERNAME }}
           ACR_PASSWORD: ${{ secrets.ACR_PASSWORD }}
           NUXT_PUBLIC_SITE_URL: ${{ env.NUXT_PUBLIC_SITE_URL }}
-          UMAMI_DB_NAME: ${{ secrets.UMAMI_DB_NAME }}
-          UMAMI_DB_USER: ${{ secrets.UMAMI_DB_USER }}
-          UMAMI_DB_PASSWORD: ${{ secrets.UMAMI_DB_PASSWORD }}
-          UMAMI_APP_SECRET: ${{ secrets.UMAMI_APP_SECRET }}
-          NUXT_PUBLIC_UMAMI_ID: ${{ secrets.NUXT_PUBLIC_UMAMI_ID }}
-          NUXT_PUBLIC_UMAMI_HOST: ${{ secrets.NUXT_PUBLIC_UMAMI_HOST }}
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
@@ -74,12 +66,6 @@ jobs:
             ACR_REGISTRY,
             ACR_USERNAME,
             ACR_PASSWORD,
-            UMAMI_DB_NAME,
-            UMAMI_DB_USER, 
-            UMAMI_DB_PASSWORD, 
-            UMAMI_APP_SECRET,
-            NUXT_PUBLIC_UMAMI_ID,
-            NUXT_PUBLIC_UMAMI_HOST
           script: |
             # 如果发生错误，则退出
             set -e
@@ -98,12 +84,6 @@ jobs:
             POSTGRES_PASSWORD=$POSTGRES_PASSWORD
             NUXT_DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
             ACR_REGISTRY=$ACR_REGISTRY
-            UMAMI_DB_NAME=$UMAMI_DB_NAME
-            UMAMI_DB_USER=$UMAMI_DB_USER
-            UMAMI_DB_PASSWORD=$UMAMI_DB_PASSWORD
-            UMAMI_APP_SECRET=$UMAMI_APP_SECRET
-            NUXT_PUBLIC_UMAMI_ID=$NUXT_PUBLIC_UMAMI_ID
-            NUXT_PUBLIC_UMAMI_HOST=$NUXT_PUBLIC_UMAMI_HOST
             EOF
 
             # 4. 确保 .env 文件权限
@@ -119,9 +99,6 @@ jobs:
 
             # 7. 拉取镜像（显式指定 .env 文件）
             docker compose --env-file .env pull nuxt-app
-
-            # 启动 Umami 数据库和服务（如果未运行则启动，已运行则确保配置最新）
-            docker compose up -d umami-db umami
 
             # 重新创建应用容器（使用新镜像）
             docker compose up -d --force-recreate nuxt-app

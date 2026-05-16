@@ -25,7 +25,12 @@
             </div>
           </div>
 
-          <Badge v-if="level !== item.level" :label="item.level" />
+          <div>
+            <Badge v-if="level !== item.level" :label="item.level" />
+            <time :datetime="item.date" class="text-xs text-ui-text-muted ml-2">
+              {{ dayjs(item.date).format("YYYY-MM-DD") }}
+            </time>
+          </div>
         </div>
       </template>
       <template #default>
@@ -39,6 +44,7 @@
 import { Card, Badge } from "moongate-vue";
 import { useDocs } from "~/composables/useDocs";
 import { useTagsFilter } from "~/composables/useTagsFilter";
+import dayjs from "dayjs";
 
 const localePath = useLocalePath();
 
