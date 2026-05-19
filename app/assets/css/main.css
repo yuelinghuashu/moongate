@@ -14,3 +14,8 @@ pre {
   background-color: var(--ui-bg) !important;
   border: 1px solid var(--ui-border);
 }
+
+.prose table {
+  display: block;
+  overflow-x: auto;
+}

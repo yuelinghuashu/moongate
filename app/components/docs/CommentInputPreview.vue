@@ -17,8 +17,6 @@
       </div>
       <Textarea
         v-model="localValue"
-        autoresize
-        :rows="5"
         :placeholder="t('comment.input.placeholder')"
         @update:model-value="(value) => handleInput(value)"
       />

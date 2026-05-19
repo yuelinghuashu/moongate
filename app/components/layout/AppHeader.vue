@@ -1,39 +1,50 @@
 <template>
-  <Header sticky class="border-b border-muted">
+  <Header
+    sticky
+    class="border-b border-muted"
+    style="background-color: var(--ui-bg)"
+  >
     <Container size="xl">
       <div class="flex items-center justify-between">
         <!-- 头部左侧标题：固定最小宽度 -->
-        <div class="left flex items-center gap-2 min-w-[180px]">
-          <SharedLogo />
+        <div class="flex items-center">
+          <Icon
+            v-if="!isDesktop"
+            name="tabler:menu-2"
+            class="mr-2 text-2xl"
+            @click="isMenuVisible = !isMenuVisible"
+          />
+          <SharedLogo class="h-5 mr-2" />
           <NuxtLink
             :to="localePath('/')"
             rel="noopener noreferrer"
-            class="text-2xl nav-link whitespace-nowrap"
+            class="text-2xl nav-link"
+            style="padding-left: 0"
           >
             MOONGATE
           </NuxtLink>
         </div>
 
         <!-- 头部居中导航栏：自动占满 -->
-        <div class="center flex-1 flex justify-center">
-          <NavigationBar v-if="isDesktop" orientation="horizontal" />
+        <div v-if="isDesktop" class="flex-1 flex justify-center">
+          <NavigationBar orientation="horizontal" />
         </div>
 
         <!-- 右侧辅助图标栏：固定最小宽度，内容右对齐 -->
-        <div class="right flex items-center justify-end gap-2 min-w-[180px]">
+        <div class="flex items-center justify-end gap-2 min-w-[180px]">
           <ClientOnly>
             <Icon
               v-if="isOutlineIconVisible"
               name="tabler:list"
-              class="cursor-pointer w-5 h-5"
+              class="cursor-pointer h-5"
               @click="toggleOutline()"
             />
 
-            <Divider vertical />
+            <Divider v-if="isOutlineIconVisible" vertical />
 
             <Icon
               :name="colorMode.value === 'dark' ? 'tabler:moon' : 'tabler:sun'"
-              class="cursor-pointer w-5 h-5"
+              class="cursor-pointer h-5"
               @click="
                 settingStore.setTheme(
                   colorMode.value === 'dark' ? 'light' : 'dark',
@@ -44,16 +55,16 @@
 
           <Divider vertical />
 
-          <SharedLanguagePopover />
+          <SharedLanguagePopover class="h-5" />
 
           <Divider vertical />
 
-          <SharedUserMenu v-if="loggedIn" />
+          <SharedUserMenu v-if="loggedIn" class="h-5" />
 
           <Icon
             v-else
             name="lucide:log-in"
-            class="cursor-pointer w-5 h-5"
+            class="cursor-pointer w-5"
             @click="
               settingStore.isLoginDialogVisible =
                 !settingStore.isLoginDialogVisible
@@ -61,19 +72,27 @@
           />
         </div>
       </div>
+
+      <!-- 移动抽屉，只在移动端显示 -->
+      <ClientOnly>
+        <Drawer
+          v-model="isMenuVisible"
+          :title="t('navigationBar')"
+          size="sm"
+          placement="left"
+        >
+          <NavigationBar orientation="vertical" />
+        </Drawer>
+      </ClientOnly>
     </Container>
   </Header>
 </template>
 
-<!-- 移动抽屉，只在移动端显示 -->
-<!-- <template #body>
-      <NavigationBar orientation="vertical" />
-    </template> -->
-
 <script lang="ts" setup>
-import { Divider, Header, Container } from "moongate-vue";
+import { Divider, Header, Container, Drawer } from "moongate-vue";
 import useSettingStore from "~/stores/setting";
 
+const { t } = useI18n();
 const settingStore = useSettingStore();
 const colorMode = useColorMode();
 const localePath = useLocalePath();
@@ -89,6 +108,17 @@ watchEffect(() => {
     isOutlineIconVisible.value = false;
   }
 });
+
+// 移动抽屉状态
+const isMenuVisible = ref(false);
+
+// 监听路由变化，自动关闭抽屉
+watch(
+  () => route.path,
+  () => {
+    isMenuVisible.value = false;
+  },
+);
 </script>
 
 <script setup></script>

@@ -2,7 +2,8 @@
   "title": "Where Moon Meets Code",
   "description": "推开月之门，进入一个由代码构筑的探索空间。这里记录着关于全栈开发、系统思考以及如何优雅解决复杂问题的沉思与笔记。",
   "coffeeTip": "如果这篇文档对你有帮助，可以请我喝杯咖啡 ☕️",
-  "navigationBar": [
+  "navigationBar": "导航栏",
+  "navigationBars": [
     { "id": 1, "name": "文档", "link": "/docs" },
     { "id": 2, "name": "系列", "link": "/series" },
     { "id": 3, "name": "关于", "link": "/about" },

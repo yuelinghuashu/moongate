@@ -66,8 +66,8 @@ importers:
         specifier: 'link:'
         version: 'link:'
       moongate-vue:
-        specifier: ^0.0.6
-        version: 0.0.6(vue@3.5.34(typescript@5.9.3))
+        specifier: ^0.0.7
+        version: 0.0.7(vue@3.5.34(typescript@5.9.3))
       pg:
         specifier: ^8.20.0
         version: 8.20.0
@@ -4978,8 +4978,8 @@ packages:
   mocked-exports@0.1.1:
     resolution: {integrity: sha512-aF7yRQr/Q0O2/4pIXm6PZ5G+jAd7QS4Yu8m+WEeEHGnbo+7mE36CbLSDQiXYV8bVL3NfmdeqPJct0tUlnjVSnA==}
 
-  moongate-vue@0.0.6:
-    resolution: {integrity: sha512-zSvBiUEVrne6aWAyUD9o5dxog+uFkG5/8MKSW3eru7gVZu/H4Lly4JU8WEAF0KkRb9PsX2wjE5lkCnyFoA8PuQ==}
+  moongate-vue@0.0.7:
+    resolution: {integrity: sha512-DGlpC1gX//GAZ7TI0oAO79ACxUitATYQI9uq0Z3dEc098d7wUcZABWM1AZq9y6BkG116LvKlJpVtfwtZ+q4UnA==}
     peerDependencies:
       vue: ^3.0.0
 
@@ -11956,7 +11956,7 @@ snapshots:
 
   mocked-exports@0.1.1: {}
 
-  moongate-vue@0.0.6(vue@3.5.34(typescript@5.9.3)):
+  moongate-vue@0.0.7(vue@3.5.34(typescript@5.9.3)):
     dependencies:
       vue: 3.5.34(typescript@5.9.3)
 

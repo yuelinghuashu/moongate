@@ -1,6 +1,10 @@
-<script lang="ts" setup>
-const { locale } = useI18n();
+<template>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
+</template>
 
+<script lang="ts" setup>
 useHead({
   meta: [{ name: "viewport", content: "width=device-width, initial-scale=1" }],
   link: [
@@ -37,12 +41,3 @@ useHead({
   ],
 });
 </script>
-
-<template>
-  <!-- 内容组件 -->
-  <NuxtLayout>
-    <NuxtPage />
-  </NuxtLayout>
-</template>
-
-<script setup></script>

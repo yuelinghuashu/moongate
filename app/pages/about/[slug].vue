@@ -10,12 +10,11 @@
     <ClientOnly>
       <Drawer
         v-model="isOutlineVisible"
-        :placement="isDesktop ? 'right' : 'bottom'"
         size="lg"
+        :placement="isDesktop ? 'right' : 'bottom'"
         :title="t('doc.title')"
-        :class="isMobile ? 'max-h-[80%]' : ''"
       >
-        <DocsOutline :outline="page?.body.toc?.links" />
+        <DocsOutline :outline="page.body.toc?.links" />
       </Drawer>
     </ClientOnly>
   </div>
@@ -31,7 +30,6 @@ const route = useRoute();
 const { locale, t } = useI18n();
 const { isDesktop } = useResponsive();
 const { isOutlineVisible, isOutlineIconVisible } = useOutline();
-const { isMobile } = useResponsive();
 
 const slug = computed(() => {
   const path = withLeadingSlash(String(route.params.slug || "/"));

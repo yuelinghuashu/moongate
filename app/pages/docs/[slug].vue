@@ -4,9 +4,7 @@
     <DocsMeta :date="page.date" :level="page.level" :tags="page.tags" />
 
     <!-- 文档内容 -->
-    <article
-      class="prose prose-sm dark:prose-invert max-w-none md:prose-base lg:prose-lg p-4 md:p-6 lg:p-8"
-    >
+    <article class="prose prose-sm dark:prose-invert md:prose-base max-w-none">
       <ContentRenderer :value="page" />
     </article>
 
@@ -14,10 +12,9 @@
     <ClientOnly>
       <Drawer
         v-model="isOutlineVisible"
-        :placement="isDesktop ? 'right' : 'bottom'"
         size="lg"
+        :placement="isDesktop ? 'right' : 'bottom'"
         :title="t('doc.title')"
-        :class="isMobile ? 'max-h-[80%]' : ''"
       >
         <DocsOutline :outline="page.body.toc?.links" />
       </Drawer>
@@ -42,7 +39,6 @@ const { locale, t } = useI18n();
 const route = useRoute();
 const { isDesktop } = useResponsive();
 const { isOutlineIconVisible } = useOutline();
-const { isMobile } = useResponsive();
 
 // ==================== 响应式状态 ====================
 /**
