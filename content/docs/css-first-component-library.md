@@ -305,3 +305,7 @@ const handleClick = (event: MouseEvent) => {
 这套方案的总代码量不到 500 行（CSS + 组件），打包后不到 10KB，却完整支撑了一个组件库的核心功能。
 
 **这 10KB 不仅是体积的缩减，更是思维的减负。**
+
+## 相关文章
+
+- [设计令牌 vs 原子化 CSS](./design-tokens-vs-atomic-css)

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-2">
+  <div class="flex flex-col gap-4">
     <Card
       v-for="item in docs"
       :key="item.id"
@@ -25,9 +25,9 @@
             </div>
           </div>
 
-          <div>
+          <div :class="['flex items-center gap-2', { 'flex-col': isMobile }]">
             <Badge v-if="level !== item.level" :label="item.level" />
-            <time :datetime="item.date" class="text-xs text-ui-text-muted ml-2">
+            <time :datetime="item.date" class="text-xs text-ui-text-muted">
               {{ dayjs(item.date).format("YYYY-MM-DD") }}
             </time>
           </div>
@@ -47,6 +47,7 @@ import { useTagsFilter } from "~/composables/useTagsFilter";
 import dayjs from "dayjs";
 
 const localePath = useLocalePath();
+const { isMobile } = useResponsive();
 
 // 从全局单例获取 tags 和 level，以及筛选方法
 const { tags, level, viewMode } = useDocs();

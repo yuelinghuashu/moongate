@@ -31,9 +31,19 @@
       </Button>
     </div>
 
-    <div class="flex justify-center gap-2 mt-2">
+    <div
+      class="flex flex-col md:flex-row items-center justify-center md:justify-between gap-4 mt-6"
+    >
+      <!-- 分页组件 -->
       <Pagination v-model:current-page="page" :total-pages="totalPages" />
-      <Select v-model="size" :options="sizeOptions" class="w-15!" />
+
+      <!-- 右侧控制区：每页条数 + 计数 -->
+      <div class="flex items-center gap-3">
+        <Select v-model="size" :options="sizeOptions" />
+        <span class="text-sm text-ui-text-muted whitespace-nowrap">
+          {{ t("docs.findCount", { count: docsList?.total || 0 }) }}
+        </span>
+      </div>
     </div>
   </div>
 </template>

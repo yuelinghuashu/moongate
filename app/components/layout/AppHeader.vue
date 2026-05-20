@@ -14,7 +14,6 @@
             class="mr-2 text-2xl"
             @click="isMenuVisible = !isMenuVisible"
           />
-          <SharedLogo class="h-5 mr-2" />
           <NuxtLink
             :to="localePath('/')"
             rel="noopener noreferrer"

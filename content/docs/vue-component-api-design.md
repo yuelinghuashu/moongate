@@ -502,4 +502,3 @@ const handleClick = (event: MouseEvent) => {
 
 - [设计令牌 vs 原子化 CSS](./design-tokens-vs-atomic-css)
 - [CSS 优先 + 组件薄封装](./css-first-component-library)
-- [从零到 npm：一个 Vue 3 组件库的打包血泪史](./component-library-publishing)

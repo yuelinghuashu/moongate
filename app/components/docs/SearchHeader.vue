@@ -19,7 +19,7 @@
         :options="tm('docs.option')"
         label-key="name"
         value-key="id"
-        class="min-w-50"
+        class="min-w-40"
         :placeholder="t('docs.optionPlaceholder')"
         @update:model-value="$emit('update:option', $event)"
       />
@@ -30,7 +30,7 @@
         label-key="name"
         value-key="id"
         :placeholder="t('docs.viewModePlaceholder')"
-        class="ml-2! min-w-30"
+        class="ml-2 min-w-25"
         @update:model-value="$emit('update:viewMode', $event)"
       />
 

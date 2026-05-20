@@ -276,3 +276,82 @@ i18n: {
   detectBrowserLanguage: false // 子域名模式下通常禁用
 }
 ```
+
+### 4.2 翻译占位符（参数插值）
+
+在实际项目中，经常需要动态替换翻译文本中的变量，例如“共 {count} 条记录”。`@nuxtjs/i18n` 支持在翻译字符串中使用 `{key}` 占位符，并在组件中传入对应的值。
+
+#### 语言文件示例
+
+在 `i18n/locales/zh_cn.json` 和 `i18n/locales/en.json` 中定义带占位符的键：
+
+```json
+// zh_cn.json
+{
+  "findCount": "已查询到 {count} 条文档",
+  "greeting": "你好，{name}！欢迎回来。",
+  "balance": "当前余额：{amount, number} 元"
+}
+```
+
+```json
+// en.json
+{
+  "findCount": "Found {count} documents",
+  "greeting": "Hello {name}! Welcome back.",
+  "balance": "Balance: {amount, number} USD"
+}
+```
+
+#### 组件中使用
+
+在 Vue 组件中通过 `$t` 或 `t` 函数传递参数对象：
+
+```vue
+<template>
+  <div>
+    <p>{{ t('findCount', { count: totalDocs }) }}</p>
+    <p>{{ t('greeting', { name: userName }) }}</p>
+    <p>{{ t('balance', { amount: userBalance }) }}</p>
+  </div>
+</template>
+
+<script setup>
+const { t } = useI18n()
+const totalDocs = ref(25)
+const userName = ref('张三')
+const userBalance = ref(12345.67)
+</script>
+```
+
+### 注意事项
+
+- 占位符键名必须**严格匹配**（区分大小写），如 `{count}` 不能写成 `{Count}`。
+- 如果某个占位符未传入值，它会原样输出（如 `{count}`）。
+- 对于需要复数处理的场景（如“1 条评论 / 2 条评论”），请使用 `vue-i18n` 的复数机制，而非手动拼接。
+
+## 总结
+
+`@nuxtjs/i18n` v10 为 Nuxt 应用提供了强大且灵活的国际化方案，但配置细节繁多，尤其在中文场景下容易踩坑。回顾全文，有几个关键点值得再次强调：
+
+1. **版本差异巨大**  
+   v10 与 v8 不兼容，务必以本文和官方文档为准，摒弃旧版认知。
+
+2. **语言标识符规范化**  
+   - `code`：全小写下划线（如 `zh_cn`）  
+   - `language`：标准连字符格式（如 `zh-CN`）  
+   - `defaultLocale`：必须与 `code` **严格一致**
+
+3. **语言文件维护**  
+   存放目录与 JSON 格式需准确无误，避免注释或尾随逗号。
+
+4. **占位符参数插值**  
+   使用 `{key}` 配合 `t('key', { key: value })` 实现动态文本，并支持数字/日期格式化。
+
+5. **路由策略与子域名**  
+   小型项目推荐 `prefix_except_default`，大型多站点可启用 `differentDomains`。
+
+6. **性能与 SEO**  
+   - 通过 `useHead` 动态设置 `lang` 和 `dir` 提升可访问性
+
+> 国际化的核心目标是让不同语言的用户获得一致的体验，希望本文能帮助你少走弯路，快速构建高质量的 Nuxt 多语言应用。

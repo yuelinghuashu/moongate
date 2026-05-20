@@ -2,7 +2,7 @@
 title: 当设计令牌遇上原子化CSS：一次整合失败的反思与融合之道
 description: 当个人开发者尝试用 UnoCSS 映射已有设计令牌失败后，反思工具迷信，提出设计令牌优先于原子化 CSS 的架构观点，并探索两者融合的务实边界。
 date: 2026-04-18
-permarlink:: 65f7b804-7301-401d-8461-b04913b29333
+permalink: 65f7b804-7301-401d-8461-b04913b29333
 series: moongate-vue
 platform: vue
 level: P3

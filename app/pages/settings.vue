@@ -1,7 +1,7 @@
 <template>
   <ClientOnly>
     <Container size="sm">
-      <div class="space-y-3!">
+      <div class="space-y-3">
         <h2 class="text-base font-medium">{{ t("settings.theme.name") }}</h2>
         <div :class="['flex', isDesktop ? ' gap-2' : 'flex-col space-y-2']">
           <Radio
@@ -17,7 +17,7 @@
 
       <Divider class="my-6" />
 
-      <div class="space-y-3!">
+      <div class="space-y-3">
         <h2 class="text-base font-medium">{{ t("settings.language.name") }}</h2>
         <div :class="['flex', isDesktop ? ' gap-2' : 'flex-col space-y-2']">
           <Radio
@@ -33,7 +33,7 @@
 
       <Divider class="my-6" />
 
-      <div class="space-y-3!">
+      <div class="space-y-3">
         <h2 class="text-base font-medium">{{ t("settings.homePage.name") }}</h2>
         <div :class="['flex', isDesktop ? ' gap-2' : 'flex-col space-y-2']">
           <Radio
