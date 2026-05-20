@@ -224,15 +224,15 @@ const startEdit = () => {
 
 const commit = () => {
   editing.value = false
-  let page = parseInt(String(inputPage.value), 10)
-  if (isNaN(page)) page = props.currentPage
-  page = Math.min(Math.max(page, 1), props.totalPages)
+  const raw = inputPage.value
+  const pageNum = parseInt(String(raw), 10)
 
+  // 非法输入直接放弃，不更新页码
+  if (isNaN(pageNum)) return
+
+  let page = Math.min(Math.max(pageNum, 1), props.totalPages)
   if (page !== props.currentPage) {
     emit('update:currentPage', page)
-  } else {
-    // 🔥 关键：如果计算后页码没变（如非法输入恢复），强制刷新 input 的内部值，防止界面卡在空状态
-    inputPage.value = page
   }
 }
 </script>

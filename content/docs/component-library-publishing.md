@@ -156,17 +156,23 @@ nrm current
 
 ### 4.2 高级技巧：发布流自动化脚本
 
-每次发布都要频繁切换源非常琐碎。你可以在 `package.json` 的 `scripts` 中配置如下一键发布命令：
+每次发布都要手动切换源、升级版本、推送标签、发布、切回源，非常琐碎且容易出错。你可以在 `package.json` 的 `scripts` 中配置如下**分步式**发布命令，兼顾效率与安全：
+
 
 ```json
 {
   "scripts": {
-    "release": "nrm use npm && npm version patch && npm publish --access public && nrm use npmmirror"
+    "release:pre": "nrm use npm && npm run build && npm test",
+    "release:version": "npm version patch --no-git-tag-version",
+    "release:tag": "git add package.json && git commit -m \"chore: release v$(node -p 'require(\"./package.json\").version')\" && git tag v$(node -p 'require(\"./package.json\").version')",
+    "release:publish": "npm publish --access public",
+    "release:post": "echo '✅ 发布完成！如需切回镜像源，请手动执行: nrm use npmmirror'",
+    "release": "npm run release:pre && npm run release:version && npm run release:tag && npm run release:publish && npm run release:post"
   }
 }
 ```
 
-> **使用前提**：请确保你的 `nrm` 中已正确配置 `npmmirror` 源（可通过 `nrm add npmmirror https://registry.npmmirror.com` 添加），否则最后一步切换会失败。如果你不需要自动切回镜像源，可以省略 `&& nrm use npmmirror`。
+**使用方式**：执行 `npm run release`，每一步若失败则自动中断，不会产生未推送的 tag 或残留的源切换。
 
 ---
 
