@@ -45,7 +45,9 @@
     "noDocuments": "暂无文档",
     "emptyMessage": "没有找到符合条件的文档，试试调整筛选条件吧",
     "clearAllFilters": "清除所有筛选",
-    "findCount": "已查询到 {count} 条文档"
+    "findCount": "已查询到 {count} 条文档",
+    "perPage": "每页",
+    "unit": "条"
   },
   "series": {
     "url-state": "URL状态同步",

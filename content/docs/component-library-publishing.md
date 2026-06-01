@@ -1,6 +1,6 @@
 ---
 title: 从代码到 npm：Vue 3 组件库发布实战与避坑指南
-description: 记录 moongate-vue 组件库从构建到 npm 发布的完整流程，涵盖 nrm 源管理、2FA 配置、WebAuthn 网络代理、安全密钥避坑、自动化脚本及工业级发布检查清单。
+description: 记录 moongate-vue 组件库从构建到 npm 发布的完整流程，涵盖 nrm 源管理、2FA 配置、WebAuthn 网络代理、本地链接测试、安全密钥避坑、自动化脚本及工业级发布检查清单。
 date: 2026-05-20
 permalink: 6b5acf3d-2c8c-421b-ab33-404ad767f18b
 series: moongate-vue
@@ -96,6 +96,34 @@ nrm current
 
 > **提示**：国内淘宝 npm 镜像已全面迁移至新域名 `https://registry.npmmirror.com`，请确保你的 `nrm` 中配置的 `npmmirror` 源地址正确，避免后续切换失败。
 
+### 2.4 本地集成测试：在真实项目中验证组件库
+
+在发布到 npm 之前，最好在真实项目中先测试一遍。我的本地测试流程：
+
+```bash
+# 1. 在组件库目录：构建 + 全局链接
+pnpm build
+pnpm link --global
+
+# 2. 在测试项目目录：链接本地组件库
+pnpm link /home/dark/projects/moongate-vue
+```
+
+这种方式的优点是不需要修改测试项目的 `package.json`，链接路径清晰可控。
+
+测试清单：
+
+- [ ] 组件能正常渲染
+- [ ] 样式文件导入生效（`import 'moongate-vue/style.css'`）
+- [ ] TypeScript 类型提示正常
+- [ ] HMR 热更新工作正常
+
+> **注意**：测试完成后，如果要彻底删除链接，需要：
+> 1. 手动删除 `package.json` 中的 `"moongate-vue": "link:../moongate-vue"` 条目
+> 2. 执行 `pnpm remove moongate-vue` 清理残留
+>
+> `pnpm unlink` 只能删除符号链接，无法删除 `package.json` 中的 `link:` 协议条目。
+
 ---
 
 ## 三、攻克双重认证（2FA）泥潭
@@ -158,7 +186,6 @@ nrm current
 
 每次发布都要手动切换源、升级版本、推送标签、发布、切回源，非常琐碎且容易出错。你可以在 `package.json` 的 `scripts` 中配置如下**分步式**发布命令，兼顾效率与安全：
 
-
 ```json
 {
   "scripts": {
@@ -184,7 +211,7 @@ nrm current
 - [ ] **产物完整**：`dist/` 目录下 `.mjs`、`.cjs`、`.d.ts`、`.css` 四大核心文件全部在场。
 - [ ] **类型有效性**：`dist/index.d.ts` 非空，且正确导出了所有组件的类型契约。
 - [ ] **干净的版本**：执行了 `npm version`，当前版本号从未在 npm 上存在过。
-- [ ] **本地沙盒验证**：在本地通过 `pnpm add file:../moongate-vue` 引入测试项目，验证打包后的组件可正常渲染，且样式文件导入正确（`import 'moongate-vue/style.css'`）。
+- [ ] **本地沙盒验证**：通过 `pnpm link` 在本地测试项目中验证（见 2.4 节），确保组件可正常渲染，且样式文件导入正确（`import 'moongate-vue/style.css'`）。
 
 ---
 
@@ -208,6 +235,10 @@ nrm current
    ```
    该路径与 `package.json` 中的 `exports` 字段对应，确保正确解析。
 
+#### Q4: 本地链接测试后，组件库更新不生效？
+
+**A**：执行 `pnpm build` 重新构建，然后在测试项目中重新运行 `pnpm link /path/to/moongate-vue` 刷新链接。如果仍不生效，先手动删除 `package.json` 中的 `link:` 条目，再执行 `pnpm remove moongate-vue` 和 `pnpm install` 重新链接。最后的手段是删除测试项目中的 `node_modules` 和 `pnpm-lock.yaml` 后重新安装。
+
 ---
 
 ## 七、结语
@@ -217,7 +248,3 @@ nrm current
 从第一篇的**设计令牌（Design Tokens）定义规范**，到后来的**薄封装哲学**、**复杂组件的类型回溯泥潭摔跤**，再到今天的 **npm 工业级分发**。五篇文章，我们从零构建起了一套完整、干净、现代的前端组件库工程闭环。
 
 打包与发布不是创造的终点，而是组件库生命的真正开始。愿你的组件库也能跨越泥潭，抵达更远的远方。🚀
-
----
-
-🌙 **推开月之门，让代码抵达更远的地方。**

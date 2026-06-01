@@ -6,7 +6,7 @@
         class="mg-button mg-button-filled-primary mg-button-md"
       >
         // Access the Gate
-        <Icon name="lucide:arrow-right" class="w-4 h-4" />
+        <Icon name="lucide:arrow-right" class="h-4" />
       </NuxtLink>
     </template>
   </Hero>
@@ -21,18 +21,18 @@ const localePath = useLocalePath();
 const settingStore = useSettingStore();
 
 // 监听路由变化，立即将 /docs? 改成 /docs
-const router = useRouter()
-const route = useRoute()
+const router = useRouter();
+const route = useRoute();
 
 watch(
   () => route.fullPath,
   (newPath) => {
-    if (newPath.endsWith('?')) {
-      router.replace({ path: route.path, query: undefined })
+    if (newPath.endsWith("?")) {
+      router.replace({ path: route.path, query: undefined });
     }
   },
-  { immediate: true }
-)
+  { immediate: true },
+);
 
 // 计算是否跳过首页
 const homepageBehavior = computed(

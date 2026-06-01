@@ -45,7 +45,9 @@
     "noDocuments": "ドキュメントがありません",
     "emptyMessage": "条件に一致するドキュメントが見つかりませんでした。フィルターを調整してみてください。",
     "clearAllFilters": "すべてのフィルターをクリア",
-    "findCount": "{count} 件の文書が見つかりました"
+    "findCount": "{count} 件の文書が見つかりました",
+    "perPage": "ページあたり",
+    "unit": "件"
   },
   "series": {
     "url-state": "URL状態同期",

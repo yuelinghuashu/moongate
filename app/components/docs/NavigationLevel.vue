@@ -1,6 +1,6 @@
 <template>
   <!-- 从 i18n 多语言文件获取等级分类数据：键为等级代码（P1~P5），值为对应的描述文本 -->
-  <ul class="flex flex-row justify-between mt-4 mb-4 text-center">
+  <ul class="flex flex-row justify-between mt-2 mb-2 text-center">
     <li
       v-for="levelKey in Object.keys(tm('docs.levels'))"
       :key="levelKey"
