@@ -47,7 +47,13 @@
     "clearAllFilters": "Clear all filters",
     "findCount": "Found {count} documents",
     "perPage": "Per page",
-    "unit": "items"
+    "unit": "items",
+    "pagination": {
+      "prev": "Previous",
+      "next": "Next",
+      "first": "First",
+      "last": "Last"
+    }
   },
   "series": {
     "url-state": "URL State Sync",

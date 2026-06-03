@@ -47,7 +47,13 @@
     "clearAllFilters": "清除所有筛选",
     "findCount": "已查询到 {count} 条文档",
     "perPage": "每页",
-    "unit": "条"
+    "unit": "条",
+    "pagination": {
+      "prev": "上一页",
+      "next": "下一页",
+      "first": "首页",
+      "last": "尾页"
+    }
   },
   "series": {
     "url-state": "URL状态同步",

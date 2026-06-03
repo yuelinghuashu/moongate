@@ -35,13 +35,24 @@
       class="flex flex-col md:flex-row items-center justify-center md:justify-between mt-6"
     >
       <!-- 分页组件 -->
-      <Pagination v-model:current-page="page" :total-pages="totalPages" />
+      <Pagination
+        v-model:current-page="page"
+        :total-pages="totalPages"
+        :size="isDesktop ? 'md' : 'sm'"
+        :prev-text="t('docs.pagination.prev')"
+        :next-text="t('docs.pagination.next')"
+      />
 
       <!-- 右侧控制区：每页条数 + 计数 -->
-      <div class="flex items-center">
+      <div class="flex items-center" :class="{ 'mt-2': isMobile }">
         <span class="text-sm">{{ t("docs.perPage") }}</span>
-        <Select v-model="size" :options="sizeOptions" class="px-2 min-w-10 max-w-20" />
-        <span class="text-sm ">{{ t("docs.unit") }}</span>
+        <Select
+          v-model="size"
+          :options="sizeOptions"
+          :size="isDesktop ? 'md' : 'sm'"
+          class="px-2 min-w-10 max-w-20"
+        />
+        <span class="text-sm">{{ t("docs.unit") }}</span>
 
         <span class="text-sm whitespace-nowrap ml-8">
           {{ t("docs.findCount", { count: docsList?.total || 0 }) }}

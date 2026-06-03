@@ -47,7 +47,13 @@
     "clearAllFilters": "すべてのフィルターをクリア",
     "findCount": "{count} 件の文書が見つかりました",
     "perPage": "ページあたり",
-    "unit": "件"
+    "unit": "件",
+    "pagination": {
+      "prev": "前へ",
+      "next": "次へ",
+      "first": "最初へ",
+      "last": "最後へ"
+    }
   },
   "series": {
     "url-state": "URL状態同期",
