@@ -29,7 +29,7 @@
     "isomorphic-dompurify": "^2.36.0",
     "kysely": "^0.29.0",
     "marked": "^17.0.6",
-    "moongate-vue": "^1.0.0",
+    "moongate-vue": "^1.2.0",
     "pg": "^8.20.0",
     "pinia": "^3.0.4",
     "pinia-plugin-persistedstate": "^4.7.1",

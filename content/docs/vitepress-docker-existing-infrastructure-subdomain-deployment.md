@@ -265,7 +265,7 @@ jobs:
             docker run -d \
               --name moongate-vue \
               --restart unless-stopped \
-              --network my-blog_blog-network \
+              -p 3001:80 \
               $ACR_REGISTRY/moongate/moongate-vue:latest
 
             # 清理旧镜像
