@@ -46,15 +46,15 @@ export default defineNuxtConfig({
           langs: ['json', 'js', 'ts', 'html', 'css', 'vue', 'shell', 'mdc', 'md', 'yaml', 'xml', 'mermaid', 'sql'],
         },
         theme: {
-          default: 'github-light',
-          light: 'github-light',
-          dark: 'material-theme-palenight'
+          default: 'vitesse-light',
+          light: 'vitesse-light',
+          dark: 'vitesse-dark'
         }
       },
     },
     shiki: {
       // 配置你需要的主题和语言
-      bundledThemes: ['github-light', 'material-theme-palenight'],
+      bundledThemes: ['vitesse-light', 'vitesse-dark'],
       bundledLangs: [
         'javascript', 'typescript', 'js', 'html', 'css',
         'vue', 'python', 'bash', 'json', 'markdown',

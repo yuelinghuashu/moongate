@@ -17,8 +17,8 @@ const renderedContent = ref("");
 // 根据当前颜色模式动态选择 Shiki 主题，确保与文档代码块配色一致
 const currentTheme = computed(() => {
   return colorMode.value === "dark"
-    ? "material-theme-palenight" // 深色主题
-    : "github-light"; // 浅色主题
+    ? "vitesse-dark" // 深色主题
+    : "vitesse-light"; // 浅色主题
 });
 
 // 核心渲染函数：将用户输入的 Markdown 内容转换为安全的、高亮的 HTML

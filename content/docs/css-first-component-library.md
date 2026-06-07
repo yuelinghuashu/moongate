@@ -32,7 +32,7 @@ tags:
 
 ## 最终架构：四层 CSS 文件
 
-整个样式系统分为四个文件，职责清晰、层层依赖：
+整个样式系统分为四个层级，职责清晰、层层依赖：
 
 ```bash
 ┌─────────────────────────────────────────────────────────────┐
@@ -46,27 +46,27 @@ tags:
 │                            ↓                                │
 │                     组件样式层（手写）                        │
 │  ┌─────────────────────────────────────────────────────┐   │
-│  │                 components.css                       │   │
-│  │      组件类（.mg-button, .mg-card, .mg-input）        │   │
+│  │                 components/                          │   │
+│  │      各组件独立样式文件（Button.css, Card.css...）    │   │
 │  │              引用 var(--ui-*) 令牌                    │   │
 │  └──────────────────────────┬──────────────────────────┘   │
 │                             ↓                               │
 │                      入口层（手写）                          │
 │  ┌─────────────────────────────────────────────────────┐   │
 │  │                    main.css                          │   │
-│  │  导入三个文件 + 全局重置 + 极简工具类                  │   │
+│  │  导入令牌文件 + 组件样式 + 全局重置 + 极简工具类       │   │
 │  └─────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### 各文件职责与行数
+### 各文件/文件夹职责
 
-| 文件             | 职责                         | 生成方式         | 行数 |
-| ---------------- | ---------------------------- | ---------------- | ---- |
-| `colors.css`     | 浅色/深色模式颜色令牌        | 主题插件自动生成 | ~120 |
-| `layout.css`     | 间距、字体、动效等布局令牌   | 主题插件自动生成 | ~50  |
-| `components.css` | 所有组件的样式类             | 手写             | ~250 |
-| `main.css`       | 入口文件 + 全局重置 + 工具类 | 手写             | ~150 |
+| 文件/文件夹       | 职责                               | 生成方式         |
+| ---------------- | ---------------------------------- | ---------------- |
+| `colors.css`     | 浅色/深色模式颜色令牌              | 主题插件自动生成 |
+| `layout.css`     | 间距、字体、动效等布局令牌         | 主题插件自动生成 |
+| `components/`    | 各组件独立样式文件（Button.css, Card.css...） | 手写             |
+| `main.css`       | 入口文件 + 全局重置 + 工具类       | 手写             |
 
 ### 设计令牌即 API
 
@@ -74,7 +74,7 @@ tags:
 
 ### 工程红利：多框架复用
 
-这种解耦意味着，如果明天我想把项目从 Vue 迁移到 React 或 Svelte，我只需要重写一遍 ~50 行的逻辑组件，而那套核心样式（~500 行 CSS）可以原地复用，无需任何改动。**这是“样式绑定逻辑”的原子化方案永远无法做到的。**
+这种解耦意味着，如果明天我想把项目从 Vue 迁移到 React 或 Svelte，我只需要重写一遍 ~50 行的逻辑组件，而那套核心样式可以原地复用，无需任何改动。**这是“样式绑定逻辑”的原子化方案永远无法做到的。**
 
 ## 极简组件：Button.vue 为例
 
@@ -93,7 +93,7 @@ const hasIconSlot = computed(() => !!slots.icon);
 
 type Variant = "filled" | "outline";
 type Color = "primary" | "success" | "warning" | "error";
-type Size = "xs" | "sm" | "md" | "lg";
+type Size = "sm" | "md" | "lg";
 
 interface Props {
   label?: string;
@@ -103,18 +103,16 @@ interface Props {
   disabled?: boolean;
   loading?: boolean;
   block?: boolean;
-  icon?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   label: "",
   variant: "filled",
   color: "primary",
-  size: "md",
+  size: "sm",
   disabled: false,
   loading: false,
   block: false,
-  icon: "",
 });
 
 const emit = defineEmits<{ click: [event: MouseEvent] }>();
@@ -139,10 +137,8 @@ const handleClick = (event: MouseEvent) => {
     @click="handleClick"
   >
     <span v-if="loading" class="mg-button-loading-icon" />
-    <span v-if="!loading && (hasIconSlot || icon)" class="mg-button-icon">
-      <slot name="icon">
-        <span v-if="icon">{{ icon }}</span>
-      </slot>
+    <span v-if="!loading && hasIconSlot" class="mg-button-icon">
+      <slot name="icon" />
     </span>
     <span class="mg-button-label">
       <slot>{{ label }}</slot>
@@ -157,7 +153,7 @@ const handleClick = (event: MouseEvent) => {
 - 只有 ~50 行代码，极简清晰
 - 类型安全（TypeScript）
 - 支持无障碍属性（`aria-busy`、`aria-disabled`），**极简并不代表简陋**
-- 支持 8 种 props + 2 种插槽，覆盖日常使用
+- 支持 7 种 props + 2 种插槽，覆盖日常使用
 
 ## 动态样式：CSS 变量局部覆盖
 
@@ -171,7 +167,7 @@ const handleClick = (event: MouseEvent) => {
 ```
 
 ```css
-/* components.css 中增加一行支持 */
+/* components/Button.css 中增加一行支持 */
 .mg-button {
   background-color: var(--btn-bg, var(--ui-primary));
 }
@@ -206,12 +202,12 @@ const handleClick = (event: MouseEvent) => {
 
 ### 体积数据
 
-| 类型              | 原始大小   | Gzip 压缩后 |
-| ----------------- | ---------- | ----------- |
-| CSS（4 个文件）   | ~15 KB     | ~4 KB       |
-| JS（Button 组件） | ~2 KB      | ~0.8 KB     |
-| 其他组件（按需）  | ~10 KB     | ~3 KB       |
-| **总计**          | **~27 KB** | **~8 KB**   |
+| 类型                      | 原始大小 | Gzip 压缩后 |
+| ------------------------- | -------- | ----------- |
+| CSS（令牌 + 组件样式）    | ~15 KB   | ~4 KB       |
+| JS（Button 组件）         | ~2 KB    | ~0.8 KB     |
+| 其他组件（按需）          | ~10 KB   | ~3 KB       |
+| **总计**                  | **~27 KB** | **~8 KB**   |
 
 ### 维护性对比
 
