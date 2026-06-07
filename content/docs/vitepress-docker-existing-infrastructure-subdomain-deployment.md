@@ -76,7 +76,7 @@ tags:
 >
 > 由于两者在同一 Docker 网络中，网关 Caddy 通过 `reverse_proxy moongate-vue:80` 直接通信，无需暴露端口到宿主机。容器间通信为内网明文 HTTP（80 端口），外层 HTTPS 证书由网关 Caddy 自动托管解析。
 
-```markdown
+```bash
 ┌─────────────┐ ┌─────────────────┐ ┌─────────────────┐
 │ 本地开发 │────▶│ GitHub Actions │────▶│ 阿里云 ACR │
 │ git push │ │ 自动构建镜像 │ │ 镜像仓库 │
