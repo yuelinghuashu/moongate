@@ -33,7 +33,7 @@ pnpm install
 
 ### 1.2 安装多个必备模块
 
-```
+```bash
 # 安装 Nuxt Content 模块
 pnpm add @nuxt/content
 

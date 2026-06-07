@@ -89,7 +89,7 @@ export default defineNuxtConfig({
 
 创建语言文件目录和文件：
 
-```text
+```markdown
 project-root/
 ├── i18n/
 │   └── locales/

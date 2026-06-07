@@ -33,7 +33,7 @@ tags: [Nuxt, Vue, Security, Content Rendering]
 
 过滤功能涉及前后端协作：
 
-```
+```markdown
 用户输入 → 前端实时检测（可选） → 提交 → 后端校验（敏感词、长度、文档归属） → 入库 → 返回结果
 ```
 

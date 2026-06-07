@@ -132,7 +132,7 @@ npx nuxi@latest module add auth-utils
 
 1. 在项目根目录创建 `.env.example` 文件，并**提交到代码仓库**：
 
-   ```ini
+   ```bash
    # 至少 32 位随机字符串（本地开发用）
    NUXT_SESSION_PASSWORD=your-local-32-char-dev-password
    # GitHub OAuth 凭证（需创建独立的 GitHub OAuth App）
@@ -148,7 +148,7 @@ npx nuxi@latest module add auth-utils
 
    **并将 `.env` 添加到 `.gitignore`**（确保不会误提交）：
 
-   ```text
+   ```bash
    .env
    ```
 
@@ -350,25 +350,22 @@ export default defineOAuthGitHubEventHandler({
 
 ### 5.4 水合问题的处理
 
-当网站支持国际化时（如 /zh、/en 前缀），登录后重定向到来源页还有一个额外的好处：自动解决水合不匹配问题。
+当网站支持国际化路径前缀（如 `/zh`、`/en`）时，登录后重定向到来源页还能**自动解决水合不匹配问题**。
 
 #### 5.4.1 水合不匹配的产生原因
 
-    用户从 /en/docs/123 点击登录
-
-    登录成功后若重定向到 /（默认语言首页）
-
-    服务器渲染的是中文 HTML，但 URL 是 /，而客户端期望的是英文内容
-
-    导致水合警告：Hydration completed but contains mismatches
+1. 用户在 `/en/docs/123` 点击登录
+2. 登录成功后，若直接重定向到首页 `/`（无语言前缀）
+3. 服务器返回的是默认语言（如中文）的 HTML
+4. 但客户端期望的 hydration 内容是英文（用户来源页面是 `/en/...`）
+5. 导致水合警告：`Hydration completed but contains mismatches`
 
 #### 5.4.2 为什么重定向到来源页能解决
 
-    用户从 /en/docs/123 来，登录后回到 /en/docs/123
-
-    服务器根据 URL 中的 /en 前缀渲染对应的语言版本
-
-    客户端 hydration 时，DOM 结构与 URL 完全匹配，水合警告自然消失
+- 用户从 `/en/docs/123` 来，登录后回到 `/en/docs/123`
+- 服务器根据 URL 中的 `/en` 前缀渲染对应的**英文版本**
+- 客户端 hydration 时，DOM 结构与 URL 完全匹配
+- 水合警告自然消失
 
 ---
 

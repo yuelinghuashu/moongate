@@ -80,7 +80,7 @@ tags: [GitHub Actions, Caddy, Docker, CI/CD, Deployment]
 
 ### 1.1 项目结构
 
-```
+```bash
 my-app/
 ├── .github/workflows/deploy.yml   # GitHub Actions 配置
 ├── Dockerfile                     # 镜像构建文件
@@ -91,7 +91,7 @@ my-app/
 
 ### 1.2 编写 Dockerfile（以 Node.js 为例）
 
-```dockerfile
+```bash
 # 构建阶段
 FROM node:24-alpine AS builder
 WORKDIR /app

@@ -76,7 +76,7 @@ tags:
 >
 > 由于两者在同一 Docker 网络中，网关 Caddy 通过 `reverse_proxy moongate-vue:80` 直接通信，无需暴露端口到宿主机。容器间通信为内网明文 HTTP（80 端口），外层 HTTPS 证书由网关 Caddy 自动托管解析。
 
-```bash
+```markdown
 ┌─────────────┐     ┌─────────────────┐     ┌─────────────────┐
 │  本地开发    │────▶│  GitHub Actions │────▶│   阿里云 ACR    │
 │  git push   │     │   自动构建镜像   │     │   镜像仓库      │
@@ -117,7 +117,7 @@ tags:
 
 VitePress 是静态站点生成器，构建后输出纯静态文件。因此 Dockerfile 分为两个阶段：
 
-```dockerfile
+```bash
 # ==================== 构建阶段 ====================
 FROM node:24-alpine AS builder
 
@@ -156,13 +156,13 @@ EXPOSE 80
 
 VitePress 1.x 的默认主题会调用 `git` 命令获取文件的最后更新时间。如果容器中没有 git，构建会报错：
 
-```
+```bash
 [vitepress] spawn git ENOENT
 ```
 
 **解决方案**：在构建阶段安装 git：
 
-```dockerfile
+```bash
 RUN apk add --no-cache git
 ```
 
@@ -170,14 +170,14 @@ RUN apk add --no-cache git
 
 pnpm 10.x 默认启用供应链安全检查，拦截发布时间 < 24 小时的包：
 
-```
+```bash
 [ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION] @types/node@25.9.2 was published ... within the minimumReleaseAge cutoff
 [ERR_PNPM_IGNORED_BUILDS] Ignored build scripts: esbuild@0.21.5, vitepress-theme-demoblock@3.1.3
 ```
 
 **解决方案**：使用 `--ignore-scripts` 参数跳过检查：
 
-```dockerfile
+```bash
 RUN pnpm install --frozen-lockfile --ignore-scripts
 ```
 
@@ -187,7 +187,7 @@ Caddy 官方镜像默认以 `caddy` 非 root 用户运行（安全考虑）。�
 
 **解决方案**：在 Caddyfile 中确保 `root` 目录可读，或使用 `--chown` 参数：
 
-```dockerfile
+```bash
 COPY --from=builder --chown=caddy:caddy /app/docs/.vitepress/dist /docs
 ```
 
@@ -305,7 +305,7 @@ docker run -d \
 
 在 `/var/www/my-site/Caddyfile` 中添加子域名配置，并指定静态文件根目录：
 
-```caddy
+```bash
 # 组件库文档站
 vue.moongate.top {
     reverse_proxy moongate-vue:80

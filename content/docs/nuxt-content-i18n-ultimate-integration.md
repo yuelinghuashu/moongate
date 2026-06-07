@@ -119,7 +119,7 @@ const { data: page } = await useAsyncData(
 
 保持您的单语言内容结构：
 
-```text
+```markdown
 content/
   docs/
     nuxt-content-guide.md

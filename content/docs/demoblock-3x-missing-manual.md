@@ -118,7 +118,7 @@ export default {
 
 直接运行 `vitepress dev docs` 会报错：
 
-```
+```bash
 Uncaught SyntaxError: Cannot find module './useComponents'
 ```
 

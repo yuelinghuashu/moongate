@@ -75,7 +75,7 @@ tags: [GitHub Actions, Caddy, Docker, CI/CD, Deployment]
 
 ## 🏗️ 系统架构图
 
-```
+```markdown
 ┌─────────────┐     ┌─────────────────┐     ┌─────────────────┐
 │  本地开发    │────▶│  GitHub Actions │────▶│   阿里云 ACR    │
 └─────────────┘     └─────────────────┘     └─────────────────┘
@@ -279,7 +279,7 @@ chmod 600 /var/www/my-app/.env
 
 内容示例（请替换为实际值）：
 
-```env
+```bash
 POSTGRES_DB=myapp
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=StrongPassword123!

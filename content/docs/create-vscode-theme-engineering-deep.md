@@ -33,7 +33,7 @@ tags: [VSCode, Theme, Engineering, Design System, Configuration]
 
 ## 📁 目录结构
 
-```
+```bash
 your-theme/
 ├── src/
 │   ├── core/

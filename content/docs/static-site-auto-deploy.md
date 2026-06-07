@@ -63,7 +63,7 @@ tags: [GitHub Actions, Caddy, Deployment, CI/CD]
 
 这套方案的核心是 **“声明式自动化”**：你只需在代码仓库中声明“做什么”（配置文件），GitHub Actions 和 Caddy 就会自动执行“怎么做”。
 
-```
+```bash
 开发者本地 (Local)
 ↓ [git push]
 GitHub 仓库 (Repository)
@@ -117,7 +117,7 @@ sudo nano /etc/caddy/Caddyfile
 
 粘贴以下配置，**请务必将 `example.com` 替换为你的真实域名**。如果没有域名，可以用 `http://你的服务器IP` 格式，但将无法享受自动 HTTPS。
 
-```caddy
+```bash
 example.com, www.example.com {
     # 网站根目录（必须与后续自动化部署的目录一致）
     root * /var/www/my-site

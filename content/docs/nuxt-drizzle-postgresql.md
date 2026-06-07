@@ -99,7 +99,7 @@ Nuxt 项目中，建议将所有数据库相关文件放在 `server/db/` 下。*
 
 ### 目录结构
 
-```
+```bash
 server/
 ├── db/
 │   ├── schema/

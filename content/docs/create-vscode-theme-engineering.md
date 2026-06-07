@@ -41,7 +41,7 @@ npm install --save-dev js-yaml
 
 我们将源码放在 `src/` 目录下，构建脚本放在 `scripts/`，最终生成的 JSON 放在 `themes/`。推荐结构如下：
 
-```
+```bash
 your-theme/
 ├── src/
 │   ├── core/
@@ -379,7 +379,7 @@ npm run dev
 
 确保发布时只包含最终产物，不包含源码和依赖。一个典型的 `.vscodeignore` 内容如下：
 
-```
+```bash
 .vscode/**
 .gitignore
 vsc-extension-quickstart.md

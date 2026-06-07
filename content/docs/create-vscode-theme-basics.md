@@ -59,7 +59,7 @@ yo code
 
 生成器会创建项目文件夹，结构如下：
 
-```
+```bash
 your-theme/
 ├── themes/
 │   └── your-theme-color-theme.json
@@ -213,7 +213,7 @@ VS Code 支持语义高亮（Semantic Highlighting），它能让你根据语义
 
 排除不需要打包的文件，例如：
 
-```
+```bash
 .vscode/**
 .gitignore
 node_modules

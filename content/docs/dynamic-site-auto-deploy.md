@@ -74,7 +74,7 @@ tags: [GitHub Actions, Caddy, Deployment, CI/CD]
 
 整个流程基于 **声明式自动化**，通过 GitHub Actions 串联所有步骤。
 
-```
+```bash
 开发者本地 (Local)
 ↓ [git push]
 GitHub 仓库 (Repository)
@@ -162,7 +162,7 @@ sudo nano /etc/caddy/Caddyfile
 
 写入以下内容（**务必替换 `example.com` 为你的域名**，Nuxt 默认运行在 3000 端口）：
 
-```caddy
+```bash
 example.com, www.example.com {
     # 反向代理到本地 Nuxt 应用进程
     reverse_proxy 127.0.0.1:3000
@@ -187,7 +187,7 @@ sudo systemctl status caddy
 
 无论数据库在服务器本地还是云端，你都需要一个有效的连接字符串，格式如：
 
-```
+```bash
 postgresql://用户名:密码@主机:端口/数据库名
 ```
 
