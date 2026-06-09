@@ -17,6 +17,25 @@ tags:
 
 > 从数据格式适配到路由同步，深入复杂组件的设计要点与逻辑复用
 
+## 📚 系列导航
+
+本系列共五篇，覆盖从设计令牌到 npm 发布的 Vue 3 组件库开发全流程：
+
+1. [**设计令牌 vs 原子化 CSS：失败整合与融合之道（理念篇）**](./design-tokens-vs-atomic-css)
+   —— 用 UnoCSS 映射设计令牌的失败经历，量化对比后得出设计令牌优先的结论。
+
+2. [**CSS 优先 + 组件薄封装：一个 10KB 组件库的极简实践（架构篇）**](./css-first-component-library)
+   —— 四层 CSS 架构、极简 Vue 组件、体积分析与维护性对比，500 行代码构建 10KB 组件库。
+
+3. [**Vue 3 简单组件开发实战：从 Button 组件看 API 设计（简单组件篇）**](./vue-component-api-design)
+   —— Props 定义、变体系统、尺寸取舍、插槽设计、状态管理、无障碍支持及与主流 UI 库对比。
+
+4. [**Vue 3 复杂组件开发实战：Select 与 Pagination 的 API 设计（复杂组件篇）**](./complex-component-api-design)
+   —— 数据格式适配、类型回溯、路由同步、键盘交互及组合式函数抽离，揭示工业级细节。
+
+5. [**从代码到 npm：Vue 3 组件库发布实战与避坑指南（发布篇）**](./component-library-publishing)
+   —— nrm 源管理、2FA 配置、WebAuthn 网络代理避坑、本地链接测试、自动化脚本及工业级发布检查清单。
+
 ## 一、引言
 
 如果说写 Button 组件是在享受写 CSS 变量的“涂料之美”，那么写 Select 和 Pagination 就是在应对原生 HTML 历史包袱的“泥潭摔跤”。简单组件是单向的数据消费者，而复杂组件则是**数据适配器**（兼容多格式）与**状态同步器**（协同路由与键盘）。
@@ -340,9 +359,3 @@ const { page, goPrev, goNext } = useMoongatePagination(totalPages)
 | **测试策略**         | 快照、事件触发                           | 状态组合、边界值、键盘模拟、类型回溯                         |
 
 一个优秀的复杂组件，对内要像吸尘器一样容纳各种奇葩的后端数据格式（通过 Key 映射和类型回溯），对外要像绅士一样克制地与全局环境（路由、窗口键盘）发生耦合。**高内聚、低耦合**，在这两类组件身上体现得淋漓尽致。
-
-## 七、相关文章
-
-- [设计令牌 vs 原子化 CSS](./design-tokens-vs-atomic-css)
-- [CSS 优先 + 组件薄封装](./css-first-component-library)
-- [Vue 3 简单组件开发实战：从 Button 组件看 API 设计](./vue-component-api-design)

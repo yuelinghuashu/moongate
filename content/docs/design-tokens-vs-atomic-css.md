@@ -18,6 +18,25 @@ tags:
 
 > 从 UnoCSS 映射设计令牌的失败经历出发，量化对比两种方案的维护成本，给出务实的分工边界
 
+## 📚 系列导航
+
+本系列共五篇，覆盖从设计令牌到 npm 发布的 Vue 3 组件库开发全流程：
+
+1. [**设计令牌 vs 原子化 CSS：失败整合与融合之道（理念篇）**](./design-tokens-vs-atomic-css)
+   —— 用 UnoCSS 映射设计令牌的失败经历，量化对比后得出设计令牌优先的结论。
+
+2. [**CSS 优先 + 组件薄封装：一个 10KB 组件库的极简实践（架构篇）**](./css-first-component-library)
+   —— 四层 CSS 架构、极简 Vue 组件、体积分析与维护性对比，500 行代码构建 10KB 组件库。
+
+3. [**Vue 3 简单组件开发实战：从 Button 组件看 API 设计（简单组件篇）**](./vue-component-api-design)
+   —— Props 定义、变体系统、尺寸取舍、插槽设计、状态管理、无障碍支持及与主流 UI 库对比。
+
+4. [**Vue 3 复杂组件开发实战：Select 与 Pagination 的 API 设计（复杂组件篇）**](./complex-component-api-design)
+   —— 数据格式适配、类型回溯、路由同步、键盘交互及组合式函数抽离，揭示工业级细节。
+
+5. [**从代码到 npm：Vue 3 组件库发布实战与避坑指南（发布篇）**](./component-library-publishing)
+   —— nrm 源管理、2FA 配置、WebAuthn 网络代理避坑、本地链接测试、自动化脚本及工业级发布检查清单。
+
 ## 一、起点：我有一套完整的设计令牌
 
 我的个人项目 `moongate-vue` 一开始只有三份 CSS 文件：
@@ -201,10 +220,3 @@ theme: {
 UnoCSS 和 Tailwind 是好工具，但它们不是设计系统的替代品。设计令牌才是地基，原子化只是上面的一层涂料。当你已经有一块坚实的地基时，是否涂上这层涂料，取决于你愿不愿意接受那点语法糖带来的维护成本。
 
 至少对我来说，**不划算**。
-
----
-
-## 相关文章
-
-- [CSS 优先 + 组件薄封装：一个 10KB 组件库的极简实践](./css-first-component-library)
-- [Vue 3 简单组件开发实战：从 Button 组件看 API 设计](./vue-component-api-design)

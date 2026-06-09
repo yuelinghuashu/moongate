@@ -15,11 +15,18 @@ tags: [Nuxt, Vue, State Management, Hydration]
 
 ---
 
-> 📚 **系列导航**  
-> 本文是 **Nuxt 状态同步三部曲** 的第二篇。
->
-> - 第一篇：[《Nuxt 中 URL 与状态双向绑定的终极指南》](./nuxt-url-state-guide.md) 讲解了原理与手写方案。
-> - 第三篇：[《从零到一：构建一个功能完备的文档列表页》](./nuxt-docs-list-page-complete-guide.md) 将综合运用本文的封装，实现完整页面。
+## 📚 系列导航
+
+本系列共三篇，覆盖 Nuxt 中 URL 与状态双向同步的全流程：
+
+1. [**Nuxt 中 URL 与状态双向绑定的终极指南（原理篇）**](./nuxt-url-state-guide)
+   —— 讲解 URL 与状态双向同步的原理与手写方案。
+
+2. [**手写一个更适合 Nuxt 的 useRouteQuery（封装篇）**](./nuxt-use-route-query-composables)
+   —— 将重复逻辑封装成开箱即用的 composable，大幅简化代码。
+
+3. [**从零到一：构建一个功能完备的文档列表页（实战篇）**](./nuxt-docs-list-page-complete-guide)
+   —— 综合运用前两篇的知识，实现一个包含分页、搜索、多标签筛选的完整列表页。
 
 ---
 
@@ -100,7 +107,7 @@ watch([searchInput, searchOption, page, size, viewMode, level, tags], () =>
 
 ### 3.1 基础函数 `useRouteQueryRaw`
 
-不对外暴露，仅用于内部读写原始值：
+不对外暴露，仅用于内部读写原始值，**使用 `replace` 避免产生多余历史记录**：
 
 ```ts
 function useRouteQueryRaw(name: string) {
@@ -108,24 +115,32 @@ function useRouteQueryRaw(name: string) {
   const router = useRouter();
   const value = ref(route.query[name]);
 
+  // 监听路由变化，同步到内部 ref
   watch(
     () => route.query[name],
-    (v) => {
-      value.value = v;
+    (newVal) => {
+      value.value = newVal;
     },
   );
-  watch(value, (v) => {
-    router.push({ query: { ...route.query, [name]: v } });
+
+  // 监听内部 ref 变化，同步到 URL
+  watch(value, (newVal) => {
+    const query = { ...route.query };
+    if (newVal !== undefined && newVal !== null && newVal !== "") {
+      query[name] = newVal;
+    } else {
+      delete query[name];
+    }
+    router.replace({ query }); // 使用 replace 避免产生多余历史记录
   });
+
   return value;
 }
 ```
 
-**特点**：
+**为什么用 `replace` 而不是 `push`？**
 
-- 无全局状态，每个组件实例独立。
-- 直接监听 `route.query` 和内部 `ref`，实现双向同步。
-- 不使用 `nextTick` 批量更新，避免复杂时序问题。
+如果使用 `push`，每次筛选条件变化都会在浏览器历史中产生一条新记录，用户点击后退按钮时会感到困惑（需要多次后退才能离开当前页面）。`replace` 只替换当前历史记录，用户体验更符合直觉。
 
 ### 3.2 字符串类型 `useRouteQueryString`
 
@@ -214,13 +229,13 @@ const tags = useRouteQueryArray("tag");
 </template>
 ```
 
-### 4.3 处理搜索防抖（可选）
+### 4.3 处理搜索防抖（生产项目真实代码）
 
 由于直接修改 `searchInput` 会立即更新 URL，如果你希望实现“输入停止后才更新”的效果，可以引入一个防抖中间变量，并添加反向同步。
 
 #### 数据流向图
 
-```
+```bash
 用户输入
     ↓
 searchInputDebounced 变化
@@ -267,6 +282,8 @@ watch(searchInput, (val) => {
 });
 ```
 
+> 💡 这段代码来自我的生产项目，包含完整的反向同步逻辑，确保后退/前进时输入框与 URL 保持一致。
+
 **注意**：如果使用了防抖，模板中需要绑定 `searchInputDebounced` 而不是 `searchInput`。
 
 ```vue
@@ -279,15 +296,15 @@ watch(searchInput, (val) => {
 
 ---
 
-## 五、与官方 `useRouteQuery` 对比
+## 五、方案对比
 
-| 维度         | 官方版本                      | 本封装       |
-| ------------ | ----------------------------- | ------------ |
-| **SSR 安全** | ⚠️ 有隐患（`WeakMap` 跨请求） | ✅ 安全      |
-| **数组支持** | 需手动 `transform`            | ✅ 内置      |
-| **使用便捷** | 需写 `transform`/`serialize`  | 函数名即类型 |
-| **代码量**   | 中等                          | 极少         |
-| **可读性**   | 一般                          | 高           |
+| 维度         | 手写方案（70行/页面） | 官方 `useRouteQuery`          | 本封装                  |
+| ------------ | --------------------- | ----------------------------- | ----------------------- |
+| **SSR 安全** | ✅                    | ⚠️ 有隐患（`WeakMap` 跨请求） | ✅                      |
+| **数组支持** | 需手动解析            | 需 `transform`                | ✅ 内置                 |
+| **使用便捷** | ❌ 繁琐               | 中等                          | 函数名即类型            |
+| **代码量**   | ~70行/页面            | ~15行                         | ~7行                    |
+| **历史记录** | 可配置                | `push`                        | `replace`（更符合直觉） |
 
 ---
 
@@ -310,6 +327,7 @@ import type { Ref } from "vue";
 
 /**
  * 基础原始查询参数读写（不暴露给外部，仅内部使用）
+ * 负责核心的 URL 同步逻辑，使用 replace 避免产生多余历史记录
  */
 function useRouteQueryRaw(name: string) {
   const route = useRoute();
@@ -319,15 +337,20 @@ function useRouteQueryRaw(name: string) {
   // 监听路由变化，同步到内部 ref
   watch(
     () => route.query[name],
-    (v) => {
-      value.value = v;
+    (newVal) => {
+      value.value = newVal;
     },
   );
 
   // 监听内部 ref 变化，同步到 URL
-  watch(value, (v) => {
-    const query = { ...route.query, [name]: v };
-    router.push({ query });
+  watch(value, (newVal) => {
+    const query = { ...route.query };
+    if (newVal !== undefined && newVal !== null && newVal !== "") {
+      query[name] = newVal;
+    } else {
+      delete query[name];
+    }
+    router.replace({ query }); // 使用 replace 避免产生多余历史记录
   });
 
   return value;
@@ -337,6 +360,9 @@ function useRouteQueryRaw(name: string) {
  * 字符串类型查询参数
  * @param name 参数名
  * @param options.defaultValue 默认值（可选）
+ * @example
+ * const search = useRouteQueryString('search', { defaultValue: '' })
+ * search.value = 'vue'  // URL 变为 ?search=vue
  */
 export function useRouteQueryString(
   name: string,
@@ -344,7 +370,6 @@ export function useRouteQueryString(
 ) {
   const raw = useRouteQueryRaw(name);
   const defaultValue = options?.defaultValue ?? "";
-
   return computed({
     get: () => (raw.value?.toString() ?? defaultValue) as string,
     set: (v: string) => {
@@ -357,6 +382,9 @@ export function useRouteQueryString(
  * 数字类型查询参数
  * @param name 参数名
  * @param options.defaultValue 默认值（可选）
+ * @example
+ * const page = useRouteQueryNumber('page', { defaultValue: 1 })
+ * page.value = 2  // URL 变为 ?page=2
  */
 export function useRouteQueryNumber(
   name: string,
@@ -364,7 +392,6 @@ export function useRouteQueryNumber(
 ) {
   const raw = useRouteQueryRaw(name);
   const defaultValue = options?.defaultValue ?? 0;
-
   return computed({
     get: () => {
       const val = raw.value;
@@ -381,10 +408,12 @@ export function useRouteQueryNumber(
 /**
  * 字符串数组类型查询参数（URL 中用逗号分隔）
  * @param name 参数名
+ * @example
+ * const tags = useRouteQueryArray('tag')
+ * tags.value = ['vue', 'nuxt']  // URL 变为 ?tag=vue,nuxt
  */
 export function useRouteQueryArray(name: string) {
   const raw = useRouteQueryRaw(name);
-
   return computed({
     get: () => {
       const val = raw.value;
@@ -407,5 +436,6 @@ export function useRouteQueryArray(name: string) {
 1. **减少重复代码**：从 70 行重复逻辑缩减到 7 行声明。
 2. **提升可维护性**：所有状态同步逻辑集中在 composable 中，修改一处全局生效。
 3. **保证 SSR 安全**：无全局状态、无 `nextTick` 依赖，彻底避免水合错误。
+4. **更好的历史记录体验**：使用 `replace` 而非 `push`，避免后退按钮产生困惑。
 
 如果你的项目中也有类似的 URL 状态同步需求，不妨试试这套封装。它已经在我的 Nuxt 项目中稳定运行，希望也能帮到你。

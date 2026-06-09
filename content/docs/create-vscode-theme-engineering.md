@@ -11,15 +11,28 @@ tags: [VSCode, Theme, Engineering]
 
 # 进阶篇：从单体到工程化：VS Code 主题进阶构建指南
 
-> **系列导航**
->
-> - [基础篇：从零创建并发布你的第一个 VS Code 主题](./create-vscode-theme-basics.md)
-> - **进阶篇**：从单体 JSON 到模块化 YAML 工程重构
-> - [扩展篇：构建深色/浅色双主题及多主题变体](./create-vscode-theme-multi-theme.md)
-> - [系统篇：从设计系统到视觉契约，打造完整的主题品牌体系](./create-vscode-theme-design-system.md)
-> - [工程深化篇：工业级构建脚本与 DTCG 完整实现](./create-vscode-theme-engineering-deep.md)
+## 📚 系列导航
 
-在[基础篇](./create-vscode-theme-basics.md)中，你已经学会了如何从零创建并发布一个 VS Code 主题。但随着主题功能越来越丰富，你可能遇到了以下痛点：
+本系列共五篇，覆盖从零基础创建到工业级设计系统的 VS Code 主题开发全流程：
+
+1. [**从零到第一个 VS Code 主题：完全入门指南（入门篇）**](./create-vscode-theme-basics)
+   —— 创建、配置并发布你的第一个 VS Code 主题，掌握核心概念与基础工作流。
+
+2. [**告别手改 JSON：用 YAML 工程化你的主题（工程篇）**](./create-vscode-theme-engineering)
+   —— 将零散的 JSON 主题重构为模块化 YAML 项目，用构建脚本实现自动化生成。
+
+3. [**亮色、暗色与更多：多主题变体与重力补偿（多主题篇）**](./create-vscode-theme-multi-theme)
+   —— 同时构建暗色、亮色和高对比度主题变体，用重力补偿原理实现视觉重量平衡。
+
+4. [**从主题到设计系统：视觉契约与品牌生态（设计系统篇）**](./create-vscode-theme-design-system)
+   —— 为你的主题赋予设计哲学、视觉契约和品牌生态，打造完整的设计系统。
+
+5. [**工业级构建脚本与 DTCG 实现（工程进阶篇）**](./create-vscode-theme-engineering-deep)
+   —— DTCG 三层架构、颜色归一化、WCAG 对比度检测、循环引用检测，自动生成 CSS 变量与设计文档。
+
+---
+
+在[基础篇](./create-vscode-theme-basics)中，你已经学会了如何从零创建并发布一个 VS Code 主题。但随着主题功能越来越丰富，你可能遇到了以下痛点：
 
 - 一个 JSON 文件动辄上千行，修改一个颜色需要全局搜索，容易误改。
 - 想为不同语言定制高亮，却要在同一个 `tokenColors` 数组里堆砌规则，难以维护。

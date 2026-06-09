@@ -15,12 +15,18 @@ tags: [Nuxt, Vue, State Management]
 
 ---
 
-> ## 系列导航
->
-> 本文是 **Nuxt 状态同步三部曲** 的第一篇，主要讲解 URL 与状态双向同步的原理与手写方案。
->
-> - **第二篇**：[《手写一个更适合 Nuxt 的 useRouteQuery》](./nuxt-use-route-query-composables.md) —— 将重复逻辑封装成开箱即用的 composable，大幅简化代码。
-> - **第三篇**：[《从零到一：构建一个功能完备的文档列表页》](./nuxt-docs-list-page-complete-guide.md) —— 综合运用前两篇的知识，实现一个包含分页、搜索、多标签筛选的完整列表页。
+## 📚 系列导航
+
+本系列共三篇，覆盖 Nuxt 中 URL 与状态双向同步的全流程：
+
+1. [**Nuxt 中 URL 与状态双向绑定的终极指南（原理篇）**](./nuxt-url-state-guide)
+   —— 讲解 URL 与状态双向同步的原理与手写方案。
+
+2. [**手写一个更适合 Nuxt 的 useRouteQuery（封装篇）**](./nuxt-use-route-query-composables)
+   —— 将重复逻辑封装成开箱即用的 composable，大幅简化代码。
+
+3. [**从零到一：构建一个功能完备的文档列表页（实战篇）**](./nuxt-docs-list-page-complete-guide)
+   —— 综合运用前两篇的知识，实现一个包含分页、搜索、多标签筛选的完整列表页。
 
 ---
 

@@ -17,6 +17,26 @@ tags:
 
 > 极简不是简陋，克制不是缺失——从 Nuxt UI v4 汲取灵感，如何设计一个好用的组件 API
 
+
+## 📚 系列导航
+
+本系列共五篇，覆盖从设计令牌到 npm 发布的 Vue 3 组件库开发全流程：
+
+1. [**设计令牌 vs 原子化 CSS：失败整合与融合之道（理念篇）**](./design-tokens-vs-atomic-css)
+   —— 用 UnoCSS 映射设计令牌的失败经历，量化对比后得出设计令牌优先的结论。
+
+2. [**CSS 优先 + 组件薄封装：一个 10KB 组件库的极简实践（架构篇）**](./css-first-component-library)
+   —— 四层 CSS 架构、极简 Vue 组件、体积分析与维护性对比，500 行代码构建 10KB 组件库。
+
+3. [**Vue 3 简单组件开发实战：从 Button 组件看 API 设计（简单组件篇）**](./vue-component-api-design)
+   —— Props 定义、变体系统、尺寸取舍、插槽设计、状态管理、无障碍支持及与主流 UI 库对比。
+
+4. [**Vue 3 复杂组件开发实战：Select 与 Pagination 的 API 设计（复杂组件篇）**](./complex-component-api-design)
+   —— 数据格式适配、类型回溯、路由同步、键盘交互及组合式函数抽离，揭示工业级细节。
+
+5. [**从代码到 npm：Vue 3 组件库发布实战与避坑指南（发布篇）**](./component-library-publishing)
+   —— nrm 源管理、2FA 配置、WebAuthn 网络代理避坑、本地链接测试、自动化脚本及工业级发布检查清单。
+
 ## 一、背景与参考
 
 在之前的文章中，我们讨论了设计令牌优先于原子化 CSS 的理念，以及 CSS 优先 + 组件薄封装的架构。但有一个问题始终没有深入：**具体到单个组件，API 到底该怎么设计？**
@@ -497,8 +517,3 @@ const handleClick = (event: MouseEvent) => {
 | `min-width` + 绝对定位加载图标 | 防止加载状态布局偏移           |
 
 本篇以 Button 为例梳理了简单组件的设计要点。下一篇将深入复杂组件，涵盖数据适配、内部状态、逻辑复用等更高级的话题。
-
-## 十三、相关文章
-
-- [设计令牌 vs 原子化 CSS](./design-tokens-vs-atomic-css)
-- [CSS 优先 + 组件薄封装](./css-first-component-library)
