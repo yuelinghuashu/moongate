@@ -1,5 +1,5 @@
 <template>
-  <Container size="sm">
+  <Container size="sm" style="padding: 0">
     <div class="flex justify-end items-center">
       <Button @click="toggleAll">
         <template #icon>

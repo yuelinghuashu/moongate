@@ -5,6 +5,7 @@
         <NuxtLink
           :to="localePath(item.link)"
           class="mx-2 min-w-20 nav-link"
+          :class="{ active: route.fullPath.includes(item.link) }"
           rel="noopener noreferrer"
         >
           {{ item.name }}
@@ -17,6 +18,7 @@
 <script lang="ts" setup>
 const { tm } = useI18nSafe();
 const localePath = useLocalePath();
+const route = useRoute();
 
 defineProps({
   orientation: {

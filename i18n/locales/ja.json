@@ -6,8 +6,9 @@
   "navigationBars": [
     { "id": 1, "name": "ドキュメント", "link": "/docs" },
     { "id": 2, "name": "シリーズ", "link": "/series" },
-    { "id": 3, "name": "概要", "link": "/about" },
-    { "id": 4, "name": "設定", "link": "/settings" }
+    { "id": 3, "name": "プロジェクト", "link": "/projects" },
+    { "id": 4, "name": "概要", "link": "/about" },
+    { "id": 5, "name": "設定", "link": "/settings" }
   ],
   "user": {
     "login": "GitHubでログイン",
@@ -65,6 +66,35 @@
     "performance": "パフォーマンス最適化",
     "ecosystem": "エコシステム適応",
     "moongate-vue": "MoonGate UI コンポーネントライブラリ"
+  },
+  "projects": {
+    "columns": [
+      { "key": "name", "title": "名称" },
+      { "key": "description", "title": "説明" },
+      { "key": "link", "title": "リンク" }
+    ],
+    "data": [
+      {
+        "name": "Moongate Theme",
+        "description": "VS Code テーマ",
+        "link": "https://marketplace.visualstudio.com/items?itemName=yuelinghuashu.moongate-theme"
+      },
+      {
+        "name": "moongate-vue",
+        "description": "Vue 3 コンポーネントライブラリ",
+        "link": "https://vue.moongate.top"
+      },
+      {
+        "name": "ストーリー集",
+        "description": "暇つぶしの個人的な脳内妄想",
+        "link": "https://github.com/yuelinghuashu/my-stories"
+      },
+      {
+        "name": "dev-note-2026",
+        "description": "2026 個人技術ノート",
+        "link": "https://github.com/yuelinghuashu/dev-note-2026"
+      }
+    ]
   },
   "settings": {
     "theme": {

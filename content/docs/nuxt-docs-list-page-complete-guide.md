@@ -62,7 +62,12 @@ tags: [Nuxt, Vue, State Management, Hydration]
 
 项目结构（关键部分）：
 
-```
+```bash
+nuxt.config.ts
+plugins/
+  useResponsive.ts         # 响应式判断（ssrWidth: 768）
+  useSwipe.ts              # 滑动检测
+layouts/
 pages/
   index.vue                # 主页面
 components/

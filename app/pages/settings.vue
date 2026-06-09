@@ -1,6 +1,6 @@
 <template>
   <ClientOnly>
-    <Container size="sm">
+    <Container size="sm" style="padding: 0">
       <div class="space-y-3">
         <h2 class="text-base font-medium">{{ t("settings.theme.name") }}</h2>
         <div :class="['flex', isDesktop ? ' gap-2' : 'flex-col space-y-2']">
