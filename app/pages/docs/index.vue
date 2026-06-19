@@ -12,8 +12,10 @@
 
     <DocsTagFilter v-show="isFilterVisible" />
 
+    <Skeleton v-if="pending && !docsList?.list.length" />
+
     <DocsList
-      v-if="docsList?.list.length"
+      v-else-if="docsList?.list.length"
       :docs="docsList.list"
       :view-mode="viewMode"
       :level="level"
@@ -36,7 +38,7 @@
     >
       <!-- 分页组件 -->
       <Pagination
-        v-model:current-page="page"
+        v-model="page"
         :total-pages="totalPages"
         :size="isDesktop ? 'md' : 'sm'"
         :prev-text="t('docs.pagination.prev')"
@@ -63,7 +65,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Button, Pagination, Select } from "moongate-vue";
+import { Button, Pagination, Select, Skeleton } from "moongate-vue";
 import {
   useLocalStorage,
   watchDebounced,
@@ -84,6 +86,7 @@ const {
   size,
   level,
   tags,
+  pending,
   resetFilters,
 } = useDocs();
 
