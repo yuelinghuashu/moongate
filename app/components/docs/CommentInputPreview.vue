@@ -5,9 +5,7 @@
       <div class="text-xs font-mono text-ui-text-muted mb-2 tracking-wider">
         // {{ t("comment.input.preview") }}
       </div>
-      <DocsMarkdownRenderer
-        :content="localValue"
-      />
+      <DocsMarkdownRenderer :content="modelValue" />
     </div>
 
     <!-- 右侧输入 -->
@@ -16,9 +14,9 @@
         // {{ t("comment.input.input") }}
       </div>
       <Textarea
-        v-model="localValue"
         :placeholder="t('comment.input.placeholder')"
-        @update:model-value="(value) => handleInput(value)"
+        :model-value="localValue"
+        @update:model-value="handleInput"
       />
     </div>
   </div>
@@ -29,33 +27,29 @@ import { Textarea } from "moongate-vue";
 import { useDebounceFn } from "@vueuse/core";
 const { t } = useI18n();
 
-const props = defineProps({
-  modelValue: { type: String, default: "" }, // v-model 绑定的值
-  debounceTime: { type: Number, default: 300 }, // 防抖延迟（毫秒），默认 300ms
+// defineModel 返回的是一个可写的 ref
+const modelValue = defineModel<string>({ default: "" });
+
+// 其他配置参数用 defineProps
+const { debounceTime = 300 } = defineProps<{
+  debounceTime?: number;
+}>();
+
+// 本地输入值，用于即时预览
+const localValue = ref(modelValue.value);
+
+// 监听外部变化
+watch(modelValue, (val) => {
+  localValue.value = val;
 });
 
-const emit = defineEmits(["update:modelValue"]);
+// 防抖更新
+const debouncedUpdate = useDebounceFn((value: string) => {
+  modelValue.value = value;
+}, debounceTime);
 
-// 创建一个 ref 来存储本地输入值
-const localValue = ref(props.modelValue);
-
-// 监听父组件 prop 变化，同步到本地
-watch(
-  () => props.modelValue,
-  (newVal) => {
-    localValue.value = newVal;
-  },
-);
-
-// 用防抖函数包装 emit
-const debouncedEmit = useDebounceFn((value: string) => {
-  emit("update:modelValue", value);
-}, props.debounceTime);
-
-// 当输入框的文本改变时
 const handleInput = (value: string) => {
-  localValue.value = value; // 立即更新预览
-  debouncedEmit(value); // 防抖更新父组件
+  localValue.value = value;
+  debouncedUpdate(value);
 };
-
 </script>

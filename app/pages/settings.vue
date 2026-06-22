@@ -52,8 +52,7 @@
 <script lang="ts" setup>
 import { Radio, Divider, Container } from "moongate-vue";
 import useSettingStore from "~/stores/setting";
-const { t } = useI18n();
-const { tm } = useI18nSafe();
+const { t, tm } = useI18nSafe();
 const { isDesktop } = useResponsive();
 
 const { settings, setTheme, setLanguage } = useSettingStore();

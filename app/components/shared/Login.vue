@@ -1,8 +1,10 @@
 <template>
   <div v-if="loggedIn">Welcome</div>
   <Button
-    :label="isLoading ? t('user.loggingIn') : t('user.login')"
+    :label="t('user.login')"
     :loading="isLoading"
+    show-label-while-loading
+    :loading-label="t('user.loggingIn')"
     @click="loginWithGitHub()"
   >
     <template #icon>
