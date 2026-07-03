@@ -192,7 +192,7 @@ export default defineNuxtPlugin(async () => {
 - 监听 `colorMode` 动态切换主题。
 - 最后通过 DOMPurify 过滤输出。
 
-````vue
+```vue
 <template>
   <!-- eslint-disable-next-line vue/no-v-html -->
   <div v-html="renderedContent" />
@@ -343,7 +343,7 @@ watch([() => props.content, () => colorMode.value], renderContent, {
 <style scoped>
 /* 样式部分见 3.5 节，此处先省略 */
 </style>
-````
+```
 
 ### 3.4 在评论区中使用
 
@@ -475,7 +475,7 @@ Nuxt Content 默认代码块样式带有背景、边框和圆角。我们通过 
 - Shiki 的主题和语言在第一次使用时才加载，后续自动缓存，优化首屏体积。
 - 保留了手动正则提取代码块的逻辑，确保参数类型安全，避免 marked 内部传递不确定对象的问题。
 
-````vue
+```vue
 <template>
   <!-- eslint-disable-next-line vue/no-v-html -->
   <div v-html="renderedContent" />
@@ -618,7 +618,7 @@ watch([() => props.content, () => colorMode.value], renderContent, {
   immediate: true,
 });
 </script>
-````
+```
 
 #### 与方案一（插件预加载）的对比
 

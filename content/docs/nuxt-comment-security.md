@@ -538,7 +538,7 @@ export default defineEventHandler(async (event) => {
 
 **/i18n/locales/zh_cn.json**
 
-````json
+```json
 {
   "comment": {
     "input": {
@@ -548,11 +548,11 @@ export default defineEventHandler(async (event) => {
     }
   }
 }
-````
+```
 
 **/i18n/locales/en.json**
 
-````json
+```json
 {
   "comment": {
     "input": {
@@ -562,11 +562,11 @@ export default defineEventHandler(async (event) => {
     }
   }
 }
-````
+```
 
 **/i18n/locales/ja.json**
 
-````json
+```json
 {
   "comment": {
     "input": {
@@ -576,7 +576,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 }
-````
+```
 
 ## 7. 整合与测试
 

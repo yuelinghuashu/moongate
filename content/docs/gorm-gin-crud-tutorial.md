@@ -49,15 +49,26 @@ go mod init gin-demo
 **安装依赖：**
 
 ```bash
+# Web 框架
+go get -u github.com/gin-gonic/gin
+
+# ORM 库 + PostgreSQL 驱动
 go get -u gorm.io/gorm
 go get -u gorm.io/driver/postgres
 ```
 
-**依赖说明：**
+**数据库驱动说明：**
 
-- `gorm.io/gorm`：GORM 核心 ORM 库
-- `gorm.io/driver/postgres`：PostgreSQL 驱动
-- 如果使用 MySQL，替换为 `gorm.io/driver/mysql`
+本文使用 PostgreSQL 作为示例数据库。如果你使用的是其他数据库，替换对应的驱动即可：
+
+| 数据库 | 安装命令 | DSN 格式 |
+|---|---|---|
+| PostgreSQL | `go get -u gorm.io/driver/postgres` | `host=localhost user=postgres dbname=books sslmode=disable` |
+| MySQL | `go get -u gorm.io/driver/mysql` | `user:pass@tcp(localhost:3306)/dbname?charset=utf8mb4&parseTime=True` |
+| SQLite | `go get -u gorm.io/driver/sqlite` | `./data.db` |
+
+> Gin 负责处理 HTTP 请求和路由，GORM 负责数据库操作，两者各司其职，缺一不可。后续所有代码都依赖这两个库。
+
 
 ## 第二章：连接数据库
 
@@ -68,6 +79,8 @@ go get -u gorm.io/driver/postgres
 1. `main.go` 启动时调用 `db.InitDB()`
 2. `db.InitDB()` 构造 DSN 字符串，通过 `gorm.Open()` 建立连接
 3. 连接成功返回 `*gorm.DB` 实例，失败则退出程序
+
+---
 
 创建 `db/db.go`：
 
@@ -103,11 +116,31 @@ func InitDB() {
 }
 ```
 
-**注意事项：**
+**代码说明：**
 
-- 在 PostgreSQL 中手动创建 `books` 数据库：`CREATE DATABASE books;`
-- GORM 能自动创建表，但不能自动创建数据库
-- `sslmode=disable` 仅用于本地开发，生产环境应开启 SSL
+| 代码 | 说明 |
+|---|---|
+| `var DB *gorm.DB` | 声明全局 DB 变量，供其他包使用 |
+| `gorm.Open(postgres.Open(dsn), &gorm.Config{})` | 建立数据库连接 |
+| `log.Fatal` | 连接失败时终止程序，避免后续代码执行 |
+
+**DSN 参数说明：**
+
+| 参数 | 示例 | 说明 |
+|---|---|---|
+| `host` | `localhost` | 数据库主机地址 |
+| `port` | `5432` | PostgreSQL 默认端口 |
+| `user` | `postgres` | 数据库用户名 |
+| `password` | `123456` | 数据库密码 |
+| `dbname` | `books` | 数据库名称 |
+| `sslmode` | `disable` | 本地开发禁用 SSL |
+
+> **注意事项：**
+>
+> - PostgreSQL 需要**手动创建数据库**：`CREATE DATABASE books;`
+> - GORM 的 `AutoMigrate` 能自动创建表，但**不能自动创建数据库**
+> - `sslmode=disable` 仅用于本地开发，生产环境应开启 SSL
+
 
 ## 第三章：定义数据模型
 

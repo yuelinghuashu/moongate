@@ -132,7 +132,7 @@ export default defineNuxtConfig({
 
 在项目根目录创建 `content` 文件夹，然后创建第一篇文档，文件暂命名为home.md
 
-````markdown
+```markdown
 # 欢迎来到我的博客
 
 这是我的第一篇使用 **Nuxt Content** 构建的文档。
@@ -152,7 +152,6 @@ export default function greet(name) {
   return `Welcome to ${name}'s blog`;
 }
 ```
-````
 
 ## 3. 创建文档渲染页面
 
