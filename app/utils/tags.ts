@@ -13,6 +13,8 @@ export const ALLOWED_TAGS = [
   // ========== 框架与工具 ==========
   'Caddy',
   'Docker',
+  'Gin',
+  'GORM',
   'GitHub Actions',
   'Nuxt',
   'PostgreSQL',

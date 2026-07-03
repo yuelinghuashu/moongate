@@ -1,6 +1,12 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import removeConsole from 'vite-plugin-remove-console'
 
+const bundledLangs = [
+  'bash', 'css', 'docker', 'go', 'html',
+  'javascript', 'json', 'markdown', 'shell',
+  'sql', 'typescript', 'vue', 'xml', 'yaml'
+];
+
 export default defineNuxtConfig({
   modules: [
     '@nuxtjs/color-mode',
@@ -38,12 +44,12 @@ export default defineNuxtConfig({
   content: {
     build: {
       markdown: {
+        highlight: {
+          langs: bundledLangs,
+        },
         toc: {
           depth: 4,
           searchDepth: 3
-        },
-        highlight: {
-          langs: ['json', 'js', 'ts', 'html', 'css', 'vue', 'shell', 'mdc', 'md', 'yaml', 'xml', 'mermaid', 'sql'],
         },
         theme: {
           default: 'vitesse-light',
@@ -55,11 +61,7 @@ export default defineNuxtConfig({
     shiki: {
       // 配置你需要的主题和语言
       bundledThemes: ['vitesse-light', 'vitesse-dark'],
-      bundledLangs: [
-        'javascript', 'typescript', 'js', 'html', 'css',
-        'vue', 'python', 'bash', 'json', 'markdown',
-        'xml', 'yaml', 'shell', 'diff', 'docker','go'
-      ],
+      bundledLangs: bundledLangs,
       defaultTheme: 'material-theme-lighter',
       dynamic: true, // 懒加载语言
     },

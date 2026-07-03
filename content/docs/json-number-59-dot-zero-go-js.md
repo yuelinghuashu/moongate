@@ -2,7 +2,7 @@
 title: 59.0 变 59：JS 社区和 Go 社区的不同反应
 description: 从 JSON 数字序列化的小现象，看 JavaScript 和 Go 两个社区在语言设计哲学、类型系统认知和工程文化上的本质差异
 permalink: d41c51b6-0401-4af9-8ec5-ee0e3e08732a
-date: 2026-07-03
+date: 2026-07-03 08:00:00
 series:
 platform: go
 level: P2

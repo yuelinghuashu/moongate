@@ -89,7 +89,7 @@ my-app/
 
 ### 1.2 编写 Dockerfile（以 Node.js 为例）
 
-```bash
+```dockerfile
 # 构建阶段
 FROM node:24-alpine AS builder
 WORKDIR /app
