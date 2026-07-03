@@ -14,6 +14,7 @@
         // {{ t("comment.input.input") }}
       </div>
       <Textarea
+        class="auto-grow"
         :placeholder="t('comment.input.placeholder')"
         :model-value="localValue"
         @update:model-value="handleInput"
@@ -53,3 +54,10 @@ const handleInput = (value: string) => {
   debouncedUpdate(value);
 };
 </script>
+
+<style scoped>
+.auto-grow {
+  field-sizing: content;
+  resize: none;
+}
+</style>

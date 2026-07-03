@@ -6,7 +6,7 @@ permalink: 9f906ca5-0c33-4467-ac12-092e5e204a99
 series: backend
 platform: nuxt
 level: P2
-tags: [Nuxt, Drizzle, PostgreSQL, ORM]
+tags: [Nuxt, PostgreSQL, ORM]
 ---
 
 # 🚀 Nuxt 4 集成 Drizzle ORM (PostgreSQL) 完整教程

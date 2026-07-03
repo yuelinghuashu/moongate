@@ -58,7 +58,7 @@ export default defineNuxtConfig({
       bundledLangs: [
         'javascript', 'typescript', 'js', 'html', 'css',
         'vue', 'python', 'bash', 'json', 'markdown',
-        'xml', 'yaml', 'shell', 'diff', 'docker'
+        'xml', 'yaml', 'shell', 'diff', 'docker','go'
       ],
       defaultTheme: 'material-theme-lighter',
       dynamic: true, // 懒加载语言

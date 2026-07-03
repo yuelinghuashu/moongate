@@ -1,28 +1,44 @@
 // app/utils/tags.ts
 export const ALLOWED_TAGS = [
-  // 技术栈
-  'HTML', 'CSS', 'JavaScript', 'Nuxt', 'Vue', 'Docker', 'Caddy', 'GitHub Actions', 'Drizzle', 'PostgreSQL', 'VSCode',
+  // ========== 编程语言 ==========
+  'CSS',
+  'Go',
+  'HTML',
+  'JavaScript',
+  'SQL',
+  'TypeScript',
+  'Vue',
+  'JSON',
 
-  // 领域概念
-  'CI/CD', 'ORM', 'OAuth', 'i18n', 'SEO', 'RSS',
-  'Design System',       // 设计系统
-  'Theme',               // 主题
-  'State Management',    // 状态管理
-  'Hydration',           // 水合
+  // ========== 框架与工具 ==========
+  'Caddy',
+  'Docker',
+  'GitHub Actions',
+  'Nuxt',
+  'PostgreSQL',
+  'VSCode',
 
-  // 技术主题
-  'Monitoring',          // 监控
-  'Umami',               // Umami
-  'Deployment',          // 部署
-  'Performance',         // 性能
-  'Security',            // 安全
-  'Content Rendering',   // 内容渲染
+  // ========== 技术概念 ==========
+  'CI/CD',
+  'Deployment',
+  'Hydration',
+  'i18n',
+  'Monitoring',
+  'OAuth',
+  'ORM',
+  'Performance',
+  'Security',
+  'SEO',
+  'State Management',
 
-  // 工程实践
-  'Engineering',         // 工程化
-  'Architecture',        // 原架构
-  'Modularization',      // 模块化
-  'Configuration',       // 配置
+  // ========== 设计相关 ==========
+  'Design System',
+  'Theme',
+
+  // ========== 工程实践 ==========
+  'Architecture',      // 项目结构、分层设计、模块划分、技术选型
+  'Engineering',       // 研发流程、CI/CD、代码规范、测试策略
+  'Configuration',     // 环境变量、多环境切换、配置管理
 ];
 
 export const isValidTag = (tag: string) => ALLOWED_TAGS.includes(tag);

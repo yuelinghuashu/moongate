@@ -6,7 +6,7 @@ permalink: 48461e0d-b045-429d-92b8-36eac871d481
 series: ecosystem
 platform: nuxt
 level: P1
-tags: [Nuxt, RSS, SEO]
+tags: [Nuxt, SEO]
 ---
 
 # Nuxt 集成 RSS 服务完全指南：从模块到手写的优雅之路

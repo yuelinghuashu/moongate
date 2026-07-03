@@ -6,7 +6,7 @@ permalink: 97e09fc8-13a0-4703-958d-44700fe20a62
 series: design-system
 platform: vscode
 level: P3
-tags: [Design System, Theme, Modularization, Configuration]
+tags: [Design System, Theme, Architecture, Configuration]
 ---
 
 # 扩展篇：从工程化到设计系统：构建深色/浅色双主题及多主题变体

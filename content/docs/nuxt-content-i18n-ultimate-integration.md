@@ -6,7 +6,7 @@ permalink: e7c84714-d1ba-4c6f-a56a-57c00edc3661
 series: i18n
 platform: nuxt
 level: P1
-tags: [Nuxt, i18n, Content Rendering, Hydration]
+tags: [Nuxt, i18n, Content Rendering]
 ---
 
 # Nuxt Content + i18n终极集成方案：一套内容支持多语言的完整实现
