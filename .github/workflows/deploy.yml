@@ -25,7 +25,7 @@ jobs:
       - name: Build and push Nuxt image
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: . 
           push: true
           build-args: |
             NUXT_PUBLIC_SITE_URL=${{ secrets.NUXT_PUBLIC_SITE_URL }}
