@@ -20,12 +20,11 @@
 import { Button } from "moongate-vue";
 const { t } = useI18n();
 const { isLoggedIn, user } = useAuth()
-const { apiUrl } = useRuntimeConfig().public
 
 const isLoading = ref(false);
 
 const loginWithGitHub = async () => {
   isLoading.value = true;
-  navigateTo(`${apiUrl}/auth/github`, { external: true });
+  navigateTo('/auth/github', { external: true });
 };
 </script>
