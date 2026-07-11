@@ -1,10 +1,11 @@
 <template>
-  <div v-if="page">
-    <!-- 文档内容 -->
-    <article
-      class="prose prose-sm dark:prose-invert max-w-none md:prose-base lg:prose-lg p-4 md:p-6 lg:p-8"
-    >
-      <ContentRenderer :value="page" />
+  <Skeleton v-if="pending" />
+  <div v-else-if="page">
+    <DocsMeta :date="page.date" :level="page.level" :tags="page.tags" v-if="page.tags" />
+    
+    <article class="prose dark:prose-invert max-w-none prose-sm md:prose-base lg:prose-lg">
+      <h1 class="text-3xl font-bold">{{ page.title }}</h1>
+      <div class="shiki-content" v-html="contentRef" />
     </article>
 
     <ClientOnly>
@@ -14,9 +15,11 @@
         :placement="isDesktop ? 'right' : 'bottom'"
         :title="t('doc.title')"
       >
-        <DocsOutline :outline="page.body.toc?.links" />
+        <DocsOutline :outline="nestedOutline" />
       </Drawer>
     </ClientOnly>
+
+    <SharedBuyMeCoffee class="mb-8 mt-8" />
   </div>
   <div v-else>
     <ErrorPage />
@@ -24,46 +27,56 @@
 </template>
 
 <script lang="ts" setup>
-import { Drawer } from "moongate-vue";
-import { withLeadingSlash } from "ufo";
+import { Drawer, Skeleton } from "moongate-vue";
+import { highlightHtmlContent } from "~/utils/shikiProcessor"; // 引入纯服务端高亮转换工具
+
 const route = useRoute();
-const { locale, t } = useI18n();
+const { t } = useI18n();
 const { isDesktop } = useResponsive();
-const { isOutlineVisible, isOutlineIconVisible } = useOutline();
+const slug = computed(() => (route.params.slug as string) || "");
 
-const slug = computed(() => {
-  const path = withLeadingSlash(String(route.params.slug || "/"));
-  // 移除语言前缀部分
-  return path.replace(new RegExp(`^/(${locale.value})`), "") || "/";
-});
-
-const { data: page } = await useAsyncData(`about-${slug.value}`, () => {
-  return queryCollection("about").path(`/about${slug.value}`).first();
-});
-
-// 监听文档详情页面内容是否有大纲目录，并设置是否显示大纲目录图标
-watchEffect(() => {
-  if (page.value && page.value.body.value && page.value.body.toc?.links) {
-    isOutlineIconVisible.value = true;
-  } else {
-    isOutlineIconVisible.value = false;
-  }
-});
-
-// 设置 SEO 元信息
-if (page.value?.title && page.value?.description) {
-  useSeoMeta({
-    title: page.value?.title,
-    description: page.value?.description,
-    ogTitle: page.value?.title,
-    ogDescription: page.value?.description,
-  });
-} else {
-  useSeoMeta({
-    title: t("title"),
-    description: t("description"),
-    ogTitle: t("title"),
-    ogDescription: t("description"),
-  });
+// 关于页面详情响应体
+interface AboutDetailResponse {
+  permalink: string
+  slug: string
+  title: string
+  description: string
+  date: string
+  content: string             // 原始未高亮的 HTML 内容
+  highlightedContent?: string // 新增：用于在服务端存放高亮转换后的完全体 HTML
 }
+
+// 获取关于页面详情
+const { data: page, pending } = useLazyAsyncData<AboutDetailResponse>(
+  `about-${slug.value}`,
+  async () => {
+    const { public: { apiUrl } } = useRuntimeConfig();
+    return await $fetch<AboutDetailResponse>(`${apiUrl}/api/about/${slug.value}`);
+  },
+  { 
+    watch: [slug],
+    // 🔥 核心魔法：数据在 Node.js 服务端抓取到后，直接拦截并转换为包含双主题样式的完全体 HTML
+    transform: async (data) => {
+      if (data && data.content) {
+        data.highlightedContent = await highlightHtmlContent(data.content)
+      }
+      return data
+    }
+  }
+);
+
+// 此时 contentRef 优先读取服务端已经注入并高亮好的完全体 HTML 字符串
+const contentRef = computed(() => page.value?.highlightedContent || page.value?.content || '')
+const { nestedOutline, isOutlineVisible, isOutlineIconVisible } = useOutline(contentRef)
+
+watchEffect(() => {
+  isOutlineIconVisible.value = !!page.value?.content;
+});
+
+useSeoMeta({
+  title: page.value?.title || t("title"),
+  description: page.value?.description || t("description"),
+  ogTitle: page.value?.title || t("title"),
+  ogDescription: page.value?.description || t("description"),
+});
 </script>

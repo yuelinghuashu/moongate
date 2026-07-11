@@ -5,27 +5,20 @@ export const ALLOWED_TAGS = [
   'Go',
   'HTML',
   'JavaScript',
-  'SQL',
-  'TypeScript',
   'Vue',
   'JSON',
 
   // ========== 框架与工具 ==========
   'Caddy',
   'Docker',
-  'Gin',
-  'GORM',
-  'GitHub Actions',
   'Nuxt',
   'PostgreSQL',
   'VSCode',
 
   // ========== 技术概念 ==========
   'CI/CD',
-  'Deployment',
   'Hydration',
   'i18n',
-  'Monitoring',
   'OAuth',
   'ORM',
   'Performance',
@@ -33,14 +26,10 @@ export const ALLOWED_TAGS = [
   'SEO',
   'State Management',
 
-  // ========== 设计相关 ==========
+  // ========== 设计与工程 ==========
   'Design System',
   'Theme',
-
-  // ========== 工程实践 ==========
-  'Architecture',      // 项目结构、分层设计、模块划分、技术选型
-  'Engineering',       // 研发流程、CI/CD、代码规范、测试策略
-  'Configuration',     // 环境变量、多环境切换、配置管理
+  'Engineering',      // 研发流程、代码规范、测试策略、CI/CD、配置
 ];
 
 export const isValidTag = (tag: string) => ALLOWED_TAGS.includes(tag);

@@ -10,12 +10,42 @@ li {
   list-style: none;
 }
 
-pre {
-  background-color: var(--ui-bg) !important;
-  border: 1px solid var(--ui-border);
-}
-
 .prose table {
   display: block;
+  overflow-x: auto !important;
+}
+
+/* 1. 默认（浅色模式）映射 */
+.shiki {
+  background-color: var(--shiki-light-bg) !important;
+  color: var(--shiki-light) !important;
+}
+.shiki span {
+  color: var(--shiki-light) !important;
+  background-color: var(--shiki-light-bg) !important;
+}
+
+/* 2. 暗黑模式映射 - 纯CSS级瞬间响应 */
+.dark .shiki {
+  background-color: var(--shiki-dark-bg) !important;
+  color: var(--shiki-dark) !important;
+}
+.dark .shiki span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+}
+
+/* 3. 美化边框与阴影 */
+.shiki-content pre.shiki {
+  padding: 1.25rem;
+  border-radius: 0.5rem;
   overflow-x: auto;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.dark .shiki-content pre.shiki {
+  border-color: #2d3748;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }

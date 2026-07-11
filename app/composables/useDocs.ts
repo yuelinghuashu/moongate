@@ -1,134 +1,194 @@
 // composables/useDocs.ts
-import { useRouteQueryString, useRouteQueryNumber, useRouteQueryArray } from './useRouteQuery'
-import { useAsyncData, queryCollection } from '#imports'
 import { createSharedComposable } from '@vueuse/core'
+import { useRouteQueryString, useRouteQueryNumber, useRouteQueryArray } from './useRouteQuery'
 
-// 定义文档项类型（基于查询选择的字段）
+/**
+ * 文档项（对应 Go API 返回的 Doc 结构）
+ */
 interface DocItem {
-  id: string
+  permalink: string
+  slug: string
   title: string
   description: string
   level: string
+  series: string | null
   tags: string[]
-  permalink: string
   date: string
-  path: string
+  content: string
 }
 
+/**
+ * 文档列表 API 响应格式
+ */
+interface DocsResponse {
+  data: DocItem[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+}
+
+/**
+ * 默认筛选条件
+ * 与 URL 查询参数默认值保持同步
+ */
+const DEFAULTS = {
+  search: '',
+  searchMode: 'all',
+  page: 1,
+  size: 10,
+  viewMode: 1,
+  level: '',
+} as const
+
+/**
+ * 文档列表 Composable
+ * 
+ * 功能：
+ * 1. 管理列表页的筛选条件（搜索、分页、排序等）
+ * 2. 筛选条件自动同步到 URL（可分享、可刷新）
+ * 3. 调用 Go API 获取文档列表
+ * 4. 提供重置筛选条件的方法
+ * 
+ * 使用 createSharedComposable 确保全局单例
+ */
 const _useDocs = () => {
-  const DEFAULT_OPTIONS = {
-    search: '',
-    searchOption: 1,
-    page: 1,
-    size: 5,
-    viewMode: 1,
-    level: '',
-  }
+  // ============================================
+  // 1. URL 同步状态
+  // 每个状态都自动与 URL 查询参数双向同步
+  // ============================================
 
-  // ---------- 路由 query 状态（自动同步 URL）----------
-  const searchInput = useRouteQueryString('search', { defaultValue: DEFAULT_OPTIONS.search })
-  const searchOption = useRouteQueryNumber('option', { defaultValue: DEFAULT_OPTIONS.searchOption })
-  const page = useRouteQueryNumber('page', { defaultValue: DEFAULT_OPTIONS.page })
-  const size = useRouteQueryNumber('size', { defaultValue: DEFAULT_OPTIONS.size })
-  const viewMode = useRouteQueryNumber('viewMode', { defaultValue: DEFAULT_OPTIONS.viewMode })
-  const level = useRouteQueryString('level', { defaultValue: DEFAULT_OPTIONS.level })
+  /** 搜索关键词 */
+  const searchInput = useRouteQueryString('search', { defaultValue: DEFAULTS.search })
 
-  // 直接使用 useRouteQueryArray 返回的响应式数组，无需二次包装
+  /** 搜索模式：all | title | description */
+  const searchMode = useRouteQueryString('searchMode', { defaultValue: DEFAULTS.searchMode })
+
+  /** 当前页码 */
+  const page = useRouteQueryNumber('page', { defaultValue: DEFAULTS.page })
+
+  /** 每页条数 */
+  const size = useRouteQueryNumber('size', { defaultValue: DEFAULTS.size })
+
+  /** 视图模式：1=详细 | 2=简洁 */
+  const viewMode = useRouteQueryNumber('viewMode', { defaultValue: DEFAULTS.viewMode })
+
+  /** 等级筛选：P1-P5 */
+  const level = useRouteQueryString('level', { defaultValue: DEFAULTS.level })
+
+  /** 标签筛选：支持多标签（URL 中为 ?tag=a&tag=b） */
   const tags = useRouteQueryArray('tag')
 
-  watch(tags, () => {
-    page.value = 1
+  /**
+   * 当筛选条件变化时，自动重置到第一页
+   * 避免筛选后停留在不存在的页码
+   */
+  watch([searchInput, searchMode, level, tags], () => {
+    page.value = DEFAULTS.page
+  }, { deep: true })
+
+  // ============================================
+  // 2. 构建 API 请求参数
+  // ============================================
+
+  /**
+   * 将当前筛选条件转换为 URLSearchParams
+   * 自动跳过空值，保持 URL 干净
+   */
+  const queryParams = computed(() => {
+    const params = new URLSearchParams()
+
+    // 分页参数（必传）
+    params.append('page', String(page.value))
+    params.append('limit', String(size.value))
+
+    // 搜索关键词
+    if (searchInput.value.trim()) {
+      params.append('search', searchInput.value.trim())
+    }
+
+    // 搜索模式（非默认值时传递）
+    if (searchMode.value !== DEFAULTS.searchMode) {
+      params.append('searchMode', searchMode.value)
+    }
+
+    // 等级筛选
+    if (level.value) {
+      params.append('level', level.value)
+    }
+
+    // 标签筛选（每个标签单独一个参数）
+    tags.value.forEach(t => params.append('tag', t))
+
+    return params
   })
 
-  // 构建查询逻辑
-  const buildQuery = () => {
-    let query = queryCollection('docs').order('date', 'DESC')
-    const keyword = searchInput.value.trim()
+  // ============================================
+  // 3. 调用 API 获取数据
+  // ============================================
 
-    if (keyword) {
-      if (searchOption.value === 1) {
-        query = query.orWhere((q) =>
-          q
-            .where('title', 'LIKE', `%${keyword}%`)
-            .where('description', 'LIKE', `%${keyword}%`)
-        )
-      } else {
-        query = query.where('title', 'LIKE', `%${keyword}%`)
-      }
-    }
-
-    if (level.value) {
-      query = query.where('level', '=', level.value)
-    }
-
-    if (tags.value.length) {
-      query = query.andWhere((q) => {
-        tags.value.forEach((tag) => {
-          q = q.where('tags', 'LIKE', `%${tag}%`)
-        })
-        return q
-      })
-    }
-
-    return query
-  }
-
-  // 数据获取
-  const { data, pending, refresh } = useAsyncData(
+  /**
+   * 使用 useAsyncData 获取文档列表
+   * 当 watch 中的依赖变化时自动重新请求
+   */
+  const { data, pending, refresh, error } = useAsyncData(
     'docs-list',
     async () => {
-      const query = buildQuery()
-      const [total, list] = await Promise.all([
-        query.count(),
-        query
-          .skip((page.value - 1) * size.value)
-          .limit(size.value)
-          .select(
-            'id',
-            'title',
-            'description',
-            'level',
-            'tags',
-            'permalink',
-            'date',
-            'path'
-          )
-          .all(),
-      ])
-      return { total, list: list as DocItem[] }
+      const { public: { apiUrl } } = useRuntimeConfig()
+      return await $fetch<DocsResponse>(`${apiUrl}/api/docs?${queryParams.value.toString()}`)
     },
     {
-      watch: [searchInput, searchOption, page, size, viewMode, level, tags],
+      // 依赖变化时自动重新获取
+      watch: [searchInput, searchMode, page, size, level, tags],
     }
   )
 
+  // ============================================
+  // 4. 工具方法
+  // ============================================
+
+  /**
+   * 重置所有筛选条件到默认值
+   * 常用于点击"清空筛选"按钮
+   */
   const resetFilters = () => {
-    searchInput.value = DEFAULT_OPTIONS.search
-    searchOption.value = DEFAULT_OPTIONS.searchOption
-    page.value = DEFAULT_OPTIONS.page
-    size.value = DEFAULT_OPTIONS.size
-    viewMode.value = DEFAULT_OPTIONS.viewMode
-    level.value = DEFAULT_OPTIONS.level
+    searchInput.value = DEFAULTS.search
+    searchMode.value = DEFAULTS.searchMode
+    page.value = DEFAULTS.page
+    size.value = DEFAULTS.size
+    viewMode.value = DEFAULTS.viewMode
+    level.value = DEFAULTS.level
     tags.value = []
   }
 
+  // ============================================
+  // 5. 对外暴露
+  // ============================================
+
   return {
+    // 筛选状态（双向绑定）
     searchInput,
-    searchOption,
+    searchMode,
     page,
     size,
     viewMode,
     level,
     tags,
-    docsList: data,
-    pending,
-    refresh,
-    resetFilters,
+
+    // 数据状态
+    docs: data,          // 文档列表数据
+    pending,             // 加载中状态
+    error,               // 错误信息
+    refresh,             // 手动刷新
+
+    // 操作方法
+    resetFilters,        // 重置所有筛选
   }
 }
 
 /**
- * 全局唯一的 useDocs 单例
- * 确保在多个组件中调用同一份状态，避免重复请求和状态冲突
+ * 导出全局单例 useDocs
+ * createSharedComposable 确保在多个组件中调用时共享同一实例
+ * 避免重复请求和状态不一致
  */
 export const useDocs = createSharedComposable(_useDocs)

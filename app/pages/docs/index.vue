@@ -1,86 +1,81 @@
 <template>
-  <div>
-    <DocsSearchHeader
-      v-model:search="searchInputDebounced"
-      v-model:option="searchOption"
-      v-model:view-mode="viewMode"
-      :is-desktop="isDesktop"
-      @toggle-filter="isFilterVisible = !isFilterVisible"
-    />
-
-    <DocsNavigationLevel :level="level" />
-
-    <DocsTagFilter v-show="isFilterVisible" />
-
-    <Skeleton v-if="pending && !docsList?.list.length" />
-
-    <DocsList
-      v-else-if="docsList?.list.length"
-      :docs="docsList.list"
-      :view-mode="viewMode"
-      :level="level"
-    />
-
-    <!-- 空状态 -->
-    <div v-else class="text-center py-12 px-4">
-      <div class="text-gray-400 text-6xl mb-4">📭</div>
-      <h3 class="text-gray-500 text-lg mb-2">{{ t("docs.noDocuments") }}</h3>
-      <p class="text-gray-400 text-sm mb-4">
-        {{ emptyStateMessage }}
-      </p>
-      <Button size="sm" class="cursor-pointer" @click="resetFilters">
-        {{ t("docs.clearAllFilters") }}
-      </Button>
-    </div>
-
-    <div
-      class="flex flex-col md:flex-row items-center justify-center md:justify-between mt-6"
-    >
-      <!-- 分页组件 -->
-      <Pagination
-        v-model="page"
-        :total-pages="totalPages"
-        :size="isDesktop ? 'md' : 'sm'"
-        :prev-text="t('docs.pagination.prev')"
-        :next-text="t('docs.pagination.next')"
+    <div>
+      <DocsSearchHeader
+        v-model:search="searchInputDebounced"
+        v-model:search-mode="searchMode"
+        v-model:view-mode="viewMode"
+        :is-desktop="isDesktop"
+        @toggle-filter="isFilterVisible = !isFilterVisible"
       />
 
-      <!-- 右侧控制区：每页条数 + 计数 -->
-      <div class="flex items-center" :class="{ 'mt-2': isMobile }">
-        <span class="text-sm">{{ t("docs.perPage") }}</span>
-        <Select
-          v-model="size"
-          :options="sizeOptions"
-          :size="isDesktop ? 'md' : 'sm'"
-          class="px-2 min-w-10 max-w-20"
-        />
-        <span class="text-sm">{{ t("docs.unit") }}</span>
+      <DocsNavigationLevel :level="level" />
 
-        <span class="text-sm whitespace-nowrap ml-8">
-          {{ t("docs.findCount", { count: docsList?.total || 0 }) }}
-        </span>
+      <DocsTagFilter v-show="isFilterVisible" />
+
+      <Skeleton v-if="pending && !docs?.data?.length" />
+
+      <DocsList
+        v-else-if="docs?.total || 0 > 0"
+        :docs="docs?.data || []"
+        :view-mode="viewMode"
+        :level="level"
+      />
+
+      <!-- 空状态 -->
+      <div v-else class="text-center py-12 px-4">
+        <div class="text-gray-400 text-6xl mb-4">📭</div>
+        <h3 class="text-gray-500 text-lg mb-2">{{ t("docs.noDocuments") }}</h3>
+        <p class="text-gray-400 text-sm mb-4">
+          {{ emptyStateMessage }}
+        </p>
+        <Button size="sm" class="cursor-pointer" @click="resetFilters">
+          {{ t("docs.clearAllFilters") }}
+        </Button>
+      </div>
+
+      <div
+        class="flex flex-col md:flex-row items-center justify-center md:justify-between mt-6"
+      >
+        <!-- 分页组件 -->
+        <Pagination
+          v-model="page"
+          :total-pages="docs?.totalPages || 0"
+          :size="isDesktop ? 'md' : 'sm'"
+          :prev-text="t('docs.pagination.prev')"
+          :next-text="t('docs.pagination.next')"
+        />
+
+        <!-- 右侧控制区：每页条数 + 计数 -->
+        <div class="flex items-center" :class="{ 'mt-2': isMobile }">
+          <span class="text-sm">{{ t("docs.perPage") }}</span>
+          <Select
+            v-model="size"
+            :options="sizeOptions"
+            :size="isDesktop ? 'md' : 'sm'"
+            class="px-2 min-w-10 max-w-20"
+          />
+          <span class="text-sm">{{ t("docs.unit") }}</span>
+
+          <span class="text-sm whitespace-nowrap ml-8">
+            {{ t("docs.findCount", { count: docs?.total || 0 }) }}
+          </span>
+        </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script lang="ts" setup>
 import { Button, Pagination, Select, Skeleton } from "moongate-vue";
-import {
-  useLocalStorage,
-  watchDebounced,
-  useEventListener,
-} from "@vueuse/core";
+import { useLocalStorage, watchDebounced, useEventListener } from "@vueuse/core";
 
 // ---------- 响应式工具 ----------
 const { isDesktop, isMobile } = useResponsive();
 const { t } = useI18n();
 
-// 使用全局单例
 const {
-  docsList,
+  docs,
   searchInput,
-  searchOption,
+  searchMode,
   viewMode,
   page,
   size,
@@ -92,10 +87,9 @@ const {
 
 
 const sizeOptions = [
-  { label: "5", value: 5 },
   { label: "10", value: 10 },
-  { label: "15", value: 15 },
   { label: "20", value: 20 },
+  { label: "50", value: 50 },
 ];
 
 // ---------- UI 状态：筛选面板可见性（持久化）----------
@@ -119,9 +113,9 @@ watch(searchInput, (val) => {
 
 // 空状态提示
 const emptyStateMessage = computed(() => {
-  const hasSearch = searchInput.value;
-  const hasLevel = level.value;
-  const hasTags = tags.value.length;
+  const hasSearch = searchInput.value?.trim() ?? false;
+  const hasLevel = level.value ?? false;
+  const hasTags = (tags.value?.length ?? 0) > 0;
 
   if (hasSearch || hasLevel || hasTags) {
     return t("docs.emptyMessage");
@@ -129,19 +123,13 @@ const emptyStateMessage = computed(() => {
   return "还没有文档，请稍后再来";
 });
 
-// 计算总页数（响应式）
-const totalPages = computed(() => {
-  const total = docsList.value?.total ?? 0;
-  const currentSize = size.value ?? 10;
-  return Math.ceil(total / currentSize);
-});
-
+// 判断当前是否聚焦在输入框
 const isInputFocused = computed(() => {
   const active = document.activeElement;
   return active?.tagName === "INPUT" || active?.tagName === "TEXTAREA";
 });
 
-// 优化键盘左右翻页事件
+// 键盘事件
 useEventListener("keydown", (e) => {
   if (e.key === "Escape" && isInputFocused.value) {
     (document.activeElement as HTMLElement)?.blur();
@@ -154,8 +142,7 @@ useEventListener("keydown", (e) => {
     if (page.value > 1) page.value -= 1;
   } else if (e.key === "ArrowRight") {
     e.preventDefault();
-    // 增加上限：不能超过总页数
-    if (page.value < totalPages.value) page.value += 1;
+    if (page.value < docs.value?.totalPages || 0) page.value += 1;
   }
 });
 

@@ -1,14 +1,13 @@
 <template>
-  <div v-if="page">
-    <!-- 元数据区 -->
+  <Skeleton v-if="pending" />
+  <div v-else-if="page">
     <DocsMeta :date="page.date" :level="page.level" :tags="page.tags" />
 
-    <!-- 文档内容 -->
-    <article class="prose prose-sm dark:prose-invert md:prose-base max-w-none">
-      <ContentRenderer :value="page" />
+    <article class="prose dark:prose-invert max-w-none prose-sm md:prose-base lg:prose-lg">
+      <h1 class="text-3xl font-bold">{{ page.title }}</h1>
+      <div class="shiki-content" v-html="contentRef" />
     </article>
 
-    <!-- 目录区 -->
     <ClientOnly>
       <Drawer
         v-model="isOutlineVisible"
@@ -16,86 +15,75 @@
         :placement="isDesktop ? 'right' : 'bottom'"
         :title="t('doc.title')"
       >
-        <DocsOutline :outline="page.body.toc?.links" />
+        <DocsOutline :outline="nestedOutline" />
       </Drawer>
     </ClientOnly>
 
-    <!-- 打赏区 -->
-    <SharedBuyMeCoffee class="mt-8 mb-8" />
-
-    <!-- 评论区 -->
-    <DocsCommentSection :permalink="page.permalink" />
+    <SharedBuyMeCoffee class="mb-8 mt-8" />
   </div>
-  <div v-else><ErrorPage /></div>
+  <div v-else>
+    <ErrorPage />
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { withLeadingSlash } from "ufo";
-import { useLocalStorage } from "@vueuse/core";
-import { Drawer } from "moongate-vue";
+import { Drawer, Skeleton } from "moongate-vue";
+import { highlightHtmlContent } from "~/utils/shikiProcessor"; // 引入纯服务端高亮转换工具
 
-// ==================== 组合式函数 ====================
-const { locale, t } = useI18n();
 const route = useRoute();
+const { t } = useI18n();
 const { isDesktop } = useResponsive();
-const { isOutlineIconVisible } = useOutline();
+const slug = computed(() => (route.params.slug as string) || "");
 
-// ==================== 响应式状态 ====================
-/**
- * 目录显示状态 - 持久化到 localStorage
- */
+// 文档详情响应体
+interface DocDetailResponse {
+  permalink: string
+  slug: string
+  title: string
+  description: string
+  date: string
+  level: string
+  series: string
+  tags: string[]
+  content: string            // 原始未高亮的 HTML 内容
+  highlightedContent?: string // 新增：服务端异步高亮生成的完全体 HTML
+}
 
-const isOutlineVisible: Ref<boolean> = useLocalStorage(
-  "isOutlineVisible",
-  false,
+const {
+  data: page,
+  pending,
+} = useLazyAsyncData<DocDetailResponse>(
+  `doc-${slug.value}`,
+  async () => {
+    const {
+      public: { apiUrl },
+    } = useRuntimeConfig();
+    return await $fetch<DocDetailResponse>(`${apiUrl}/api/docs/${slug.value}`);
+  },
+  { 
+    watch: [slug],
+    // 🔥 核心魔法：数据在 Node.js 服务端抓取到后，直接拦截并转换为高亮 HTML
+    transform: async (data) => {
+      if (data && data.content) {
+        data.highlightedContent = await highlightHtmlContent(data.content)
+      }
+      return data
+    }
+  },
 );
 
-// ==================== 计算属性 ====================
-/**
- * 移除语言前缀，得到文档原始路径
- * 例如：/en/docs/welcome -> /docs/welcome
- */
-const slug: ComputedRef<string> = computed(() => {
-  const path = withLeadingSlash(String(route.params.slug || "/"));
-  // 移除语言前缀部分
-  return path.replace(new RegExp(`^/(${locale.value})`), "") || "/";
-});
+// 此时 contentRef 优先读取服务端已经注入并高亮好的完全体 HTML 字符串
+const contentRef = computed(() => page.value?.highlightedContent || page.value?.content || '')
+const { nestedOutline, isOutlineVisible, isOutlineIconVisible } = useOutline(contentRef)
 
-// ==================== 数据获取 ====================
-/**
- * 获取文档内容
- * 稳定查询：永远只查询 'docs' 这个集合
- */
-const { data: page } = await useAsyncData(`docs-${slug.value}`, () => {
-  return queryCollection("docs").path(`/docs${slug.value}`).first();
-});
-
-// ==================== 生命周期与副作用 ====================
-/**
- * 监听文档详情页面内容是否有大纲目录，并设置是否显示大纲目录图标
- */
 watchEffect(() => {
-  if (page.value && page.value.body.value && page.value.body.toc?.links) {
-    isOutlineIconVisible.value = true;
-  } else {
-    isOutlineIconVisible.value = false;
-  }
-}, {});
+  isOutlineIconVisible.value = !!page.value;
+});
 
-// ==================== SEO 元信息 ====================
-if (page.value?.title && page.value?.description) {
-  useSeoMeta({
-    title: page.value.title as string,
-    description: page.value.description as string,
-    ogTitle: page.value.title as string,
-    ogDescription: page.value.description as string,
-  });
-} else {
-  useSeoMeta({
-    title: t("title") as string,
-    description: t("description") as string,
-    ogTitle: t("title") as string,
-    ogDescription: t("description") as string,
-  });
-}
+useSeoMeta({
+  title: page.value?.title || t("title"),
+  description: page.value?.description || t("description"),
+  ogTitle: page.value?.title || t("title"),
+  ogDescription: page.value?.description || t("description"),
+});
 </script>

@@ -1,39 +1,25 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import removeConsole from 'vite-plugin-remove-console'
 
-const bundledLangs = [
-  'bash', 'css', 'docker', 'go', 'html',
-  'javascript', 'json', 'markdown', 'shell',
-  'sql', 'typescript', 'vue', 'xml', 'yaml'
-];
-
 export default defineNuxtConfig({
   modules: [
     '@nuxtjs/color-mode',
     '@unocss/nuxt',
     '@nuxtjs/i18n',
-    '@nuxt/content',
     '@nuxt/image',
     "@nuxt/eslint",
     '@nuxt/icon',
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
-    'nuxt-auth-utils',
   ],
   ssr: true,
   devtools: {
     enabled: true
   },
   runtimeConfig: {
-    oauth: {
-      github: {
-        clientId: '',
-        clientSecret: '',
-      }
-    },
-    databaseUrl: '',
     public: {
-      siteUrl: ''
+      siteUrl: '',
+      apiUrl: '',
     }
   },
   vite: {
@@ -41,33 +27,11 @@ export default defineNuxtConfig({
       removeConsole({ includes: ['log'] }) // 移除console.log
     ]
   },
-  content: {
-    build: {
-      markdown: {
-        highlight: {
-          langs: bundledLangs,
-        },
-        toc: {
-          depth: 4,
-          searchDepth: 3
-        },
-        theme: {
-          default: 'vitesse-light',
-          light: 'vitesse-light',
-          dark: 'vitesse-dark'
-        }
-      },
-    },
-    shiki: {
-      // 配置你需要的主题和语言
-      bundledThemes: ['vitesse-light', 'vitesse-dark'],
-      bundledLangs: bundledLangs,
-      defaultTheme: 'material-theme-lighter',
-      dynamic: true, // 懒加载语言
-    },
-    experimental: {
-      nativeSqlite: true
-    }
+  colorMode:{
+    preference: 'system',
+    fallback: 'light',
+    classSuffix: '', // 确保是空字符串，生成 .dark
+    storageKey: 'nuxt-color-mode',
   },
   css: ['~/assets/css/main.css'],
   i18n: {

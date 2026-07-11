@@ -2,39 +2,39 @@
   <div class="flex flex-col gap-4">
     <Card
       v-for="item in docs"
-      :key="item.id"
+      :key="item.permalink"
       as="li"
       hoverable
       :hide-body="viewMode === 1 ? false : true"
       class="cursor-pointer"
-      @click="navigateTo(localePath(item.path))"
+      @click="navigateToDoc(item.slug)"
     >
       <template #header>
-        <div class="flex justify-between items-start">
-          <div class="flex justify-between items-center">
+        <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-2">
+          <div class="flex-1">
             <h2 class="text-xl font-medium">{{ item.title }}</h2>
-            <div class="flex flex-wrap gap-1">
-              <em
+            <div class="flex flex-wrap mt-1">
+              <span
                 v-for="tag in item.tags"
                 :key="tag"
-                class="inline-block nav-link text-sm"
+                class="inline-block nav-link text-sm cursor-pointer"
                 :class="{ active: isTagSelected(tag) }"
                 @click="handleTagClick(tag, $event)"
-                >#{{ tag }}</em
+                >#{{ tag }}</span
               >
             </div>
           </div>
 
-          <div :class="['flex items-center gap-2', { 'flex-col': isMobile }]">
+          <div class="flex items-center gap-2 flex-shrink-0">
             <Badge v-if="level !== item.level" :label="item.level" />
-            <time :datetime="item.date" class="text-xs text-ui-text-muted">
+            <time :datetime="item.date" class="text-xs text-ui-text-muted whitespace-nowrap">
               {{ dayjs(item.date).format("YYYY-MM-DD") }}
             </time>
           </div>
         </div>
       </template>
       <template #default>
-        <p class="truncate">{{ item.description }}</p>
+        <p class="line-clamp-1">{{ item.description }}</p>
       </template>
     </Card>
   </div>
@@ -46,15 +46,32 @@ import { useDocs } from "~/composables/useDocs";
 import { useTagsFilter } from "~/composables/useTagsFilter";
 import dayjs from "dayjs";
 
-const localePath = useLocalePath();
-const { isMobile } = useResponsive();
-
-// 从全局单例获取 tags 和 level，以及筛选方法
-const { tags, level, viewMode } = useDocs();
-const { isTagSelected, handleTagClick } = useTagsFilter(tags);
+// ---------- 定义 Props 和 Emits ----------
+interface DocItem {
+  permalink: string
+  slug: string
+  title: string
+  description: string
+  level: string
+  tags: string[]
+  date: string
+}
 
 const props = defineProps<{
-  docs: any[];
-  viewMode: number;
-}>();
+  docs: DocItem[]
+  viewMode: number
+}>()
+
+
+// ---------- 响应式工具 ----------
+const localePath = useLocalePath()
+
+// ---------- 全局状态 ----------
+const { tags, level, viewMode } = useDocs()
+const { isTagSelected, handleTagClick } = useTagsFilter(tags)
+
+// ---------- 导航 ----------
+const navigateToDoc = (slug: string) => {
+  return navigateTo(localePath(`/docs/${slug}`))
+}
 </script>

@@ -1,11 +1,7 @@
 <template>
-  <h1 class="text-2xl">Wecome {{ route.params.user }}</h1>
+  <h1 class="text-2xl">Wecome {{ user.username }}</h1>
 </template>
 
 <script lang="ts" setup>
-const route = useRoute();
-
-definePageMeta({
-  requiresAuth: true, // 标记需要保护
-});
+  const {user} = useAuth()
 </script>

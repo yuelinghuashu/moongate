@@ -22,11 +22,12 @@
   },
   "docs": {
     "inputPlaceholder": "Search Docs",
-    "optionPlaceholder": "Search options",
+    "searchModePlaceholder": "Search options",
     "viewModePlaceholder": "View mode",
-    "option": [
-      { "id": 1, "name": "Search title and description" },
-      { "id": 2, "name": "Search title only" }
+    "searchMode": [
+      { "id": 1, "name": "Title & Description", "value": "all" },
+      { "id": 2, "name": "Title only", "value": "title" },
+      { "id": 3, "name": "Description only", "value": "description" }
     ],
     "viewMode": [
       { "id": 1, "name": "Detailed" },

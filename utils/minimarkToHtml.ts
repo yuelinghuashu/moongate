@@ -47,7 +47,7 @@ export function minimarkToHtml(node: any): string {
     if (node.type === 'text' && node.value) {
       return node.value
     }
-    
+
   }
 
   return ''

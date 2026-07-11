@@ -58,10 +58,11 @@
 
           <Divider vertical />
 
-          <SharedUserMenu v-if="loggedIn" class="h-5" />
+          <SharedUserMenu v-show="isLoggedIn" class="h-5" />
 
           <Icon
-            v-else
+                  v-show="!isLoggedIn"
+
             name="lucide:log-in"
             class="cursor-pointer w-5"
             @click="
@@ -97,8 +98,8 @@ const colorMode = useColorMode();
 const localePath = useLocalePath();
 const { isDesktop } = useResponsive();
 const route = useRoute();
-const { loggedIn } = useUserSession();
 const { isOutlineIconVisible, toggleOutline } = useOutline();
+const {isLoggedIn} = useAuth()
 
 watchEffect(() => {
   if (route.path.match(/^\/(?:[a-z_-]+\/)?(docs|about)\/.+/)) {

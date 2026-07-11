@@ -27,8 +27,8 @@
           <span class="text-sm text-gray-500">({{ series.docs.length }})</span>
         </summary>
         <div class="pl-4 mt-2 space-y-2">
-          <div v-for="article in series.docs" :key="article.id">
-            <NuxtLink :to="article.path" class="text-primary">
+          <div v-for="article in series.docs" :key="article.slug">
+            <NuxtLink  class="text-primary" :to="localePath(`/docs/${article.slug}`)">
               {{ article.title }}
             </NuxtLink>
             <div class="text-xs text-gray-500">
@@ -46,36 +46,44 @@ import { Button, Container } from "moongate-vue";
 import dayjs from "dayjs";
 
 const { tm } = useI18nSafe();
+const localePath = useLocalePath()
 
-// ==================== 数据获取与分组 ====================
-const { data: docsList } = await useAsyncData("series", () => {
-  return queryCollection("docs")
-    .order("date", "ASC")
-    .select("id", "series", "title", "level", "path", "seo", "date")
-    .all();
-});
+// ==================== 类型定义 ====================
+interface SeriesDoc {
+  title: string
+  date: string
+  permalink: string
+  slug: string
+  level: string
+}
 
-// 将文档按 series 分组
-const seriesMap = computed(() => {
-  const map = new Map<string, typeof docsList.value>();
-  if (!docsList.value) return map;
-  for (const doc of docsList.value) {
-    if (!doc.series) continue;
-    if (!map.has(doc.series)) map.set(doc.series, []);
-    map.get(doc.series)!.push(doc);
+interface SeriesGroup {
+  slug: string
+  docs: SeriesDoc[]
+}
+
+// ==================== API 调用（唯一改动） ====================
+const { data: seriesData } = await useAsyncData<SeriesGroup[]>(
+  'series-list',
+  async () => {
+    const config = useRuntimeConfig()
+    const apiUrl = config.public.apiUrl
+    // 复用 docs API，加 group=series 参数
+    return await $fetch<SeriesGroup[]>(`${apiUrl}/api/docs?group=series`)
   }
-  return map;
-});
+)
 
-// 系列列表（从 i18n 获取系列名）
+// ==================== 合并 i18n 系列名 ====================
+const seriesNames = tm('series') as Record<string, string>
+
 const seriesList = computed(() => {
-  const seriesObj = tm("series") as Record<string, string>;
-  return Object.entries(seriesObj).map(([slug, name]) => ({
-    slug,
-    name,
-    docs: seriesMap.value.get(slug) || [],
-  }));
-});
+  if (!seriesData.value) return []
+  return seriesData.value.map(group => ({
+    slug: group.slug,
+    name: seriesNames[group.slug] || group.slug,
+    docs: group.docs
+  }))
+})
 
 // ==================== 折叠/展开所有系列 ====================
 
@@ -88,6 +96,8 @@ const isAnyExpanded = ref(false);
  * 该函数仅在手动点击 summary 时调用，用于同步按钮状态
  */
 const updateAnyExpanded = () => {
+  // 只在客户端执行
+  if (typeof document === 'undefined') return
   const details = document.querySelectorAll("details");
   isAnyExpanded.value = Array.from(details).some((detail) => detail.open);
 };

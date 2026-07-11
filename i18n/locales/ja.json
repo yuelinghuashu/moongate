@@ -22,11 +22,12 @@
   },
   "docs": {
     "inputPlaceholder": "ドキュメントを検索",
-    "optionPlaceholder": "検索オプション",
+    "searchModePlaceholder": "検索オプション",
     "viewModePlaceholder": "表示モード",
-    "option": [
-      { "id": 1, "name": "タイトルと説明を検索" },
-      { "id": 2, "name": "タイトルのみ検索" }
+    "searchMode": [
+      { "id": 1, "name": "タイトル + 説明", "value": "all" },
+      { "id": 2, "name": "タイトルのみ", "value": "title" },
+      { "id": 3, "name": "説明のみ", "value": "description" }
     ],
     "viewMode": [
       { "id": 1, "name": "詳細" },

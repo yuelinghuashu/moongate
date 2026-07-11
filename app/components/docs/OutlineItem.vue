@@ -28,8 +28,12 @@ import { computed } from "vue";
 const route = useRoute();
 
 const props = defineProps<{
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  item: any
+  item: {
+    id: string
+    text: string
+    depth: number
+    children?: any[]
+  }
 }>()
 
 defineEmits<{

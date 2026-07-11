@@ -74,22 +74,44 @@ export function useRouteQueryNumber(name: string, options?: { defaultValue?: num
 }
 
 /**
- * 字符串数组类型查询参数（URL 中用逗号分隔）
+ * 字符串数组类型查询参数
+ * 支持多参数格式：?tag=go&tag=vue
  * @param name 参数名
  * @example
  * const tags = useRouteQueryArray('tag')
- * tags.value = ['vue', 'nuxt']  // URL 变为 ?tag=vue,nuxt
+ * tags.value = ['vue', 'nuxt']  // URL 变为 ?tag=vue&tag=nuxt
  */
 export function useRouteQueryArray(name: string) {
-  const raw = useRouteQueryRaw(name)
-  return computed({
-    get: () => {
-      const val = raw.value
-      if (!val) return []
-      return Array.isArray(val) ? val : (val as string).split(',')
-    },
-    set: (v: string[]) => {
-      raw.value = v.length ? v.join(',') : undefined
+  const route = useRoute()
+  const router = useRouter()
+
+  // 读取：从 route.query 获取数组
+  const getValue = (): string[] => {
+    const val = route.query[name]
+    if (!val) return []
+    return Array.isArray(val) ? val : [val]
+  }
+
+  const value = ref(getValue())
+
+  // 监听路由变化
+  watch(() => route.query[name], () => {
+    const newVal = getValue()
+    if (JSON.stringify(value.value) !== JSON.stringify(newVal)) {
+      value.value = newVal
     }
-  }) as Ref<string[]>
+  })
+
+  // 监听内部 ref 变化，同步到 URL（多参数格式）
+  watch(value, (newVal) => {
+    const query = { ...route.query }
+    if (newVal.length === 0) {
+      delete query[name]
+    } else {
+      query[name] = newVal  // Vue Router 自动展开成 ?tag=go&tag=vue
+    }
+    router.replace({ query })
+  }, { deep: true })
+
+  return value
 }

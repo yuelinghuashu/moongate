@@ -14,12 +14,12 @@
       :class="{ 'ml-2': isDesktop }"
     >
       <Select
-        v-model="option"
-        :options="tm('docs.option')"
+        v-model="searchMode"
+        :options="tm('docs.searchMode')"
         label-key="name"
-        value-key="id"
+        value-key="value"
         class="min-w-40 px-0"
-        :placeholder="t('docs.optionPlaceholder')"
+        :placeholder="t('docs.searchModePlaceholder')"
       />
 
       <Select
@@ -42,7 +42,7 @@ import { Button, Select, Input } from "moongate-vue";
 const { t, tm } = useI18nSafe();
 
 const search = defineModel<string>("search", { default: "" });
-const option = defineModel<number>("option", { default: 1 });
+const searchMode = defineModel<string>("searchMode", { default: "all" });
 const viewMode = defineModel<number>("viewMode", { default: 1 });
 
 // 只读 props

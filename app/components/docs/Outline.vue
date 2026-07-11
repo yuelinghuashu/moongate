@@ -1,22 +1,35 @@
+<!-- components/DocsOutline.vue -->
 <template>
   <nav class="p-4 leading-loose">
-    <OutlineItem
-      v-for="item in outline"
-      :key="item.id"
-      :item="item"
-      @close="isOutlineVisible = false"
-    />
+    <ul class="space-y-0">
+      <OutlineItem
+        v-for="item in nestedOutline"
+        :key="item.id"
+        :item="item"
+        @close="emit('close')"
+      />
+    </ul>
   </nav>
 </template>
 
 <script setup lang="ts">
-import { useLocalStorage } from "@vueuse/core";
 import OutlineItem from "./OutlineItem.vue";
 
-defineProps<{
-  outline: object[]
+interface OutlineItem {
+  id: string
+  text: string
+  depth: number
+  children?: OutlineItem[]
+}
+
+const props = defineProps<{
+  outline: OutlineItem[]
 }>()
 
-// 持久化抽屉可见性（避免水合错误）
-const isOutlineVisible = useLocalStorage("isOutlineVisible", false);
+const emit = defineEmits<{
+  close: []
+}>()
+
+// 直接使用传入的 outline（已经是嵌套结构）
+const nestedOutline = computed(() => props.outline)
 </script>

@@ -1,12 +1,12 @@
 <template>
-  <div class="flex flex-col gap-4">
+  <div v-if="page" class="flex flex-col gap-4">
     <Card
       v-for="item in page"
-      :key="item.id"
+      :key="item.slug"
       as="li"
       hoverable
       class="cursor-pointer"
-      @click="navigateTo(localePath(item.path))"
+      @click="navigateTo(localePath(`/about/${item.slug}`))"
     >
       <template #header>{{ item.title }}</template>
       <template #default>{{ item.description }}</template>
@@ -19,10 +19,20 @@ import { Card } from "moongate-vue";
 
 const localePath = useLocalePath();
 
+// 类型定义 
+interface AboutDetailResponse {
+  permalink: string
+  slug: string
+  title: string
+  description: string
+  date: string
+}
+
 // 获取关于页面列表
-const { data: page } = await useAsyncData("about-list", () => {
-  return queryCollection("about").order("date", "ASC").all();
-});
+const {data:page} = useLazyAsyncData<AboutDetailResponse[]>('about-list', async () => {
+  const apiUrl = useRuntimeConfig().public.apiUrl
+  return await $fetch<AboutDetailResponse[]>(`${apiUrl}/api/about`)
+})
 
 useSeoMeta({
   title: "关于 | About",

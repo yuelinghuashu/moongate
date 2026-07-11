@@ -22,11 +22,12 @@
   },
   "docs": {
     "inputPlaceholder": "搜索文档",
-    "optionPlaceholder": "搜索选项",
+    "searchModePlaceholder": "搜索选项",
     "viewModePlaceholder": "视图模式",
-    "option": [
-      { "id": 1, "name": "搜索标题和描述" },
-      { "id": 2, "name": "仅搜索标题" }
+    "searchMode": [
+      { "id": 1, "name": "标题 + 描述", "value": "all" },
+      { "id": 2, "name": "仅标题", "value": "title" },
+      { "id": 3, "name": "仅描述", "value": "description" }
     ],
     "viewMode": [
       { "id": 1, "name": "详细" },
