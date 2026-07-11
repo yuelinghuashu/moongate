@@ -25,14 +25,14 @@ jobs:
       - name: Build and push Nuxt image
         uses: docker/build-push-action@v5
         with:
-          context: . 
+          context: .
           push: true
           build-args: |
             NUXT_PUBLIC_SITE_URL=${{ secrets.NUXT_PUBLIC_SITE_URL }}
             NUXT_PUBLIC_API_URL=http://go-backend:8080
           tags: |
-            ${{ secrets.ACR_REGISTRY }}/moongate-blog:latest
-            ${{ secrets.ACR_REGISTRY }}/moongate-blog:${{ github.sha }}
+            ${{ secrets.ACR_REGISTRY }}/moongate/moongate-blog:latest
+            ${{ secrets.ACR_REGISTRY }}/moongate/moongate-blog:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -51,17 +51,12 @@ jobs:
             set -e
             cd /var/www/my-site
 
-            # 登录 ACR
             echo "$ACR_PASSWORD" | docker login "$ACR_REGISTRY" -u "$ACR_USERNAME" --password-stdin
 
-            # 只拉取和重启 Nuxt
             docker compose pull nuxt-app
             docker compose up -d --force-recreate nuxt-app
-
-            # 重启 Caddy（确保路由生效）
             docker compose up -d --force-recreate caddy
 
-            # 清理旧镜像
             docker image prune -f --filter "until=24h"
 
             docker compose ps
