@@ -1,7 +1,7 @@
 import { minimarkToHtml } from '../../utils/minimarkToHtml'
 
 export default defineCachedEventHandler(async (event) => {
-  const { siteUrl, apiUrl } = useRuntimeConfig().public
+  const { siteUrl,apiUrl } = useRuntimeConfig().public
 
   try {
     const response = await $fetch(`${apiUrl}/api/docs?content=false&limit=1000`)

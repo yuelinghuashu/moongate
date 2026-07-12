@@ -29,10 +29,16 @@ interface AboutDetailResponse {
 }
 
 // 获取关于页面列表
-const {data:page} = useAsyncData<AboutDetailResponse[]>('about-list', async () => {
-  const apiUrl = useRuntimeConfig().public.apiUrl
-  return await $fetch<AboutDetailResponse[]>(`${apiUrl}/api/about`)
-})
+const config = useRuntimeConfig()
+
+const { data: page } = await useAsyncData<AboutDetailResponse[]>(
+  'about-list',
+  async () => {
+    return await $fetch<AboutDetailResponse[]>(`/api/about`, {
+      baseURL: config.public.apiUrl
+    })
+  }
+)
 
 useSeoMeta({
   title: "关于 | About",

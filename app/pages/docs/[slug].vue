@@ -49,16 +49,17 @@ interface DocDetailResponse {
   highlightedContent?: string // 新增：服务端异步高亮生成的完全体 HTML
 }
 
+const config = useRuntimeConfig()
+
 const {
   data: page,
   pending,
 } = useAsyncData<DocDetailResponse>(
   `doc-${slug.value}`,
   async () => {
-    const {
-      public: { apiUrl },
-    } = useRuntimeConfig();
-    return await $fetch<DocDetailResponse>(`${apiUrl}/api/docs/${slug.value}`);
+    return await $fetch<DocDetailResponse>(`/api/docs/${slug.value}`, {
+      baseURL: config.public.apiUrl
+    });
   },
   { 
     watch: [slug],

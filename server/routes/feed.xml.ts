@@ -2,7 +2,7 @@
 import { minimarkToHtml } from '../../utils/minimarkToHtml'
 
 export default defineCachedEventHandler(async (event) => {
-  const { siteUrl, apiUrl } = useRuntimeConfig().public
+  const { siteUrl,apiUrl } = useRuntimeConfig().public
 
   try {
     console.log('开始获取文档...')

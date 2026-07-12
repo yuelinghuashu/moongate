@@ -62,14 +62,15 @@ interface SeriesGroup {
   docs: SeriesDoc[]
 }
 
-// ==================== API 调用（唯一改动） ====================
+// ==================== API 调用 ====================
+const config = useRuntimeConfig()
+
 const { data: seriesData } = await useAsyncData<SeriesGroup[]>(
   'series-list',
   async () => {
-    const config = useRuntimeConfig()
-    const apiUrl = config.public.apiUrl
-    // 复用 docs API，加 group=series 参数
-    return await $fetch<SeriesGroup[]>(`${apiUrl}/api/docs?group=series`)
+    return await $fetch<SeriesGroup[]>(`/api/docs?group=series`, {
+      baseURL: config.public.apiUrl
+    })
   }
 )
 

@@ -131,14 +131,15 @@ const _useDocs = () => {
    * 使用 useAsyncData 获取文档列表
    * 当 watch 中的依赖变化时自动重新请求
    */
+  const config = useRuntimeConfig()
   const { data, pending, refresh, error } = useAsyncData(
     'docs-list',
     async () => {
-      const { public: { apiUrl } } = useRuntimeConfig()
-      return await $fetch<DocsResponse>(`${apiUrl}/api/docs?${queryParams.value.toString()}`)
+      return await $fetch(`/api/docs?${queryParams.value.toString()}`, {
+        baseURL: config.public.apiUrl
+      })
     },
     {
-      // 依赖变化时自动重新获取
       watch: [searchInput, searchMode, page, size, level, tags],
     }
   )

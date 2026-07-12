@@ -1,6 +1,6 @@
 // server/routes/sitemap.xml.ts
 export default defineEventHandler(async (event) => {
-  const { siteUrl, apiUrl } = useRuntimeConfig().public
+  const { siteUrl,apiUrl } = useRuntimeConfig().public
 
   try {
     // 1. 获取文档数据

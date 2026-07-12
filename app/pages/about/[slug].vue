@@ -1,8 +1,6 @@
 <template>
   <Skeleton v-if="pending" />
   <div v-else-if="page">
-    <DocsMeta :date="page.date" :level="page.level" :tags="page.tags" v-if="page.tags" />
-    
     <article class="prose dark:prose-invert max-w-none prose-sm md:prose-base lg:prose-lg">
       <h1 class="text-3xl font-bold">{{ page.title }}</h1>
       <div class="shiki-content" v-html="contentRef" />
@@ -47,15 +45,17 @@ interface AboutDetailResponse {
 }
 
 // 获取关于页面详情
+const config = useRuntimeConfig()
+
 const { data: page, pending } = useAsyncData<AboutDetailResponse>(
   `about-${slug.value}`,
   async () => {
-    const { public: { apiUrl } } = useRuntimeConfig();
-    return await $fetch<AboutDetailResponse>(`${apiUrl}/api/about/${slug.value}`);
+    return await $fetch<AboutDetailResponse>(`/api/about/${slug.value}`, {
+      baseURL: config.public.apiUrl
+    })
   },
   { 
     watch: [slug],
-    // 🔥 核心魔法：数据在 Node.js 服务端抓取到后，直接拦截并转换为包含双主题样式的完全体 HTML
     transform: async (data) => {
       if (data && data.content) {
         data.highlightedContent = await highlightHtmlContent(data.content)
@@ -63,7 +63,7 @@ const { data: page, pending } = useAsyncData<AboutDetailResponse>(
       return data
     }
   }
-);
+)
 
 // 此时 contentRef 优先读取服务端已经注入并高亮好的完全体 HTML 字符串
 const contentRef = computed(() => page.value?.highlightedContent || page.value?.content || '')
