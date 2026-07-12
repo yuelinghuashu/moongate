@@ -29,7 +29,7 @@ interface AboutDetailResponse {
 }
 
 // 获取关于页面列表
-const {data:page} = useLazyAsyncData<AboutDetailResponse[]>('about-list', async () => {
+const {data:page} = useAsyncData<AboutDetailResponse[]>('about-list', async () => {
   const apiUrl = useRuntimeConfig().public.apiUrl
   return await $fetch<AboutDetailResponse[]>(`${apiUrl}/api/about`)
 })

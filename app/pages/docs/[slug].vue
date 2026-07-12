@@ -52,7 +52,7 @@ interface DocDetailResponse {
 const {
   data: page,
   pending,
-} = useLazyAsyncData<DocDetailResponse>(
+} = useAsyncData<DocDetailResponse>(
   `doc-${slug.value}`,
   async () => {
     const {

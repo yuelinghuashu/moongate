@@ -47,7 +47,7 @@ interface AboutDetailResponse {
 }
 
 // 获取关于页面详情
-const { data: page, pending } = useLazyAsyncData<AboutDetailResponse>(
+const { data: page, pending } = useAsyncData<AboutDetailResponse>(
   `about-${slug.value}`,
   async () => {
     const { public: { apiUrl } } = useRuntimeConfig();
