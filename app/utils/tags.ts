@@ -2,10 +2,11 @@
 export const ALLOWED_TAGS = [
   // ========== 编程语言 ==========
   'CSS',
-  'Go',
   'HTML',
   'JavaScript',
   'Vue',
+  'Go',
+  'Compiler',
   'JSON',
 
   // ========== 框架与工具 ==========
@@ -29,7 +30,7 @@ export const ALLOWED_TAGS = [
   // ========== 设计与工程 ==========
   'Design System',
   'Theme',
-  'Engineering',      // 研发流程、代码规范、测试策略、CI/CD、配置
+  'Engineering', // 研发流程、代码规范、测试策略、CI/CD、配置等工程化内容
 ];
 
 export const isValidTag = (tag: string) => ALLOWED_TAGS.includes(tag);

@@ -23,7 +23,7 @@
 | 框架         | Nuxt 4                               |
 | 语言         | TypeScript                           |
 | 样式         | UnoCSS                               |
-| 内容         | Nuxt Content                         |
+| 内容         | Go API                               |
 | 国际化       | Nuxt i18n                            |
 | 状态管理     | Pinia                                |
 | 组件库       | [moongate-vue](https://www.npmjs.com/package/moongate-vue) |
@@ -35,6 +35,7 @@
 
 ## 📄 SEO
 
+- RSS Feed
 - robots.txt
 - sitemap.xml（已提交 Google Search Console）
 
