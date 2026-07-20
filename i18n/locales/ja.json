@@ -67,7 +67,8 @@
     "performance": "パフォーマンス最適化",
     "ecosystem": "エコシステム適応",
     "moongate-vue": "MoonGate UI コンポーネントライブラリ",
-    "lexer-from-scratch":"スクラッチから作る字句解析器"
+    "lexer-from-scratch": "スクラッチから作る字句解析器",
+    "narrative-engine": "ナラティブエンジン"
   },
   "projects": {
     "columns": [
@@ -95,6 +96,11 @@
         "name": "dev-note-2026",
         "description": "2026 個人技術ノート",
         "link": "https://github.com/yuelinghuashu/dev-note-2026"
+      },
+      {
+        "name": "Mephisto",
+        "description": "長期的ナラティブエンジン",
+        "link": "https://github.com/yuelinghuashu/mephisto"
       }
     ]
   },

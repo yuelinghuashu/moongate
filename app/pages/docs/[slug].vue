@@ -66,7 +66,12 @@ const {
     // 🔥 核心魔法：数据在 Node.js 服务端抓取到后，直接拦截并转换为高亮 HTML
     transform: async (data) => {
       if (data && data.content) {
-        data.highlightedContent = await highlightHtmlContent(data.content)
+        try {
+          data.highlightedContent = await highlightHtmlContent(data.content)
+        } catch (e) {
+          console.error(`[${slug.value}] 高亮渲染失败，使用原始内容:`, e)
+          data.highlightedContent = data.content
+        }
       }
       return data
     }

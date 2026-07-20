@@ -67,7 +67,8 @@
     "performance": "Performance Optimization",
     "ecosystem": "Ecosystem Adaptation",
     "moongate-vue": "MoonGate UI Component Library",
-    "lexer-from-scratch":"Lexer from Scratch"
+    "lexer-from-scratch": "Lexer from Scratch",
+    "narrative-engine": "Narrative Engine"
   },
   "projects": {
     "columns": [
@@ -95,6 +96,11 @@
         "name": "dev-note-2026",
         "description": "2026 Personal Tech Notes",
         "link": "https://github.com/yuelinghuashu/dev-note-2026"
+      },
+      {
+        "name": "Mephisto",
+        "description": "Long-Form Narrative Engine",
+        "link": "https://github.com/yuelinghuashu/mephisto"
       }
     ]
   },

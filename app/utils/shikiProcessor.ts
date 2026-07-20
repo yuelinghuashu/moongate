@@ -20,8 +20,8 @@ export async function highlightHtmlContent(htmlContent: string): Promise<string>
     const [fullMatch, attributes, rawCode] = match
 
     // 提取语言类型，若无则默认为 'text'
-    const langMatch = attributes.match(/class="[^"]*language-(\w+)"/)
-    const lang = langMatch ? langMatch[1] : 'text'
+    const langMatch = attributes?.match(/class="[^"]*language-(\w+)"/)
+    const lang = langMatch ? langMatch[1] || 'text' : 'text'
 
     // 解码 HTML 实体（如 &lt; 转为 <），防止 Shiki 二次转义
     const code = rawCode
@@ -29,10 +29,15 @@ export async function highlightHtmlContent(htmlContent: string): Promise<string>
       .replace(/&gt;/g, '>')
       .replace(/&amp;/g, '&')
       .replace(/&quot;/g, '"')
-      .replace(/&#39;/g, "'")
+      .replace(/&apos;/g, "'")
+
+    // 🔥 防止 Shiki 遇到未注册语言（如 meph、gitignore）时抛异常
+    // 检查语言是否已加载，未注册则降级为 text 纯文本显示
+    const supportedLangs: string[] = highlighter.getLoadedLanguages() as string[]
+    const safeLang = supportedLangs.includes(lang) ? lang : 'text'
 
     const highlighted = highlighter.codeToHtml(code, {
-      lang,
+      lang: safeLang,
       themes: {
         light: 'Moongate Theme Light',
         dark: 'Moongate Theme Dark',

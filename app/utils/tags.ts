@@ -18,8 +18,10 @@ export const ALLOWED_TAGS = [
 
   // ========== 技术概念 ==========
   'CI/CD',
+  'DSL',
   'Hydration',
   'i18n',
+  'LLM',
   'OAuth',
   'ORM',
   'Performance',
