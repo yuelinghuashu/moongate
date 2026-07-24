@@ -99,8 +99,13 @@
       },
       {
         "name": "Mephisto",
-        "description": "Long-Form Narrative Engine",
+        "description": "Long-form narrative engine — driving rules and LLMs with plain-text contract files",
         "link": "https://github.com/yuelinghuashu/mephisto"
+      },
+      {
+        "name": "vscode-mephisto",
+        "description": "VS Code extension for Mephisto contract files, providing syntax highlighting, real-time diagnostics, and code completion",
+        "link": "https://marketplace.visualstudio.com/items?itemName=yuelinghuashu.vscode-mephisto"
       }
     ]
   },

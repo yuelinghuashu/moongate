@@ -67,8 +67,8 @@
     "performance": "性能优化",
     "ecosystem": "生态适配",
     "moongate-vue": "MoonGate UI 组件库",
-    "lexer-from-scratch":"词法分析器",
-    "narrative-engine":"叙事引擎"
+    "lexer-from-scratch": "词法分析器",
+    "narrative-engine": "叙事引擎"
   },
   "projects": {
     "columns": [
@@ -99,8 +99,13 @@
       },
       {
         "name": "Mephisto",
-        "description": "长线叙事引擎",
+        "description": "长线叙事引擎 —— 用纯文本契约文件驱动规则与大模型",
         "link": "https://github.com/yuelinghuashu/mephisto"
+      },
+      {
+        "name": "vscode-mephisto",
+        "description": "Mephisto 契约文件的 VS Code 扩展，提供语法高亮、实时诊断与代码补全",
+        "link": "https://marketplace.visualstudio.com/items?itemName=yuelinghuashu.vscode-mephisto"
       }
     ]
   },

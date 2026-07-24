@@ -99,8 +99,13 @@
       },
       {
         "name": "Mephisto",
-        "description": "長期的ナラティブエンジン",
+        "description": "長編叙事エンジン — プレーンテキストの契約ファイルでルールと大規模言語モデルを駆動する",
         "link": "https://github.com/yuelinghuashu/mephisto"
+      },
+      {
+        "name": "vscode-mephisto",
+        "description": "Mephisto 契約ファイルの VS Code 拡張機能。構文ハイライト、リアルタイム診断、コード補完を提供します。",
+        "link": "https://marketplace.visualstudio.com/items?itemName=yuelinghuashu.vscode-mephisto"
       }
     ]
   },

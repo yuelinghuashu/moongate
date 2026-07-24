@@ -1,5 +1,5 @@
 <template>
-  <Container size="sm" style="padding: 0">
+  <Container style="padding: 0">
     <Table :columns="tm('projects.columns')" :data="tm('projects.data')">
       <template #column-link="{ row }">
         <NuxtLink :to="row.link" target="_blank" rel="noopener noreferrer"

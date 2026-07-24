@@ -14,19 +14,18 @@
 - ⚙️ **用户偏好** —— 主题、语言、默认视图持久化
 - 🔍 **文档搜索** —— 实时搜索过滤
 - 📱 **响应式** —— 桌面端与移动端适配
-- 📝 **内容驱动** —— Nuxt Content 管理文档
 
 ## 🛠️ 技术栈
 
-| 类别         | 技术                                 |
-| ------------ | ------------------------------------ |
-| 框架         | Nuxt 4                               |
-| 语言         | TypeScript                           |
-| 样式         | UnoCSS                               |
-| 内容         | Go API                               |
-| 国际化       | Nuxt i18n                            |
-| 状态管理     | Pinia                                |
-| 组件库       | [moongate-vue](https://www.npmjs.com/package/moongate-vue) |
+| 类别     | 技术                                                       |
+| -------- | ---------------------------------------------------------- |
+| 框架     | Nuxt 4                                                     |
+| 语言     | TypeScript                                                 |
+| 样式     | UnoCSS                                                     |
+| 内容     | Go API                                                     |
+| 国际化   | Nuxt i18n                                                  |
+| 状态管理 | Pinia                                                      |
+| 组件库   | [moongate-vue](https://www.npmjs.com/package/moongate-vue) |
 
 ## 🚀 自动化部署
 
@@ -40,22 +39,6 @@
 - sitemap.xml（已提交 Google Search Console）
 
 ---
-
-## 本地开发
-
-```bash
-# 安装依赖
-pnpm install
-
-# 启动开发服务器
-pnpm dev
-
-# 构建生产版本
-pnpm build
-
-# 预览生产版本
-pnpm preview
-```
 
 ## 许可证
 
