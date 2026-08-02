@@ -1,5 +1,5 @@
 // composables/useRouteQuery.ts
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute, useRouter, type LocationQueryRaw } from 'vue-router'
 import type { Ref } from 'vue'
 
 /**
@@ -18,11 +18,11 @@ function useRouteQueryRaw(name: string) {
 
   // 监听内部 ref 变化，同步到 URL
   watch(value, (newVal) => {
-    const query = { ...route.query }
+    const query: LocationQueryRaw = { ...route.query }
     if (newVal !== undefined && newVal !== null && newVal !== '') {
-      query[name] = newVal
+      query[name] = newVal as string
     } else {
-      delete query[name]
+      Reflect.deleteProperty(query, name)
     }
     router.replace({ query })
   })
@@ -85,11 +85,14 @@ export function useRouteQueryArray(name: string) {
   const route = useRoute()
   const router = useRouter()
 
-  // 读取：从 route.query 获取数组
+  // 读取：从 route.query 获取数组（过滤 null 值）
   const getValue = (): string[] => {
     const val = route.query[name]
     if (!val) return []
-    return Array.isArray(val) ? val : [val]
+    if (Array.isArray(val)) {
+      return val.filter((v): v is string => v !== null)
+    }
+    return [val]
   }
 
   const value = ref(getValue())
@@ -104,9 +107,9 @@ export function useRouteQueryArray(name: string) {
 
   // 监听内部 ref 变化，同步到 URL（多参数格式）
   watch(value, (newVal) => {
-    const query = { ...route.query }
+    const query: LocationQueryRaw = { ...route.query }
     if (newVal.length === 0) {
-      delete query[name]
+      Reflect.deleteProperty(query, name)
     } else {
       query[name] = newVal  // Vue Router 自动展开成 ?tag=go&tag=vue
     }

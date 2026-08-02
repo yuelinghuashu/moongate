@@ -57,7 +57,7 @@ interface DocItem {
   date: string
 }
 
-const props = defineProps<{
+defineProps<{
   docs: DocItem[]
   viewMode: number
 }>()
@@ -67,7 +67,7 @@ const props = defineProps<{
 const localePath = useLocalePath()
 
 // ---------- 全局状态 ----------
-const { tags, level, viewMode } = useDocs()
+const { tags, level } = useDocs()
 const { isTagSelected, handleTagClick } = useTagsFilter(tags)
 
 // ---------- 导航 ----------

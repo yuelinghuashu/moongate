@@ -1,6 +1,6 @@
 <template>
   <Popover>
-    <Icon name="lucide:user" />
+    <Icon name="tabler:user" />
     <template #content>
       <div
         v-for="item in items"
@@ -26,7 +26,7 @@ const route = useRoute();
 const items = [
   {
     label: t("user.profile"),
-    icon: "lucide-user",
+    icon: "tabler:user",
     active:
       user && user.value?.login
         ? route.path === localePath(`/${user.value.login}/profile`)
@@ -37,7 +37,7 @@ const items = [
   },
   {
     label: t("user.logout"),
-    icon: "i-lucide-log-out",
+    icon: "tabler:logout",
     onClick() {
       logout();
     },

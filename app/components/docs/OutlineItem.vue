@@ -27,13 +27,15 @@ import { computed } from "vue";
 
 const route = useRoute();
 
+interface OutlineItemData {
+  id: string
+  text: string
+  depth: number
+  children?: OutlineItemData[]
+}
+
 const props = defineProps<{
-  item: {
-    id: string
-    text: string
-    depth: number
-    children?: any[]
-  }
+  item: OutlineItemData
 }>()
 
 defineEmits<{

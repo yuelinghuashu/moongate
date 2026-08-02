@@ -74,17 +74,15 @@ jobs:
             set -e
             cd /var/www/my-site
 
-            cat > .env << EOF
-            POSTGRES_DB=$POSTGRES_DB
-            POSTGRES_USER=$POSTGRES_USER
-            POSTGRES_PASSWORD=$POSTGRES_PASSWORD
-            JWT_SECRET=$JWT_SECRET
-            SESSION_SECRET=$SESSION_SECRET
-            OAUTH_GITHUB_KEY=$OAUTH_GITHUB_KEY
-            OAUTH_GITHUB_SECRET=$OAUTH_GITHUB_SECRET
-            GITHUB_CALLBACK_URL=https://moongate.top/auth/github/callback
+            # 仅追加前端自己的变量，不覆盖后端变量
+            sed -i '/^NUXT_PUBLIC_SITE_URL=/d' .env 2>/dev/null || true
+            sed -i '/^NUXT_PUBLIC_API_URL=/d' .env 2>/dev/null || true
+            sed -i '/^GITHUB_CALLBACK_URL=/d' .env 2>/dev/null || true
+            sed -i '/^ACR_REGISTRY=/d' .env 2>/dev/null || true
+            cat >> .env << EOF
             NUXT_PUBLIC_SITE_URL=$NUXT_PUBLIC_SITE_URL
             NUXT_PUBLIC_API_URL=$NUXT_PUBLIC_API_URL
+            GITHUB_CALLBACK_URL=https://moongate.top/auth/github/callback
             ACR_REGISTRY=$ACR_DOMAIN/$ACR_NAMESPACE
             EOF
 

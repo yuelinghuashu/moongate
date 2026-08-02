@@ -10,7 +10,7 @@
             v-model="settings.appearance.theme"
             :label="item.name"
             :value="item.name"
-            @update:model-value="(theme) => setTheme(theme)"
+            @update:model-value="(theme: string | number) => setTheme(String(theme))"
           />
         </div>
       </div>
@@ -26,7 +26,7 @@
             v-model="settings.appearance.language"
             :label="item.name"
             :value="item.code"
-            @update:model-value="(lang) => setLanguage(lang)"
+            @update:model-value="(lang: string | number) => setLanguage(lang as 'zh_cn' | 'en' | 'ja')"
           />
         </div>
       </div>

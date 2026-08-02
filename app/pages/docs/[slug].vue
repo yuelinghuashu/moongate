@@ -1,6 +1,6 @@
 <template>
-  <Skeleton v-if="pending" />
-  <div v-else-if="page">
+  <Skeleton v-if="!page" />
+  <div v-else>
     <DocsMeta :date="page.date" :level="page.level" :tags="page.tags" />
 
     <article class="prose dark:prose-invert max-w-none prose-sm md:prose-base lg:prose-lg">
@@ -20,9 +20,6 @@
     </ClientOnly>
 
     <SharedBuyMeCoffee class="mb-8 mt-8" />
-  </div>
-  <div v-else>
-    <ErrorPage />
   </div>
 </template>
 
@@ -53,7 +50,6 @@ const config = useRuntimeConfig()
 
 const {
   data: page,
-  pending,
 } = useAsyncData<DocDetailResponse>(
   `doc-${slug.value}`,
   async () => {

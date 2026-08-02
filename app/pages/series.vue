@@ -10,7 +10,7 @@
         <template #icon>
           <Icon
             :name="
-              isAnyExpanded ? 'lucide-chevrons-up' : 'lucide-chevrons-down'
+              isAnyExpanded ? 'tabler:chevrons-up' : 'tabler:chevrons-down'
             "
           />
         </template>

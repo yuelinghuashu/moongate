@@ -6,7 +6,7 @@
         class="mg-button mg-button-filled-primary mg-button-md"
       >
         // Access the Gate
-        <Icon name="lucide:arrow-right" class="h-4" />
+        <Icon name="tabler:arrow-right" class="h-4" />
       </NuxtLink>
     </template>
   </Hero>

@@ -1,11 +1,11 @@
-import { minimarkToHtml } from '../../utils/minimarkToHtml'
+import { contentToHtml, safeParseDate } from '../../app/utils/docs'
+import { fetchDocs } from '../utils/docs'
 
 export default defineCachedEventHandler(async (event) => {
-  const { siteUrl,apiUrl } = useRuntimeConfig().public
+  const { siteUrl, apiUrl } = useRuntimeConfig().public
 
   try {
-    const response = await $fetch(`${apiUrl}/api/docs?content=false&limit=1000`)
-    const docs = response.data || []
+    const docs = await fetchDocs(apiUrl, { includeContent: true })
 
     // 构建 JSON Feed
     const feed = {
@@ -20,33 +20,13 @@ export default defineCachedEventHandler(async (event) => {
         url: siteUrl
       }],
       items: docs.map((doc) => {
-        // 转换全文
-        let contentHtml = ''
-        if (doc.content) {
-          try {
-            contentHtml = minimarkToHtml(doc.content)
-          } catch (e) {
-            console.error('转换失败:', e)
-            contentHtml = doc.description || ''
-          }
-        }
-
-        // 安全处理日期
-        let datePublished
-        try {
-          const dateObj = new Date(doc.date)
-          datePublished = isNaN(dateObj.getTime()) ? new Date().toISOString() : dateObj.toISOString()
-        } catch (e) {
-          datePublished = new Date().toISOString()
-        }
-
         return {
           id: doc.permalink || `${siteUrl}/docs/${doc.slug}`,
           url: `${siteUrl}/docs/${doc.slug}`,
           title: doc.title || '无标题',
-          content_html: contentHtml,
+          content_html: contentToHtml(doc),
           summary: doc.description || '',
-          date_published: datePublished,
+          date_published: safeParseDate(doc.date).toISOString(),
           language: 'zh-CN',
           tags: doc.tags || [],
           // 额外字段

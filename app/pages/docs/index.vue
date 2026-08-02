@@ -12,10 +12,10 @@
 
       <DocsTagFilter v-show="isFilterVisible" />
 
-      <Skeleton v-if="pending && !docs?.data?.length" />
+      <Skeleton v-if="!docs" />
 
       <DocsList
-        v-else-if="docs?.total || 0 > 0"
+        v-else-if="(docs?.total || 0) > 0"
         :docs="docs?.data || []"
         :view-mode="viewMode"
         :level="level"
@@ -66,7 +66,7 @@
 
 <script lang="ts" setup>
 import { Button, Pagination, Select, Skeleton } from "moongate-vue";
-import { useLocalStorage, watchDebounced, useEventListener } from "@vueuse/core";
+import { useLocalStorage, useEventListener } from "@vueuse/core";
 
 // ---------- 响应式工具 ----------
 const { isDesktop, isMobile } = useResponsive();
@@ -81,7 +81,6 @@ const {
   size,
   level,
   tags,
-  pending,
   resetFilters,
 } = useDocs();
 
@@ -95,21 +94,8 @@ const sizeOptions = [
 // ---------- UI 状态：筛选面板可见性（持久化）----------
 const isFilterVisible = useLocalStorage("isFilterVisible", false);
 
-// 防抖搜索
-const searchInputDebounced = ref(searchInput.value);
-
-watchDebounced(
-  searchInputDebounced,
-  (val) => {
-    searchInput.value = val;
-    page.value = 1;
-  },
-  { debounce: 500 },
-);
-
-watch(searchInput, (val) => {
-  searchInputDebounced.value = val;
-});
+// 防抖搜索（复用 useDebouncedSearch composable）
+const { searchInputDebounced } = useDebouncedSearch(searchInput, page, 500);
 
 // 空状态提示
 const emptyStateMessage = computed(() => {
@@ -142,7 +128,7 @@ useEventListener("keydown", (e) => {
     if (page.value > 1) page.value -= 1;
   } else if (e.key === "ArrowRight") {
     e.preventDefault();
-    if (page.value < docs.value?.totalPages || 0) page.value += 1;
+    if (page.value < (docs.value?.totalPages || 0)) page.value += 1;
   }
 });
 

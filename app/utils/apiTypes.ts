@@ -1,0 +1,28 @@
+// utils/apiTypes.ts
+// 共享 API 类型定义（前端 + 服务端通用）
+
+/**
+ * 文档项（对应 Go API 返回的 Doc 结构）
+ */
+export interface DocItem {
+  permalink: string
+  slug: string
+  title: string
+  description: string
+  level: string
+  series: string | null
+  tags: string[]
+  date: string
+  content: string
+}
+
+/**
+ * 文档列表 API 响应格式
+ */
+export interface DocsResponse {
+  data: DocItem[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+}

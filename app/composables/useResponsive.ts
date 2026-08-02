@@ -8,6 +8,7 @@ import {
  * 用于在组件中判断当前设备是桌面端还是移动端
  * 基于 TailwindCSS 的断点系统
  * 
+ * 使用 ssrWidth 在服务端给出合理默认（768px），确保 SSR 输出桌面版布局
  * @returns 包含设备类型判断的响应式对象
  */
 export const useResponsive = () => {

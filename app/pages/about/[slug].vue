@@ -1,6 +1,6 @@
 <template>
-  <Skeleton v-if="pending" />
-  <div v-else-if="page">
+  <Skeleton v-if="!page" />
+  <div v-else>
     <article class="prose dark:prose-invert max-w-none prose-sm md:prose-base lg:prose-lg">
       <h1 class="text-3xl font-bold">{{ page.title }}</h1>
       <div class="shiki-content" v-html="contentRef" />
@@ -18,9 +18,6 @@
     </ClientOnly>
 
     <SharedBuyMeCoffee class="mb-8 mt-8" />
-  </div>
-  <div v-else>
-    <ErrorPage />
   </div>
 </template>
 
@@ -47,7 +44,7 @@ interface AboutDetailResponse {
 // 获取关于页面详情
 const config = useRuntimeConfig()
 
-const { data: page, pending } = useAsyncData<AboutDetailResponse>(
+const { data: page } = useAsyncData<AboutDetailResponse>(
   `about-${slug.value}`,
   async () => {
     return await $fetch<AboutDetailResponse>(`/api/about/${slug.value}`, {

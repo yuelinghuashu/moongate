@@ -5,7 +5,7 @@ import { getShikiHighlighter } from '~/composables/useShikiHighlighter'
 export async function highlightHtmlContent(htmlContent: string): Promise<string> {
   if (!htmlContent) return ''
 
-  // 仅在服务端或支持的通用环境下运行，避免客户端打包加载 WASM
+  // 惰性加载 Shiki（首次调用时创建实例，服务端/客户端共用单例）
   const highlighter = await getShikiHighlighter()
 
   // 用正则是最快、最轻量且不依赖浏览器 DOMParser 的方式
@@ -17,13 +17,13 @@ export async function highlightHtmlContent(htmlContent: string): Promise<string>
   let resultHtml = htmlContent
 
   for (const match of matches) {
-    const [fullMatch, attributes, rawCode] = match
+    const [fullMatch, attributes = '', rawCode = ''] = match
 
     // 提取语言类型，若无则默认为 'text'
     const langMatch = attributes?.match(/class="[^"]*language-(\w+)"/)
     const lang = langMatch ? langMatch[1] || 'text' : 'text'
 
-    // 解码 HTML 实体（如 &lt; 转为 <），防止 Shiki 二次转义
+    // 解码 HTML 实体（如 &lt; 转为左尖括号），防止 Shiki 二次转义
     const code = rawCode
       .replace(/&lt;/g, '<')
       .replace(/&gt;/g, '>')

@@ -23,7 +23,7 @@ const useSettingStore = defineStore('setting', () => {
       // 语言
       language: locales.value[defaultLocale]!.code,
     },
-    // 是否跳过首页
+    // 是否跳过首页（31=显示首页，32=跳过首页）
     homepageBehavior: 31,
   })
 
@@ -33,8 +33,8 @@ const useSettingStore = defineStore('setting', () => {
     settings.value.appearance.theme = theme
   }
 
-  // 设置语言
-  const setLanguage = (lang) => {
+  // 设置语言（类型从 i18n locales 推导，兼容 setLocale 的语言代码联合类型）
+  const setLanguage = (lang: typeof locale.value) => {
     setLocale(lang)
     settings.value.appearance.language = lang
   }

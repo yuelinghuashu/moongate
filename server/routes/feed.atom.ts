@@ -1,11 +1,12 @@
-import { minimarkToHtml } from '../../utils/minimarkToHtml'
+import { contentToHtml, safeParseDate } from '../../app/utils/docs'
+import { escapeXml } from '../../app/utils/xml'
+import { fetchDocs } from '../utils/docs'
 
 export default defineCachedEventHandler(async (event) => {
   const { siteUrl, apiUrl } = useRuntimeConfig().public
 
   try {
-    const response = await $fetch(`${apiUrl}/api/docs?content=false&limit=1000`)
-    const docs = response.data || []
+    const docs = await fetchDocs(apiUrl, { includeContent: true })
 
     // 获取最新更新时间
     const updated = docs[0]?.date
@@ -28,30 +29,10 @@ export default defineCachedEventHandler(async (event) => {
 
     for (const doc of docs) {
       // 转换全文
-      let content = ''
-      if (doc.content) {
-        try {
-          content = minimarkToHtml(doc.content)
-        } catch (e) {
-          console.error('转换失败:', e)
-          content = doc.description || ''
-        }
-      }
+      const content = contentToHtml(doc)
 
       // 安全处理日期
-      let published
-      try {
-        const dateObj = new Date(doc.date)
-        if (isNaN(dateObj.getTime())) {
-          console.warn('无效日期:', doc.date, '使用当前时间')
-          published = new Date().toISOString()
-        } else {
-          published = dateObj.toISOString()
-        }
-      } catch (e) {
-        console.warn('日期处理失败:', e, '使用当前时间')
-        published = new Date().toISOString()
-      }
+      const published = safeParseDate(doc.date).toISOString()
 
       const link = `${siteUrl}/docs/${doc.slug}`
       const id = doc.permalink || link
@@ -101,14 +82,3 @@ export default defineCachedEventHandler(async (event) => {
   name: 'atom-feed',
   getKey: () => 'static'
 })
-
-// 工具函数：转义 XML 特殊字符
-function escapeXml(text: string): string {
-  if (!text) return ''
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;')
-}

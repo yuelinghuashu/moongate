@@ -10,7 +10,7 @@
       @click="loginWithGitHub()"
     >
       <template #icon>
-        <Icon name="lucide-github" />
+        <Icon name="tabler:brand-github" />
       </template>
     </Button>
   </div>

@@ -1,32 +1,7 @@
 // composables/useDocs.ts
 import { createSharedComposable } from '@vueuse/core'
 import { useRouteQueryString, useRouteQueryNumber, useRouteQueryArray } from './useRouteQuery'
-
-/**
- * 文档项（对应 Go API 返回的 Doc 结构）
- */
-interface DocItem {
-  permalink: string
-  slug: string
-  title: string
-  description: string
-  level: string
-  series: string | null
-  tags: string[]
-  date: string
-  content: string
-}
-
-/**
- * 文档列表 API 响应格式
- */
-interface DocsResponse {
-  data: DocItem[]
-  total: number
-  page: number
-  limit: number
-  totalPages: number
-}
+import type { DocsResponse } from '~/utils/apiTypes'
 
 /**
  * 默认筛选条件

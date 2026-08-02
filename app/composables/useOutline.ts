@@ -24,19 +24,19 @@ export function useOutline(contentRef?: Ref<string | undefined>) {
 
   // ==================== 大纲提取 ====================
   const outline = computed<OutlineItem[]>(() => {
-    const content = contentRef?.value
-    if (!content) return []
+    const rawContent = contentRef?.value
+    if (typeof rawContent !== 'string' || !rawContent) return []
 
     try {
       const parser = new DOMParser()
-      const doc = parser.parseFromString(content, 'text/html')
+      const doc = parser.parseFromString(rawContent, 'text/html')
       // 支持 h2, h3, h4, h5, h6
       const headings = doc.querySelectorAll('h2, h3, h4, h5, h6')
 
       return Array.from(headings).map((heading, index) => ({
         id: heading.id || `heading-${index}`,
         text: heading.textContent?.trim() || '',
-        depth: parseInt(heading.tagName[1]), // 2,3,4,5,6
+        depth: parseInt(heading.tagName.charAt(1)), // 2,3,4,5,6
       }))
     } catch {
       return []
@@ -64,7 +64,7 @@ export function useOutline(contentRef?: Ref<string | undefined>) {
       // 找到最近的父级（深度小于当前）
       let parentFound = false
       while (stack.length > 0) {
-        const top = stack[stack.length - 1]
+        const top = stack[stack.length - 1]!
         if (top.depth < item.depth) {
           // 找到父级
           top.item.children = top.item.children || []

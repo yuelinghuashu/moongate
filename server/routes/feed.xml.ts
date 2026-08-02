@@ -1,13 +1,14 @@
 // server/routes/feed.xml.ts
-import { minimarkToHtml } from '../../utils/minimarkToHtml'
+import { contentToHtml, safeParseDate } from '../../app/utils/docs'
+import { cdataEscape } from '../../app/utils/xml'
+import { fetchDocs } from '../utils/docs'
 
 export default defineCachedEventHandler(async (event) => {
-  const { siteUrl,apiUrl } = useRuntimeConfig().public
+  const { siteUrl, apiUrl } = useRuntimeConfig().public
 
   try {
     console.log('开始获取文档...')
-    const response = await $fetch(`${apiUrl}/api/docs?content=false&limit=1000`)
-    const docs = response.data || []
+    const docs = await fetchDocs(apiUrl, { includeContent: true })
     console.log(`获取到 ${docs.length} 篇文章`)
 
     // 如果没有文章，返回最小版本
@@ -32,16 +33,7 @@ export default defineCachedEventHandler(async (event) => {
     for (const doc of docs) {
       try {
         // 转换全文
-        let fullContent = ''
-        if (doc.content) {
-          try {
-            const htmlContent = minimarkToHtml(doc.content)
-            fullContent = htmlContent ? htmlContent.replace(/]]>/g, ']]]]><![CDATA[>') : ''
-          } catch (e) {
-            console.error(`文章 "${doc.title}" 转换失败:`, e)
-            fullContent = doc.description || ''
-          }
-        }
+        const fullContent = cdataEscape(contentToHtml(doc))
 
         // 构建链接
         const slug = doc.slug || doc.permalink || ''
@@ -49,13 +41,7 @@ export default defineCachedEventHandler(async (event) => {
         const guid = doc.permalink || link
 
         // 安全处理日期
-        let pubDate
-        try {
-          const dateObj = new Date(doc.date)
-          pubDate = isNaN(dateObj.getTime()) ? new Date().toUTCString() : dateObj.toUTCString()
-        } catch (e) {
-          pubDate = new Date().toUTCString()
-        }
+        const pubDate = safeParseDate(doc.date).toUTCString()
 
         // 安全获取字段
         const title = doc.title || '无标题'

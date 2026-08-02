@@ -63,7 +63,7 @@
           <Icon
                   v-show="!isLoggedIn"
 
-            name="lucide:log-in"
+            name="tabler:login"
             class="cursor-pointer w-5"
             @click="
               settingStore.isLoginDialogVisible =

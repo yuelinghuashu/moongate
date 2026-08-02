@@ -53,7 +53,7 @@ const { isTagSelected, handleTagClick: originalHandleTagClick } =
 /**
  * 处理标签点击，支持桌面端 Ctrl/Cmd 多选、移动端多选模式开关
  */
-const handleTagClick = (tag, event) => {
+const handleTagClick = (tag: string, event: MouseEvent) => {
   let isMulti = false;
 
   if (isMobile.value) {
