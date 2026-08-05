@@ -1,7 +1,7 @@
 <template>
   <nav class="text-center">
     <ul :class="orientation === 'horizontal' ? 'flex justify-center' : ''">
-      <li v-for="item in tm('navigationBars')" :key="item.id">
+      <li v-for="item in tm('nav.items')" :key="item.id">
         <NuxtLink
           :to="localePath(item.link)"
           class="mx-2 min-w-20 nav-link"

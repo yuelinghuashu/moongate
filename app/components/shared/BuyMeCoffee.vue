@@ -1,7 +1,7 @@
 <template>
   <details ref="containerRef" @toggle="onDetailsToggle($event)">
     <summary class="text-center">
-      {{ t("coffeeTip") }}
+      {{ t("site.coffeeTip") }}
     </summary>
     <div class="flex justify-center gap-4">
       <NuxtImg
@@ -24,5 +24,4 @@
 const { containerRef, onDetailsToggle } = useDetailsScroll();
 const { t } = useI18n();
 
-const _ = containerRef;
 </script>

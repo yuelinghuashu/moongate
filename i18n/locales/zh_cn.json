@@ -1,15 +1,19 @@
 {
-  "title": "Where Moon Meets Code",
-  "description": "推开月之门，进入一个由代码构筑的探索空间。这里记录着关于全栈开发、系统思考以及如何优雅解决复杂问题的沉思与笔记。",
-  "coffeeTip": "如果这篇文档对你有帮助，可以请我喝杯咖啡 ☕️",
-  "navigationBar": "导航栏",
-  "navigationBars": [
-    { "id": 1, "name": "文档", "link": "/docs" },
-    { "id": 2, "name": "系列", "link": "/series" },
-    { "id": 3, "name": "作品", "link": "/projects" },
-    { "id": 4, "name": "关于", "link": "/about" },
-    { "id": 5, "name": "设置", "link": "/settings" }
-  ],
+  "site": {
+    "title": "Where Moon Meets Code",
+    "description": "推开月之门，进入一个由代码构筑的探索空间。这里记录着关于全栈开发、系统思考以及如何优雅解决复杂问题的沉思与笔记。",
+    "coffeeTip": "如果这篇文档对你有帮助，可以请我喝杯咖啡 ☕️"
+  },
+  "nav": {
+    "title": "导航栏",
+    "items": [
+      { "id": 1, "name": "文档", "link": "/docs" },
+      { "id": 2, "name": "系列", "link": "/series" },
+      { "id": 3, "name": "作品", "link": "/projects" },
+      { "id": 4, "name": "关于", "link": "/about" },
+      { "id": 5, "name": "设置", "link": "/settings" }
+    ]
+  },
   "user": {
     "login": "使用 Github 登录",
     "logout": "退出登录",
@@ -44,6 +48,12 @@
     "ctrlMultiSelect": "Ctrl+点击多选",
     "multiSelectMode": "多选模式",
     "exitMultiSelect": "退出多选",
+    "tagGroups": {
+      "language": "编程语言",
+      "framework": "框架与工具",
+      "concept": "技术概念",
+      "engineering": "设计与工程"
+    },
     "noDocuments": "暂无文档",
     "emptyMessage": "没有找到符合条件的文档，试试调整筛选条件吧",
     "clearAllFilters": "清除所有筛选",
@@ -55,6 +65,10 @@
       "next": "下一页",
       "first": "首页",
       "last": "尾页"
+    },
+    "detail": {
+      "title": "目录",
+      "description": "点击目录快速跳转"
     }
   },
   "series": {
@@ -78,7 +92,7 @@
     ],
     "data": [
       {
-        "name": "Moongate Theme",
+        "name": "moongate-theme",
         "description": "VS Code 主题",
         "link": "https://marketplace.visualstudio.com/items?itemName=yuelinghuashu.moongate-theme"
       },
@@ -98,9 +112,14 @@
         "link": "https://github.com/yuelinghuashu/dev-note-2026"
       },
       {
-        "name": "Mephisto",
-        "description": "长线叙事引擎 —— 用纯文本契约文件驱动规则与大模型",
+        "name": "mephisto-cli",
+        "description": "用纯文本契约文件驱动规则引擎与大模型，无图形界面。",
         "link": "https://github.com/yuelinghuashu/mephisto"
+      },
+      {
+        "name": "mephisto-gui",
+        "description": "用契约书写命运，在 AI 驱动下推进长线叙事,提供图形化界面。",
+        "link": "https://github.com/yuelinghuashu/mephisto-gui"
       },
       {
         "name": "vscode-mephisto",
@@ -134,41 +153,9 @@
       ]
     }
   },
-  "errorPage": {
+  "error": {
     "statusMessage": "未找到页面",
     "message": "您正在查找的页面不存在。",
     "backToHome": "返回首页"
-  },
-  "doc": {
-    "title": "目录",
-    "description": "点击目录快速跳转"
-  },
-  "comment": {
-    "label": "评论",
-    "section": "评论区",
-    "input": {
-      "placeholder": "支持 Markdown 格式",
-      "newLine": "换行",
-      "input": "输入",
-      "preview": "预览",
-      "write": "撰写"
-    },
-    "actions": {
-      "send": "发送评论",
-      "reply": "回复",
-      "edit": "编辑",
-      "delete": "删除"
-    },
-    "badge": {
-      "admin": "博主",
-      "commenter": "评论者",
-      "author": "作者"
-    },
-    "status": {
-      "noComments": "暂无评论",
-      "login_to_comment": "登录后参与评论",
-      "loading": "加载中...",
-      "sending": "发送中..."
-    }
   }
 }

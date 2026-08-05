@@ -44,19 +44,10 @@
 import { Card, Badge } from "moongate-vue";
 import { useDocs } from "~/composables/useDocs";
 import { useTagsFilter } from "~/composables/useTagsFilter";
+import type { DocItem } from "~/utils/apiTypes";
 import dayjs from "dayjs";
 
-// ---------- 定义 Props 和 Emits ----------
-interface DocItem {
-  permalink: string
-  slug: string
-  title: string
-  description: string
-  level: string
-  tags: string[]
-  date: string
-}
-
+// ---------- 定义 Props ----------
 defineProps<{
   docs: DocItem[]
   viewMode: number

@@ -35,7 +35,12 @@ li {
   background-color: var(--shiki-dark-bg) !important;
 }
 
-/* 3. 美化边框与阴影 */
+/* 3. 导航链接选中态（组件库 .nav-link 未内置 active 样式） */
+.nav-link.active {
+  background-color: var(--ui-primary);
+}
+
+/* 4. 美化边框与阴影 */
 .shiki-content pre.shiki {
   padding: 1.25rem;
   border-radius: 0.5rem;

@@ -1,5 +1,4 @@
 const useSettingStore = defineStore('setting', () => {
-
   const { setLocale, locales, locale } = useI18n()
   const colorMode = useColorMode()
 
@@ -12,7 +11,7 @@ const useSettingStore = defineStore('setting', () => {
   // 默认语言
   const defaultLocale = locales.value.findIndex(
     (item) => item.code === locale.value,
-  );
+  )
 
   // 用户设置
   const settings = ref({
@@ -39,11 +38,9 @@ const useSettingStore = defineStore('setting', () => {
     settings.value.appearance.language = lang
   }
 
-
   return {
     isLoginDialogVisible,
     isOutlineIconVisible,
-
     setLanguage,
     setTheme,
     settings

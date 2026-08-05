@@ -1,15 +1,19 @@
 {
-  "title": "Where Moon Meets Code",
-  "description": "Push open the Moon Gate, and step into an exploratory space built with code. Here lie contemplations and notes on full-stack development, systems thinking, and the art of elegantly untangling complexity.",
-  "coffeeTip": "If this article helped you, you can buy me a coffee ☕️",
-  "navigationBar": "Navigation Bar",
-  "navigationBars": [
-    { "id": 1, "name": "Docs", "link": "/docs" },
-    { "id": 2, "name": "Series", "link": "/series" },
-    { "id": 3, "name": "Projects", "link": "/projects" },
-    { "id": 4, "name": "About", "link": "/about" },
-    { "id": 5, "name": "Settings", "link": "/settings" }
-  ],
+  "site": {
+    "title": "Where Moon Meets Code",
+    "description": "Push open the Moon Gate, and step into an exploratory space built with code. Here lie contemplations and notes on full-stack development, systems thinking, and the art of elegantly untangling complexity.",
+    "coffeeTip": "If this article helped you, you can buy me a coffee ☕️"
+  },
+  "nav": {
+    "title": "Navigation Bar",
+    "items": [
+      { "id": 1, "name": "Docs", "link": "/docs" },
+      { "id": 2, "name": "Series", "link": "/series" },
+      { "id": 3, "name": "Projects", "link": "/projects" },
+      { "id": 4, "name": "About", "link": "/about" },
+      { "id": 5, "name": "Settings", "link": "/settings" }
+    ]
+  },
   "user": {
     "login": "Sign in with GitHub",
     "logout": "Logout",
@@ -44,6 +48,12 @@
     "ctrlMultiSelect": "Ctrl+Click to multi-select",
     "multiSelectMode": "Multi-select mode",
     "exitMultiSelect": "Exit multi-select",
+    "tagGroups": {
+      "language": "Languages",
+      "framework": "Frameworks & Tools",
+      "concept": "Concepts",
+      "engineering": "Design & Engineering"
+    },
     "noDocuments": "No documents",
     "emptyMessage": "No documents found. Try adjusting your filters.",
     "clearAllFilters": "Clear all filters",
@@ -55,6 +65,10 @@
       "next": "Next",
       "first": "First",
       "last": "Last"
+    },
+    "detail": {
+      "title": "Table of Contents",
+      "description": "Jump to section"
     }
   },
   "series": {
@@ -78,7 +92,7 @@
     ],
     "data": [
       {
-        "name": "Moongate Theme",
+        "name": "moongate-theme",
         "description": "VS Code Theme",
         "link": "https://marketplace.visualstudio.com/items?itemName=yuelinghuashu.moongate-theme"
       },
@@ -98,9 +112,14 @@
         "link": "https://github.com/yuelinghuashu/dev-note-2026"
       },
       {
-        "name": "Mephisto",
-        "description": "Long-form narrative engine — driving rules and LLMs with plain-text contract files",
+        "name": "mephisto-cli",
+        "description": "Drive rules engine and LLMs with plain-text contract files, no GUI.",
         "link": "https://github.com/yuelinghuashu/mephisto"
+      },
+      {
+        "name": "mephisto-gui",
+        "description": "Write fate with contracts. AI-driven long-form narrative with a graphical interface.",
+        "link": "https://github.com/yuelinghuashu/mephisto-gui"
       },
       {
         "name": "vscode-mephisto",
@@ -134,41 +153,9 @@
       ]
     }
   },
-  "errorPage": {
+  "error": {
     "statusMessage": "Page Not Found",
     "message": "The page you are looking for does not exist.",
     "backToHome": "Back to Home"
-  },
-  "doc": {
-    "title": "Table of Contents",
-    "description": "Jump to section"
-  },
-  "comment": {
-    "label": "Comment",
-    "section": "Comments",
-    "input": {
-      "placeholder": "Markdown supported",
-      "newLine": "new line",
-      "input": "input",
-      "preview": "preview",
-      "write": "write"
-    },
-    "actions": {
-      "send": "Send",
-      "reply": "Reply",
-      "edit": "Edit",
-      "delete": "Delete"
-    },
-    "badge": {
-      "admin": "Admin",
-      "commenter": "Commenter",
-      "author": "Author"
-    },
-    "status": {
-      "noComments": "No comments yet",
-      "login_to_comment": "Login to comment",
-      "loading": "Loading...",
-      "sending": "Sending..."
-    }
   }
 }

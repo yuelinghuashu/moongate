@@ -1,5 +1,5 @@
 <template>
-  <Hero :title="t('title')" :description="t('description')">
+  <Hero :title="t('site.title')" :description="t('site.description')">
     <template #actions>
       <NuxtLink
         :to="localePath('/docs')"
@@ -55,9 +55,9 @@ onMounted(() => {
   }
 });
 
-const title = "Where Moon Meets Code";
-const description =
-  "推开月之门，进入一个由代码构筑的探索空间。这里记录着关于全栈开发、系统思考以及如何优雅解决复杂问题的沉思与笔记。";
+// SEO 标题/描述直接复用站点 i18n 文案，避免双份维护
+const title = t("site.title");
+const description = t("site.description");
 
 useSeoMeta({
   title,

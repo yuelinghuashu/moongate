@@ -13,7 +13,7 @@
         v-model="isOutlineVisible"
         size="lg"
         :placement="isDesktop ? 'right' : 'bottom'"
-        :title="t('doc.title')"
+        :title="t('docs.detail.title')"
       >
         <DocsOutline :outline="nestedOutline" />
       </Drawer>
@@ -83,9 +83,9 @@ watchEffect(() => {
 });
 
 useSeoMeta({
-  title: page.value?.title || t("title"),
-  description: page.value?.description || t("description"),
-  ogTitle: page.value?.title || t("title"),
-  ogDescription: page.value?.description || t("description"),
+  title: page.value?.title || t("site.title"),
+  description: page.value?.description || t("site.description"),
+  ogTitle: page.value?.title || t("site.title"),
+  ogDescription: page.value?.description || t("site.description"),
 });
 </script>

@@ -3,11 +3,11 @@
     <Container class="text-center">
       <div class="text-9xl font-bold text-primary mb-4">404</div>
       <h1 class="text-3xl font-semibold mb-2">
-        {{ t("errorPage.statusMessage") }}
+        {{ t("error.statusMessage") }}
       </h1>
-      <p class="text-dim mb-8">{{ t("errorPage.message") }}</p>
+      <p class="text-dim mb-8">{{ t("error.message") }}</p>
       <Button variant="filled" color="primary" size="md" @click="goHome">
-        {{ t("errorPage.backToHome") }}
+        {{ t("error.backToHome") }}
       </Button>
     </Container>
   </div>

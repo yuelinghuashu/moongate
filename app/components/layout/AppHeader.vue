@@ -61,8 +61,7 @@
           <SharedUserMenu v-show="isLoggedIn" class="h-5" />
 
           <Icon
-                  v-show="!isLoggedIn"
-
+            v-show="!isLoggedIn"
             name="tabler:login"
             class="cursor-pointer w-5"
             @click="
@@ -77,7 +76,7 @@
       <ClientOnly>
         <Drawer
           v-model="isMenuVisible"
-          :title="t('navigationBar')"
+          :title="t('nav.title')"
           size="sm"
           placement="left"
         >
@@ -120,5 +119,3 @@ watch(
   },
 );
 </script>
-
-<script setup></script>
