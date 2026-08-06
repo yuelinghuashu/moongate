@@ -22,7 +22,9 @@
   </ul>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { RouteLocationRaw, LocationQueryRaw } from "vue-router";
+
 const route = useRoute();
 const { t } = useI18n();
 const { tm } = useI18nSafe();
@@ -32,9 +34,9 @@ const props = defineProps({
   level: { type: String, default: "" }, // 默认空字符串，表示无选中
 });
 
-// 生成链接：如果当前等级等于点击的等级，则移除 level 参数；否则添加
-const getLink = (item) => {
-  const query = { ...route.query };
+/** 生成链接：如果当前等级等于点击的等级，则移除 level 参数；否则添加 */
+const getLink = (item: string): RouteLocationRaw => {
+  const query: LocationQueryRaw = { ...route.query };
   if (props.level === item) {
     delete query.level; // 取消选中
   } else {

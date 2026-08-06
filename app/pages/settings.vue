@@ -10,7 +10,7 @@
             v-model="settings.appearance.theme"
             :label="item.name"
             :value="item.name"
-            @update:model-value="(theme: string | number) => setTheme(String(theme))"
+            @update:model-value="(theme: string | number | undefined) => theme && setTheme(String(theme))"
           />
         </div>
       </div>
@@ -26,7 +26,7 @@
             v-model="settings.appearance.language"
             :label="item.name"
             :value="item.code"
-            @update:model-value="(lang: string | number) => setLanguage(lang as 'zh_cn' | 'en' | 'ja')"
+            @update:model-value="(lang: string | number | undefined) => lang && setLanguage(lang as 'zh_cn' | 'en' | 'ja')"
           />
         </div>
       </div>
@@ -66,5 +66,3 @@ useSeoMeta({
   ogDescription: "个性化你的 Moongate 浏览方式。",
 });
 </script>
-
-<style scoped></style>

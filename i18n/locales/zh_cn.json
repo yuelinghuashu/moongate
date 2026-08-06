@@ -2,7 +2,7 @@
   "site": {
     "title": "Where Moon Meets Code",
     "description": "推开月之门，进入一个由代码构筑的探索空间。这里记录着关于全栈开发、系统思考以及如何优雅解决复杂问题的沉思与笔记。",
-    "coffeeTip": "如果这篇文档对你有帮助，可以请我喝杯咖啡 ☕️"
+    "coffeeTip": "如果这篇文章对你有帮助，可以请我喝杯咖啡 ☕️"
   },
   "nav": {
     "title": "导航栏",
@@ -56,6 +56,7 @@
     },
     "noDocuments": "暂无文档",
     "emptyMessage": "没有找到符合条件的文档，试试调整筛选条件吧",
+    "emptyState": "还没有文档，请稍后再来",
     "clearAllFilters": "清除所有筛选",
     "findCount": "已查询到 {count} 条文档",
     "perPage": "每页",

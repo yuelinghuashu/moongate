@@ -56,6 +56,7 @@
     },
     "noDocuments": "No documents",
     "emptyMessage": "No documents found. Try adjusting your filters.",
+    "emptyState": "No documents yet. Please check back later.",
     "clearAllFilters": "Clear all filters",
     "findCount": "Found {count} documents",
     "perPage": "Per page",

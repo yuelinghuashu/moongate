@@ -23,7 +23,6 @@
 
 <script lang="ts" setup>
 import { Drawer, Skeleton } from "moongate-vue";
-import { highlightHtmlContent } from "~/utils/shikiProcessor"; // 引入纯服务端高亮转换工具
 
 const route = useRoute();
 const { t } = useI18n();
@@ -38,37 +37,16 @@ interface AboutDetailResponse {
   description: string
   date: string
   content: string             // 原始未高亮的 HTML 内容
-  highlightedContent?: string // 新增：用于在服务端存放高亮转换后的完全体 HTML
+  highlightedContent?: string // 用于在服务端存放高亮转换后的完全体 HTML
 }
 
-// 获取关于页面详情
-const config = useRuntimeConfig()
-
-const { data: page } = useAsyncData<AboutDetailResponse>(
-  `about-${slug.value}`,
-  async () => {
-    return await $fetch<AboutDetailResponse>(`/api/about/${slug.value}`, {
-      baseURL: config.public.apiUrl
-    })
-  },
-  { 
-    watch: [slug],
-    transform: async (data) => {
-      if (data && data.content) {
-        data.highlightedContent = await highlightHtmlContent(data.content)
-      }
-      return data
-    }
-  }
-)
-
-// 此时 contentRef 优先读取服务端已经注入并高亮好的完全体 HTML 字符串
-const contentRef = computed(() => page.value?.highlightedContent || page.value?.content || '')
-const { nestedOutline, isOutlineVisible, isOutlineIconVisible } = useOutline(contentRef)
-
-watchEffect(() => {
-  isOutlineIconVisible.value = !!page.value?.content;
-});
+// 复用公共 useDocDetail：数据获取 + Shiki 高亮 + 大纲提取
+const { page, contentRef, nestedOutline, isOutlineVisible } =
+  useDocDetail<AboutDetailResponse>(
+    `about-${slug.value}`,
+    slug,
+    `/api/about/${slug.value}`,
+  );
 
 useSeoMeta({
   title: page.value?.title || t("site.title"),

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="isLoggedIn">Welcome, {{ user?.username }}</div>
+    <div v-if="isLoggedIn">Welcome, {{ user?.login || user?.username }}</div>
     <Button
       v-else
       :label="t('user.login')"
@@ -25,6 +25,11 @@ const isLoading = ref(false);
 
 const loginWithGitHub = async () => {
   isLoading.value = true;
-  navigateTo('/auth/github', { external: true });
+  try {
+    await navigateTo('/auth/github', { external: true });
+  } catch (error) {
+    console.error("GitHub 登录跳转失败:", error);
+    isLoading.value = false; // 导航失败时恢复 loading 状态
+  }
 };
 </script>

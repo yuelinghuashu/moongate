@@ -33,11 +33,11 @@
       </ul>
     </section>
 
-    <router-link to="/series" class="back-link">← 返回系列索引</router-link>
+    <NuxtLink to="/series" class="back-link">← 返回系列索引</NuxtLink>
   </Container>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { Container, Table } from "moongate-vue";
 
 const columns = [

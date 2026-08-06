@@ -106,7 +106,7 @@ const emptyStateMessage = computed(() => {
   if (hasSearch || hasLevel || hasTags) {
     return t("docs.emptyMessage");
   }
-  return "还没有文档，请稍后再来";
+  return t("docs.emptyState");
 });
 
 // 判断当前是否聚焦在输入框

@@ -5,7 +5,7 @@
         :to="localePath('/docs')"
         class="mg-button mg-button-filled-primary mg-button-md"
       >
-        // Access the Gate
+        Access the Gate
         <Icon name="tabler:arrow-right" class="h-4" />
       </NuxtLink>
     </template>

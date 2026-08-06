@@ -22,17 +22,21 @@ const {user, logout} = useAuth()
 const { t } = useI18n();
 const route = useRoute();
 
-// 用户下拉菜单列表
-const items = [
+// 用户下拉菜单列表（computed 确保登录状态变化时响应式更新）
+// 用户标识：优先 login（GitHub 用户名），回退到 username
+const userSlug = computed(() => user.value?.login || user.value?.username || "");
+
+const items = computed(() => [
   {
     label: t("user.profile"),
     icon: "tabler:user",
-    active:
-      user && user.value?.login
-        ? route.path === localePath(`/${user.value.login}/profile`)
-        : false,
+    active: userSlug.value
+      ? route.path === localePath(`/${userSlug.value}/profile`)
+      : false,
     onClick() {
-      navigateTo(localePath(`/${user.value?.login}/profile`));
+      if (userSlug.value) {
+        navigateTo(localePath(`/${userSlug.value}/profile`));
+      }
     },
   },
   {
@@ -42,5 +46,5 @@ const items = [
       logout();
     },
   },
-];
+]);
 </script>
