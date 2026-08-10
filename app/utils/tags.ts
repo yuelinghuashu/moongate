@@ -17,13 +17,14 @@ export const TAG_GROUPS: TagGroup[] = [
       'TypeScript',
       'Vue',
       'Go',
+      'Dart',
       'Compiler',
       'JSON',
     ],
   },
   {
     key: 'framework',
-    tags: ['Caddy', 'Docker', 'Nuxt', 'PostgreSQL', 'VSCode'],
+    tags: ['Caddy', 'Docker', 'Flutter', 'Nuxt', 'PostgreSQL', 'VSCode'],
   },
   {
     key: 'concept',
