@@ -1,4 +1,5 @@
 // composables/useDetailsScroll.ts
+import { ref, nextTick } from 'vue'
 
 /**
  * details 元素自动滚动功能

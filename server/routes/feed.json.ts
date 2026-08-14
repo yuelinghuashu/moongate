@@ -1,33 +1,42 @@
-import { contentToHtml, safeParseDate } from '../../app/utils/docs'
-import { fetchDocs } from '../utils/docs'
+import {
+  FEED_CONSTANTS,
+  buildDocLink,
+  buildDocId,
+  docContentToCdata,
+  formatDateIso,
+  getFeedDocs,
+} from '../utils/feed'
 
 export default defineCachedEventHandler(async (event) => {
   const { siteUrl, apiUrl } = useRuntimeConfig().public
 
   try {
-    const docs = await fetchDocs(apiUrl, { includeContent: true })
+    const docs = await getFeedDocs(apiUrl)
 
     // 构建 JSON Feed
     const feed = {
       version: 'https://jsonfeed.org/version/1.1',
-      title: 'MoonGate',
+      title: FEED_CONSTANTS.title,
       home_page_url: siteUrl,
       feed_url: `${siteUrl}/feed.json`,
-      description: 'Where Moon Meets Code',
-      language: 'zh-CN',
+      description: FEED_CONSTANTS.description,
+      language: FEED_CONSTANTS.language,
       authors: [{
-        name: 'MoonGate',
+        name: FEED_CONSTANTS.title,
         url: siteUrl
       }],
       items: docs.map((doc) => {
+        const link = buildDocLink(siteUrl, doc)
+        const id = buildDocId(doc, link)
+
         return {
-          id: doc.permalink || `${siteUrl}/docs/${doc.slug}`,
-          url: `${siteUrl}/docs/${doc.slug}`,
+          id,
+          url: link,
           title: doc.title || '无标题',
-          content_html: contentToHtml(doc),
+          content_html: docContentToCdata(doc),
           summary: doc.description || '',
-          date_published: safeParseDate(doc.date).toISOString(),
-          language: 'zh-CN',
+          date_published: formatDateIso(doc.date),
+          language: FEED_CONSTANTS.language,
           tags: doc.tags || [],
           // 额外字段
           _slug: doc.slug,
@@ -45,12 +54,12 @@ export default defineCachedEventHandler(async (event) => {
     // 返回最小化的 JSON Feed
     const minimalFeed = {
       version: 'https://jsonfeed.org/version/1.1',
-      title: 'MoonGate',
+      title: FEED_CONSTANTS.title,
       home_page_url: siteUrl,
       feed_url: `${siteUrl}/feed.json`,
-      description: 'Where Moon Meets Code',
-      language: 'zh-CN',
-      authors: [{ name: 'MoonGate', url: siteUrl }],
+      description: FEED_CONSTANTS.description,
+      language: FEED_CONSTANTS.language,
+      authors: [{ name: FEED_CONSTANTS.title, url: siteUrl }],
       items: []
     }
 

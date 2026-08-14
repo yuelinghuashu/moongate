@@ -8,7 +8,9 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
-    "typecheck": "nuxt typecheck"
+    "typecheck": "nuxt typecheck",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@nuxt/eslint": "^1.15.2",
@@ -20,6 +22,7 @@
     "@vueuse/core": "^14.3.0",
     "@vueuse/router": "^14.3.0",
     "dayjs": "^1.11.20",
+    "dompurify": "^3.4.13",
     "moongate-vue": "^1.5.0",
     "pinia": "^3.0.4",
     "pinia-plugin-persistedstate": "^4.7.1",
@@ -28,12 +31,15 @@
   "devDependencies": {
     "@iconify-json/tabler": "^1.2.35",
     "@unocss/nuxt": "^66.6.8",
+    "@vue/test-utils": "^2.4.11",
     "eslint": "^10.5.0",
+    "happy-dom": "^20.11.2",
     "nuxt": "^4.4.5",
     "shiki": "^4.3.1",
     "typescript": "^6.0.3",
     "unocss": "^66.6.8",
     "vite-plugin-remove-console": "^2.2.0",
+    "vitest": "^4.1.10",
     "vue-tsc": "^3.2.8"
   },
   "packageManager": "pnpm@10.26.1"

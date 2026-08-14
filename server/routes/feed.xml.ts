@@ -1,15 +1,21 @@
 // server/routes/feed.xml.ts
-import { contentToHtml, safeParseDate } from '../../app/utils/docs'
-import { cdataEscape } from '../../app/utils/xml'
-import { fetchDocs } from '../utils/docs'
+import { useRuntimeConfig } from '#imports'
+import {
+  FEED_CONSTANTS,
+  buildDocLink,
+  buildDocId,
+  docContentToCdata,
+  formatDateUtc,
+  getFeedDocs,
+  xmlCdata,
+  xmlEscape,
+} from '../utils/feed'
 
 export default defineCachedEventHandler(async (event) => {
   const { siteUrl, apiUrl } = useRuntimeConfig().public
 
   try {
-    console.log('开始获取文档...')
-    const docs = await fetchDocs(apiUrl, { includeContent: true })
-    console.log(`获取到 ${docs.length} 篇文章`)
+    const docs = await getFeedDocs(apiUrl)
 
     // 如果没有文章，返回最小版本
     if (docs.length === 0) {
@@ -23,47 +29,46 @@ export default defineCachedEventHandler(async (event) => {
   xmlns:content="http://purl.org/rss/1.0/modules/content/" 
   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
-    <title>MoonGate</title>
-    <link>${siteUrl}</link>
-    <description>Where Moon Meets Code</description>
-    <language>zh-CN</language>
+    <title>${FEED_CONSTANTS.title}</title>
+    <link>${xmlEscape(siteUrl)}</link>
+    <description>${FEED_CONSTANTS.description}</description>
+    <language>${FEED_CONSTANTS.language}</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
 `
 
     for (const doc of docs) {
       try {
         // 转换全文
-        const fullContent = cdataEscape(contentToHtml(doc))
+        const fullContent = docContentToCdata(doc)
 
-        // 构建链接
-        const slug = doc.slug || doc.permalink || ''
-        const link = slug ? `${siteUrl}/docs/${slug}` : siteUrl
-        const guid = doc.permalink || link
+        // 构建链接和标识
+        const link = buildDocLink(siteUrl, doc)
+        const guid = buildDocId(doc, link)
 
         // 安全处理日期
-        const pubDate = safeParseDate(doc.date).toUTCString()
+        const pubDate = formatDateUtc(doc.date)
 
-        // 安全获取字段
-        const title = doc.title || '无标题'
-        const description = doc.description || ''
+        // 安全获取字段（CDATA 内容需用 cdataEscape 处理，避免 ]]> 破坏 XML）
+        const title = xmlCdata(doc.title || '无标题')
+        const description = xmlCdata(doc.description || '')
 
-        // 安全处理 tags
+        // 安全处理 tags（同样需要 cdataEscape）
         const tags = doc.tags || []
         const tagsXml = tags.length > 0
-          ? tags.map(tag => `<category><![CDATA[${tag}]]></category>`).join('\n      ')
+          ? tags.map(tag => `<category><![CDATA[${xmlCdata(tag)}]]></category>`).join('\n      ')
           : ''
 
         rss += `
     <item>
       <title><![CDATA[${title}]]></title>
-      <link>${link}</link>
-      <guid isPermaLink="true">${guid}</guid>
+      <link>${xmlEscape(link)}</link>
+      <guid isPermaLink="true">${xmlEscape(guid)}</guid>
       <pubDate>${pubDate}</pubDate>
       <content:encoded><![CDATA[${fullContent}]]></content:encoded>
       <description><![CDATA[${description}]]></description>
       ${tagsXml}
-      ${doc.level ? `<dc:subject>${doc.level}</dc:subject>` : ''}
-      ${doc.series ? `<dc:relation><![CDATA[series:${doc.series}]]></dc:relation>` : ''}
+      ${doc.level ? `<dc:subject>${xmlEscape(doc.level)}</dc:subject>` : ''}
+      ${doc.series ? `<dc:relation><![CDATA[series:${xmlCdata(doc.series)}]]></dc:relation>` : ''}
     </item>
 `
       } catch (docError) {
@@ -95,10 +100,10 @@ function getMinimalRss(siteUrl: string): string {
   xmlns:content="http://purl.org/rss/1.0/modules/content/" 
   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
-    <title>MoonGate</title>
-    <link>${siteUrl}</link>
-    <description>Where Moon Meets Code</description>
-    <language>zh-CN</language>
+    <title>${FEED_CONSTANTS.title}</title>
+    <link>${xmlEscape(siteUrl)}</link>
+    <description>${FEED_CONSTANTS.description}</description>
+    <language>${FEED_CONSTANTS.language}</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
   </channel>
 </rss>`

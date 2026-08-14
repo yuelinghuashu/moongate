@@ -1,5 +1,6 @@
 // composables/useOutline.ts
 import { useLocalStorage } from "@vueuse/core";
+import { computed } from "vue";
 import type { Ref } from "vue";
 
 export interface OutlineItem {

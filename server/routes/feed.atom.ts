@@ -1,51 +1,58 @@
-import { contentToHtml, safeParseDate } from '../../app/utils/docs'
-import { escapeXml } from '../../app/utils/xml'
-import { fetchDocs } from '../utils/docs'
+import {
+  FEED_CONSTANTS,
+  buildDocLink,
+  buildDocId,
+  docContentToCdata,
+  formatDateIso,
+  getFeedDocs,
+  xmlCdata,
+  xmlEscape,
+} from '../utils/feed'
 
 export default defineCachedEventHandler(async (event) => {
   const { siteUrl, apiUrl } = useRuntimeConfig().public
 
   try {
-    const docs = await fetchDocs(apiUrl, { includeContent: true })
+    const docs = await getFeedDocs(apiUrl)
 
     // 获取最新更新时间
     const updated = docs[0]?.date
-      ? new Date(docs[0].date).toISOString()
+      ? formatDateIso(docs[0].date)
       : new Date().toISOString()
 
     // 构建 Atom XML
     let atom = `<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>MoonGate</title>
-  <subtitle>Where Moon Meets Code</subtitle>
-  <link href="${siteUrl}/feed.atom" rel="self"/>
-  <link href="${siteUrl}" rel="alternate"/>
-  <id>${siteUrl}</id>
+  <title>${FEED_CONSTANTS.title}</title>
+  <subtitle>${FEED_CONSTANTS.subtitle}</subtitle>
+  <link href="${xmlEscape(siteUrl)}/feed.atom" rel="self"/>
+  <link href="${xmlEscape(siteUrl)}" rel="alternate"/>
+  <id>${xmlEscape(siteUrl)}</id>
   <updated>${updated}</updated>
   <author>
-    <name>MoonGate</name>
+    <name>${FEED_CONSTANTS.title}</name>
   </author>
 `
 
     for (const doc of docs) {
       // 转换全文
-      const content = contentToHtml(doc)
+      const content = docContentToCdata(doc)
 
       // 安全处理日期
-      const published = safeParseDate(doc.date).toISOString()
+      const published = formatDateIso(doc.date)
 
-      const link = `${siteUrl}/docs/${doc.slug}`
-      const id = doc.permalink || link
+      const link = buildDocLink(siteUrl, doc)
+      const id = buildDocId(doc, link)
 
       // 转义特殊字符
-      const title = escapeXml(doc.title || '无标题')
-      const description = escapeXml(doc.description || '')
+      const title = xmlCdata(doc.title || '无标题')
+      const description = xmlCdata(doc.description || '')
 
       atom += `
   <entry>
     <title>${title}</title>
-    <link href="${link}"/>
-    <id>${id}</id>
+    <link href="${xmlEscape(link)}"/>
+    <id>${xmlEscape(id)}</id>
     <published>${published}</published>
     <updated>${published}</updated>
     <summary>${description}</summary>
@@ -63,14 +70,14 @@ export default defineCachedEventHandler(async (event) => {
     // 返回最小化的 feed
     const minimalFeed = `<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>MoonGate</title>
-  <subtitle>Where Moon Meets Code</subtitle>
-  <link href="${siteUrl}/feed.atom" rel="self"/>
-  <link href="${siteUrl}" rel="alternate"/>
-  <id>${siteUrl}</id>
+  <title>${FEED_CONSTANTS.title}</title>
+  <subtitle>${FEED_CONSTANTS.subtitle}</subtitle>
+  <link href="${xmlEscape(siteUrl)}/feed.atom" rel="self"/>
+  <link href="${xmlEscape(siteUrl)}" rel="alternate"/>
+  <id>${xmlEscape(siteUrl)}</id>
   <updated>${new Date().toISOString()}</updated>
   <author>
-    <name>MoonGate</name>
+    <name>${FEED_CONSTANTS.title}</name>
   </author>
 </feed>`
 

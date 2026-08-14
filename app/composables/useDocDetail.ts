@@ -1,8 +1,9 @@
 // composables/useDocDetail.ts
 // 文档/关于页详情公共逻辑：数据获取 + Shiki 高亮 + 大纲提取
-import { useLocalStorage } from "@vueuse/core";
+import { computed } from "vue";
 import type { Ref } from "vue";
 import { highlightHtmlContent } from "~/utils/shikiProcessor";
+import { sanitizeHtml } from "~/utils/sanitize";
 import { useOutline } from "./useOutline";
 
 /** 详情页数据基础结构（满足 content + highlightedContent 两个关键字段） */
@@ -52,17 +53,22 @@ export function useDocDetail<T extends DocDetailBase = DocDetailBase>(
   );
 
   // 优先读取服务端已高亮的完全体 HTML 字符串
-  const contentRef = computed(() => page.value?.highlightedContent || page.value?.content || "");
+  // DOMPurify 仅在客户端执行，SSR 直接透传（保证首屏速度）
+  const contentRef = computed(() => {
+    const raw = page.value?.highlightedContent || page.value?.content || "";
+    if (import.meta.client) {
+      try {
+        return sanitizeHtml(raw);
+      } catch {
+        return raw; // sanitize 失败时退回原始内容
+      }
+    }
+    return raw;
+  });
 
   // 从正文构建嵌套大纲
+  // isOutlineIconVisible 由 AppHeader.vue 通过路由判断统一管理
   const { nestedOutline, isOutlineVisible } = useOutline(contentRef);
-
-  // 有内容时显示目录图标
-  const isOutlineIconVisible = useLocalStorage("isOutlineIconVisible", false);
-
-  watchEffect(() => {
-    isOutlineIconVisible.value = !!page.value?.content;
-  });
 
   return {
     page: page as unknown as Ref<T | null>,

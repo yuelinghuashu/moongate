@@ -14,7 +14,8 @@ export default defineNuxtConfig({
   ],
   ssr: true,
   devtools: {
-    enabled: true
+    // 生产环境禁用 devtools，减少 bundle 体积
+    enabled: process.env.NODE_ENV !== 'production',
   },
   runtimeConfig: {
     public: {
