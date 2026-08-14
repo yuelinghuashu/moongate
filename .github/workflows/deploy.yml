@@ -20,7 +20,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '24'
           cache: 'pnpm'
 
       - name: Install dependencies
@@ -52,6 +52,11 @@ jobs:
         with:
           context: .
           push: true
+          # 显式禁用 provenance 和 SBOM attestations，
+          # 解决阿里云 ACR 不支持 OCI attestation manifest 导致的推送失败：
+          # denied: unknown manifest class for application/vnd.oci.empty.v1+json
+          provenance: false
+          sbom: false
           build-args: |
             NUXT_PUBLIC_SITE_URL=${{ secrets.NUXT_PUBLIC_SITE_URL }}
             NUXT_PUBLIC_API_URL=https://moongate.top
