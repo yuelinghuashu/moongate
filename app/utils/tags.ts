@@ -31,6 +31,7 @@ export const TAG_GROUPS: TagGroup[] = [
     tags: [
       'CI/CD',
       'DSL',
+      'Encoding',
       'Hydration',
       'i18n',
       'LLM',
