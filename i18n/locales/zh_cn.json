@@ -108,11 +108,6 @@
         "link": "https://github.com/yuelinghuashu/my-stories"
       },
       {
-        "name": "dev-note-2026",
-        "description": "2026 个人技术笔记",
-        "link": "https://github.com/yuelinghuashu/dev-note-2026"
-      },
-      {
         "name": "mephisto-cli",
         "description": "用纯文本契约文件驱动规则引擎与大模型，无图形界面。",
         "link": "https://github.com/yuelinghuashu/mephisto"
@@ -126,6 +121,11 @@
         "name": "vscode-mephisto",
         "description": "Mephisto 契约文件的 VS Code 扩展，提供语法高亮、实时诊断与代码补全",
         "link": "https://marketplace.visualstudio.com/items?itemName=yuelinghuashu.vscode-mephisto"
+      },
+      {
+        "name": "story-cli",
+        "description": "零部署、Git 原生的 Markdown 故事内容管理 CLI。",
+        "link": "https://github.com/yuelinghuashu/story-cli"
       }
     ]
   },

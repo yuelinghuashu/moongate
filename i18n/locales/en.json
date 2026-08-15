@@ -108,11 +108,6 @@
         "link": "https://github.com/yuelinghuashu/my-stories"
       },
       {
-        "name": "dev-note-2026",
-        "description": "2026 Personal Tech Notes",
-        "link": "https://github.com/yuelinghuashu/dev-note-2026"
-      },
-      {
         "name": "mephisto-cli",
         "description": "Drive rules engine and LLMs with plain-text contract files, no GUI.",
         "link": "https://github.com/yuelinghuashu/mephisto"
@@ -126,6 +121,11 @@
         "name": "vscode-mephisto",
         "description": "VS Code extension for Mephisto contract files, providing syntax highlighting, real-time diagnostics, and code completion",
         "link": "https://marketplace.visualstudio.com/items?itemName=yuelinghuashu.vscode-mephisto"
+      },
+      {
+        "name": "story-cli",
+        "description": "Zero-deploy, Git-native CLI for Markdown story content management.",
+        "link": "https://github.com/yuelinghuashu/story-cli"
       }
     ]
   },

@@ -108,11 +108,6 @@
         "link": "https://github.com/yuelinghuashu/my-stories"
       },
       {
-        "name": "dev-note-2026",
-        "description": "2026 個人技術ノート",
-        "link": "https://github.com/yuelinghuashu/dev-note-2026"
-      },
-      {
         "name": "mephisto-cli",
         "description": "プレーンテキストの契約ファイルでルールエンジンとLLMを駆動。GUIなし。",
         "link": "https://github.com/yuelinghuashu/mephisto"
@@ -126,6 +121,11 @@
         "name": "vscode-mephisto",
         "description": "Mephisto 契約ファイルの VS Code 拡張機能。構文ハイライト、リアルタイム診断、コード補完を提供します。",
         "link": "https://marketplace.visualstudio.com/items?itemName=yuelinghuashu.vscode-mephisto"
+      },
+      {
+        "name": "story-cli",
+        "description": "デプロイ不要、GitネイティブなMarkdownストーリー管理CLI。",
+        "link": "https://github.com/yuelinghuashu/story-cli"
       }
     ]
   },
