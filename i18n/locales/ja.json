@@ -75,6 +75,7 @@
   "series": {
     "url-state": "URL状態同期",
     "design-system": "デザインシステム",
+    "flutter-practice": "Flutter 実践",
     "comment": "コメント",
     "deployment": "デプロイ自動化",
     "i18n": "国際化",

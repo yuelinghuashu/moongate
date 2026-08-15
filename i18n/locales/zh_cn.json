@@ -75,6 +75,7 @@
   "series": {
     "url-state": "URL状态同步",
     "design-system": "设计系统",
+    "flutter-practice": "Flutter 实战",
     "comment": "评论区",
     "deployment": "部署自动化",
     "i18n": "国际化",

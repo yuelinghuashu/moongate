@@ -75,6 +75,7 @@
   "series": {
     "url-state": "URL State Sync",
     "design-system": "Design System",
+    "flutter-practice": "Flutter Practice",
     "comment": "Comments",
     "deployment": "Deployment Automation",
     "i18n": "Internationalization",
