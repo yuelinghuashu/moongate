@@ -54,10 +54,10 @@ pnpm dev
 
 ### 环境变量
 
-| 变量 | 说明 | 示例 |
-|------|------|------|
-| `NUXT_PUBLIC_SITE_URL` | 站点公开 URL | `http://localhost:3000` |
-| `NUXT_PUBLIC_API_URL` | 后端 API 地址 | `http://localhost:8080` |
+| 变量                   | 说明          | 示例                    |
+| ---------------------- | ------------- | ----------------------- |
+| `NUXT_PUBLIC_SITE_URL` | 站点公开 URL  | `http://localhost:3000` |
+| `NUXT_PUBLIC_API_URL`  | 后端 API 地址 | `http://localhost:8080` |
 
 ## 🧪 测试
 

@@ -14,16 +14,6 @@
       { "id": 5, "name": "设置", "link": "/settings" }
     ]
   },
-  "user": {
-    "login": "使用 Github 登录",
-    "logout": "退出登录",
-    "loggingIn": "正在登录...",
-    "username": "用户名",
-    "profile": "个人资料",
-    "myComments": "我的评论",
-    "title": "接入终端",
-    "description": "使用 GitHub 账号一键登录，解锁评论与互动权限"
-  },
   "docs": {
     "inputPlaceholder": "搜索文档",
     "searchModePlaceholder": "搜索选项",

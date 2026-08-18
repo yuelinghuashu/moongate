@@ -14,16 +14,6 @@
       { "id": 5, "name": "Settings", "link": "/settings" }
     ]
   },
-  "user": {
-    "login": "Sign in with GitHub",
-    "logout": "Logout",
-    "loggingIn": "Loading...",
-    "username": "Username",
-    "profile": "Profile",
-    "myComments": "My Comments",
-    "title": "Access Terminal",
-    "description": "One-click login with GitHub account to unlock comments and interactions"
-  },
   "docs": {
     "inputPlaceholder": "Search Docs",
     "searchModePlaceholder": "Search options",

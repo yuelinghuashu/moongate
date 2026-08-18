@@ -14,16 +14,6 @@
       { "id": 5, "name": "設定", "link": "/settings" }
     ]
   },
-  "user": {
-    "login": "GitHubでログイン",
-    "logout": "ログアウト",
-    "loggingIn": "ログイン中...",
-    "username": "ユーザー名",
-    "title": "端末に接続",
-    "profile": "プロフィール",
-    "myComments": "自分のコメント",
-    "description": "GitHubアカウントでワンクリックログインし、コメントやインタラクションを利用可能"
-  },
   "docs": {
     "inputPlaceholder": "ドキュメントを検索",
     "searchModePlaceholder": "検索オプション",

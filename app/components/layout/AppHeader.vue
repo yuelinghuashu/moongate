@@ -56,19 +56,6 @@
 
           <SharedLanguagePopover class="h-5" />
 
-          <Divider vertical />
-
-          <SharedUserMenu v-show="isLoggedIn" class="h-5" />
-
-          <Icon
-            v-show="!isLoggedIn"
-            name="tabler:login"
-            class="cursor-pointer w-5"
-            @click="
-              settingStore.isLoginDialogVisible =
-                !settingStore.isLoginDialogVisible
-            "
-          />
         </div>
       </div>
 
@@ -98,8 +85,6 @@ const localePath = useLocalePath();
 const { isDesktop } = useResponsive();
 const route = useRoute();
 const { isOutlineIconVisible, toggleOutline } = useOutline();
-const {isLoggedIn} = useAuth()
-
 watchEffect(() => {
   if (route.path.match(/^\/(?:[a-z_-]+\/)?(docs|about)\/.+/)) {
     isOutlineIconVisible.value = true;

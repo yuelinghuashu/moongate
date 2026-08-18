@@ -9,24 +9,11 @@
     </Main>
 
     <LayoutAppFooter />
-
-    <Modal v-model="settingStore.isLoginDialogVisible" :title="t('user.title')">
-      <template #default
-        ><div class="text-center">
-          <div>{{ t("user.description") }}</div>
-          <SharedLogin />
-        </div>
-      </template>
-    </Modal>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { Main, Container, Modal } from "moongate-vue";
-import useSettingStore from "~/stores/setting";
-
-const settingStore = useSettingStore();
-const { t } = useI18n();
+import { Main, Container } from "moongate-vue";
 </script>
 
 <style scoped></style>

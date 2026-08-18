@@ -2,9 +2,6 @@ const useSettingStore = defineStore('setting', () => {
   const { setLocale, locales, locale } = useI18n()
   const colorMode = useColorMode()
 
-  // 是否显示登录对话框
-  const isLoginDialogVisible = ref(false)
-
   // 是否显示目录图标
   const isOutlineIconVisible = ref(false)
 
@@ -39,7 +36,6 @@ const useSettingStore = defineStore('setting', () => {
   }
 
   return {
-    isLoginDialogVisible,
     isOutlineIconVisible,
     setLanguage,
     setTheme,
