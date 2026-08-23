@@ -10,11 +10,11 @@ ENV NUXT_PUBLIC_API_URL=$NUXT_PUBLIC_API_URL
 
 WORKDIR /app
 
-# 安装 pnpm
-RUN corepack enable && corepack prepare pnpm@latest --activate
+# 安装 pnpm（固定版本，与本地开发环境一致，避免 corepack "latest" 漂移）
+RUN corepack enable && corepack prepare pnpm@11.22.0 --activate
 
-# 复制依赖文件并安装
-COPY package.json pnpm-lock.yaml ./
+# 复制依赖文件并安装（含 pnpm-workspace.yaml，pnpm 11 的 allowBuilds 配置在此）
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 
 # 复制源代码并构建
