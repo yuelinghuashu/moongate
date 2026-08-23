@@ -73,13 +73,6 @@ jobs:
           ACR_NAMESPACE: ${{ secrets.ACR_NAMESPACE }}
           ACR_USERNAME: ${{ secrets.ACR_USERNAME }}
           ACR_PASSWORD: ${{ secrets.ACR_PASSWORD }}
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
-          OAUTH_GITHUB_KEY: ${{ secrets.OAUTH_GITHUB_KEY }}
-          OAUTH_GITHUB_SECRET: ${{ secrets.OAUTH_GITHUB_SECRET }}
           NUXT_PUBLIC_SITE_URL: ${{ secrets.NUXT_PUBLIC_SITE_URL }}
           NUXT_PUBLIC_API_URL: https://moongate.top
         with:
@@ -91,28 +84,19 @@ jobs:
             ACR_NAMESPACE,
             ACR_USERNAME,
             ACR_PASSWORD,
-            POSTGRES_DB,
-            POSTGRES_USER,
-            POSTGRES_PASSWORD,
-            JWT_SECRET,
-            SESSION_SECRET,
-            OAUTH_GITHUB_KEY,
-            OAUTH_GITHUB_SECRET,
             NUXT_PUBLIC_SITE_URL,
             NUXT_PUBLIC_API_URL
           script: |
             set -e
             cd /var/www/my-site
 
-            # 仅追加前端自己的变量，不覆盖后端变量
+            # 更新前端变量
             sed -i '/^NUXT_PUBLIC_SITE_URL=/d' .env 2>/dev/null || true
             sed -i '/^NUXT_PUBLIC_API_URL=/d' .env 2>/dev/null || true
-            sed -i '/^GITHUB_CALLBACK_URL=/d' .env 2>/dev/null || true
             sed -i '/^ACR_REGISTRY=/d' .env 2>/dev/null || true
             cat >> .env << EOF
             NUXT_PUBLIC_SITE_URL=$NUXT_PUBLIC_SITE_URL
             NUXT_PUBLIC_API_URL=$NUXT_PUBLIC_API_URL
-            GITHUB_CALLBACK_URL=https://moongate.top/auth/github/callback
             ACR_REGISTRY=$ACR_DOMAIN/$ACR_NAMESPACE
             EOF
 
