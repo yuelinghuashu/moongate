@@ -49,6 +49,8 @@
     "emptyState": "No documents yet. Please check back later.",
     "clearAllFilters": "Clear all filters",
     "findCount": "Found {count} documents",
+    "chineseBadge": "Chinese",
+    "enBadge": "EN",
     "perPage": "Per page",
     "unit": "items",
     "pagination": {
@@ -59,6 +61,7 @@
     },
     "detail": {
       "title": "Table of Contents",
+      "fallbackNotice": "This article is currently available in Chinese only.",
       "description": "Jump to section"
     }
   },

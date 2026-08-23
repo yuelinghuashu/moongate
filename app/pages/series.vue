@@ -60,6 +60,7 @@
 <script setup lang="ts">
 import { Badge, Button, Container } from "moongate-vue";
 import dayjs from "dayjs";
+import { resolveLangParam } from "~/utils/docs";
 
 const { tm } = useI18nSafe();
 const localePath = useLocalePath();
@@ -80,11 +81,14 @@ interface SeriesGroup {
 
 // ==================== API 调用 ====================
 const config = useRuntimeConfig();
+const { locale } = useI18n();
+const lang = computed(() => resolveLangParam(locale.value));
 
 const { data: seriesData } = await useAsyncData<SeriesGroup[]>(
-  "series-list",
+  computed(() => `series-list-${lang.value}`),
   async () => {
-    return await $fetch<SeriesGroup[]>(`/api/docs?group=series`, {
+    const query = lang.value ? `&lang=${lang.value}` : '';
+    return await $fetch<SeriesGroup[]>(`/api/docs?group=series${query}`, {
       baseURL: config.public.apiUrl,
     });
   },

@@ -49,6 +49,8 @@
     "emptyState": "还没有文档，请稍后再来",
     "clearAllFilters": "清除所有筛选",
     "findCount": "已查询到 {count} 条文档",
+    "chineseBadge": "中文",
+    "enBadge": "EN",
     "perPage": "每页",
     "unit": "条",
     "pagination": {
@@ -59,6 +61,7 @@
     },
     "detail": {
       "title": "目录",
+      "fallbackNotice": "本文暂只有中文版本，英文翻译敬请期待。",
       "description": "点击目录快速跳转"
     }
   },

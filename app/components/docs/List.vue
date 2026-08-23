@@ -27,6 +27,19 @@
 
           <div class="flex items-center gap-2 flex-shrink-0">
             <Badge v-if="level !== item.level" :label="item.level" />
+            <!-- 语言角标：英文界面下回退为中文内容的文章；中文界面下存在英文译文的文章 -->
+            <Badge
+              v-if="item.isFallback"
+              size="sm"
+              color="warning"
+              :label="t('docs.chineseBadge')"
+            />
+            <Badge
+              v-else-if="item.lang === 'zh' && item.hasTranslation"
+              size="sm"
+              color="primary"
+              :label="t('docs.enBadge')"
+            />
             <time :datetime="item.date" class="text-xs text-ui-text-muted whitespace-nowrap">
               {{ dayjs(item.date).format("YYYY-MM-DD") }}
             </time>
@@ -56,6 +69,7 @@ defineProps<{
 
 // ---------- 响应式工具 ----------
 const localePath = useLocalePath()
+const { t } = useI18n()
 
 // ---------- 全局状态 ----------
 const { tags, level } = useDocs()

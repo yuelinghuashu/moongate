@@ -1,6 +1,7 @@
 // composables/useDocs.ts
 import { createSharedComposable } from '@vueuse/core'
 import { useRouteQueryString, useRouteQueryNumber, useRouteQueryArray } from './useRouteQuery'
+import { resolveLangParam } from '~/utils/docs'
 import type { DocsResponse } from '~/utils/apiTypes'
 
 /**
@@ -54,6 +55,10 @@ const _useDocs = () => {
   /** 标签筛选：支持多标签（URL 中为 ?tag=a&tag=b） */
   const tags = useRouteQueryArray('tag')
 
+  /** 内容语言：由 i18n locale（/en URL 前缀）驱动，仅 en 时请求英文内容 */
+  const { locale } = useI18n()
+  const lang = computed(() => resolveLangParam(locale.value))
+
   /**
    * 当筛选条件变化时，自动重置到第一页
    * 避免筛选后停留在不存在的页码
@@ -95,6 +100,11 @@ const _useDocs = () => {
     // 标签筛选（每个标签单独一个参数）
     tags.value.forEach(t => params.append('tag', t))
 
+    // 内容语言（仅 en 时发送）
+    if (lang.value) {
+      params.append('lang', lang.value)
+    }
+
     return params
   })
 
@@ -108,14 +118,15 @@ const _useDocs = () => {
    */
   const config = useRuntimeConfig()
   const { data, pending, refresh, error } = useAsyncData<DocsResponse>(
-    'docs-list',
+    // key 随语言变化，避免 SSR payload 跨语言错位
+    computed(() => `docs-list-${lang.value}`),
     async () => {
       return await $fetch<DocsResponse>(`/api/docs?${queryParams.value.toString()}`, {
         baseURL: config.public.apiUrl
       })
     },
     {
-      watch: [searchInput, searchMode, page, size, level, tags],
+      watch: [searchInput, searchMode, page, size, level, tags, lang],
     }
   )
 

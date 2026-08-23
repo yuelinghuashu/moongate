@@ -14,6 +14,12 @@ export interface DocItem {
   tags: string[]
   date: string
   content: string
+  /** 实际返回内容的语言：zh | en */
+  lang?: string
+  /** 请求语言无译文时回退到了另一语言 */
+  isFallback?: boolean
+  /** 该 slug 是否存在英文译文 */
+  hasTranslation?: boolean
 }
 
 /**

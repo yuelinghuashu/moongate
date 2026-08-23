@@ -49,6 +49,8 @@
     "emptyState": "まだドキュメントがありません。後でもう一度お試しください。",
     "clearAllFilters": "すべてのフィルターをクリア",
     "findCount": "{count} 件の文書が見つかりました",
+    "chineseBadge": "中国語",
+    "enBadge": "EN",
     "perPage": "ページあたり",
     "unit": "件",
     "pagination": {
@@ -59,6 +61,7 @@
     },
     "detail": {
       "title": "目次",
+      "fallbackNotice": "この記事は現在中国語版のみ提供されています。",
       "description": "セクションへジャンプ"
     }
   },

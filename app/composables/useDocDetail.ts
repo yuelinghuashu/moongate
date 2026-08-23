@@ -24,20 +24,28 @@ export interface DocDetailBase {
  *
  * @param fetchKey - useAsyncData 的缓存 key（如 `doc-${slug}` / `about-${slug}`）
  * @param slug - 当前 slug（响应式 ref）
- * @param apiPath - API 路径（如 `/api/docs/${slug}` / `/api/about/${slug}`）
+ * @param buildApiPath - 根据 slug 构建 API 路径的函数（如 `(s) => \`/api/docs/${s}\``）
+ * @param lang - 可选的内容语言参数（如 `en`），变化时自动重新请求
  */
 export function useDocDetail<T extends DocDetailBase = DocDetailBase>(
   fetchKey: string,
   slug: Ref<string>,
-  apiPath: string,
+  buildApiPath: (slug: string) => string,
+  lang?: Ref<string>,
 ) {
   const config = useRuntimeConfig();
+  const langParam = lang || ref('');
+
+  const fetchUrl = computed(() => {
+    const query = langParam.value ? `?lang=${langParam.value}` : '';
+    return `${buildApiPath(slug.value)}${query}`;
+  });
 
   const { data: page } = useAsyncData<DocDetailBase>(
-    fetchKey,
-    () => $fetch<DocDetailBase>(apiPath, { baseURL: config.public.apiUrl }),
+    computed(() => `${fetchKey}-${langParam.value}`),
+    () => $fetch<DocDetailBase>(fetchUrl.value, { baseURL: config.public.apiUrl }),
     {
-      watch: [slug],
+      watch: [slug, langParam],
       transform: async (data) => {
         if (data && data.content) {
           try {

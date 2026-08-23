@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { contentToHtml, safeParseDate } from '../docs'
+import { contentToHtml, safeParseDate, resolveLangParam } from '../docs'
 import type { DocItem } from '../apiTypes'
 
 describe('contentToHtml', () => {
@@ -79,5 +79,23 @@ describe('safeParseDate', () => {
   it('should handle ISO timestamp string', () => {
     const result = safeParseDate('2025-03-20T08:00:00.000Z')
     expect(result.toISOString()).toBe('2025-03-20T08:00:00.000Z')
+  })
+})
+
+describe('resolveLangParam', () => {
+  it('should return "en" for English locale', () => {
+    expect(resolveLangParam('en')).toBe('en')
+  })
+
+  it('should return empty string for default Chinese locale', () => {
+    expect(resolveLangParam('zh_cn')).toBe('')
+  })
+
+  it('should return empty string for Japanese locale (no ja content)', () => {
+    expect(resolveLangParam('ja')).toBe('')
+  })
+
+  it('should return empty string for unknown locale', () => {
+    expect(resolveLangParam('fr')).toBe('')
   })
 })

@@ -58,6 +58,15 @@ export default defineEventHandler(async (event) => {
         changefreq: 'monthly',
         lastmod: doc.date ? new Date(doc.date).toISOString().split('T')[0] : lastmod
       })),
+      // 英文译文页面 - 仅存在英文译文的文档
+      ...docs
+        .filter((doc) => doc.hasTranslation)
+        .map((doc) => ({
+          loc: `${siteUrl}/en/docs/${doc.slug}`,
+          priority: '0.8',
+          changefreq: 'monthly',
+          lastmod: doc.date ? new Date(doc.date).toISOString().split('T')[0] : lastmod
+        })),
       // about 页面
       ...about.map((page) => ({
         loc: `${siteUrl}/about/${page.slug || page.path}`,

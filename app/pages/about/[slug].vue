@@ -45,7 +45,7 @@ const { page, contentRef, nestedOutline, isOutlineVisible } =
   useDocDetail<AboutDetailResponse>(
     `about-${slug.value}`,
     slug,
-    `/api/about/${slug.value}`,
+    (s) => `/api/about/${s}`,
   );
 
 useSeoMeta({
