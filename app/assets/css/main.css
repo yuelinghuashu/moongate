@@ -54,3 +54,8 @@ li {
   border-color: #2d3748;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
+
+/* 5. 行内代码长文本自动换行，避免溢出容器（pre 代码块保持横向滚动不受影响） */
+.shiki-content code:not(pre code) {
+  overflow-wrap: anywhere;
+}
