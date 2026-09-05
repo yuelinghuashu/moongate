@@ -12,7 +12,9 @@
       {{ t("docs.detail.fallbackNotice") }}
     </div>
 
-    <article class="prose dark:prose-invert max-w-none prose-sm md:prose-base lg:prose-lg">
+    <article
+      class="prose dark:prose-invert max-w-none prose-sm md:prose-base lg:prose-lg"
+    >
       <h1 class="text-3xl font-bold">{{ page.title }}</h1>
       <div class="shiki-content" v-html="contentRef" />
     </article>
@@ -46,19 +48,18 @@ const lang = computed(() => resolveLangParam(locale.value));
 
 // 文档详情响应体
 interface DocDetailResponse {
-  permalink: string
-  slug: string
-  title: string
-  description: string
-  date: string
-  level: string
-  series: string
-  tags: string[]
-  content: string            // 原始未高亮的 HTML 内容
-  highlightedContent?: string // 服务端异步高亮生成的完全体 HTML
-  lang?: string              // 实际返回内容的语言
-  isFallback?: boolean       // 请求语言无译文时回退到了另一语言
-  hasTranslation?: boolean   // 该 slug 是否存在英文译文
+  slug: string;
+  title: string;
+  description: string;
+  date: string;
+  level: string;
+  series: string;
+  tags: string[];
+  content: string; // 原始未高亮的 HTML 内容
+  highlightedContent?: string; // 服务端异步高亮生成的完全体 HTML
+  lang?: string; // 实际返回内容的语言
+  isFallback?: boolean; // 请求语言无译文时回退到了另一语言
+  hasTranslation?: boolean; // 该 slug 是否存在英文译文
 }
 
 // 复用公共 useDocDetail：数据获取 + Shiki 高亮 + 大纲提取
@@ -71,12 +72,12 @@ const { page, contentRef, nestedOutline, isOutlineVisible } =
   );
 
 // ---------- SEO：canonical + hreflang 双语交替 ----------
-const siteUrl = computed(() => (config.public.siteUrl || "").replace(/\/$/, ""));
+const siteUrl = computed(() =>
+  (config.public.siteUrl || "").replace(/\/$/, ""),
+);
 const docZhUrl = computed(() => `${siteUrl.value}/docs/${slug.value}`);
 const docEnUrl = computed(() => `${siteUrl.value}/en/docs/${slug.value}`);
-const canonicalUrl = computed(() =>
-  `${siteUrl.value}${route.path}`,
-);
+const canonicalUrl = computed(() => `${siteUrl.value}${route.path}`);
 
 useHead(() => ({
   link: [
@@ -85,7 +86,11 @@ useHead(() => ({
     // 存在英文译文时声明双语交替页
     ...(page.value?.hasTranslation
       ? [
-          { rel: "alternate", hreflang: "zh-CN", href: docZhUrl.value } as const,
+          {
+            rel: "alternate",
+            hreflang: "zh-CN",
+            href: docZhUrl.value,
+          } as const,
           { rel: "alternate", hreflang: "en", href: docEnUrl.value } as const,
         ]
       : []),

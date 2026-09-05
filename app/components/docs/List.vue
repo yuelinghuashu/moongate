@@ -2,7 +2,7 @@
   <div class="flex flex-col gap-4">
     <Card
       v-for="item in docs"
-      :key="item.permalink"
+      :key="item.slug"
       as="li"
       hoverable
       :hide-body="viewMode === 1 ? false : true"

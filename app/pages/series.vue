@@ -69,7 +69,6 @@ const localePath = useLocalePath();
 interface SeriesDoc {
   title: string
   date: string
-  permalink: string
   slug: string
   level: string
 }

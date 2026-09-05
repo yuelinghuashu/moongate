@@ -21,7 +21,6 @@ const localePath = useLocalePath();
 
 // 类型定义 
 interface AboutDetailResponse {
-  permalink: string
   slug: string
   title: string
   description: string

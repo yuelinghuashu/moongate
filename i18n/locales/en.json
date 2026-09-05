@@ -73,6 +73,7 @@
     "deployment": "Deployment Automation",
     "i18n": "Internationalization",
     "backend": "Backend Integration",
+    "gin-gorm": "GORM Practice",
     "performance": "Performance Optimization",
     "ecosystem": "Ecosystem Adaptation",
     "moongate-vue": "MoonGate UI Component Library",

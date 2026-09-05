@@ -5,7 +5,6 @@
  * 文档项（对应 Go API 返回的 Doc 结构）
  */
 export interface DocItem {
-  permalink: string
   slug: string
   title: string
   description: string

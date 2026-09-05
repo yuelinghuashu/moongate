@@ -11,7 +11,6 @@ export interface FeedDoc {
   title: string
   description: string
   date: string
-  permalink: string
   slug: string
   level: string
   series: string | null
@@ -65,7 +64,6 @@ export async function getFeedDocs(apiUrl: string): Promise<FeedDoc[]> {
       title: doc.title || '',
       description: doc.description || '',
       date: doc.date || '',
-      permalink: doc.permalink || '',
       slug: doc.slug || '',
       level: doc.level || '',
       series: doc.series || null,
@@ -82,15 +80,15 @@ export async function getFeedDocs(apiUrl: string): Promise<FeedDoc[]> {
  * 构建文档链接
  */
 export function buildDocLink(siteUrl: string, doc: FeedDoc): string {
-  const slug = doc.slug || doc.permalink || ''
+  const slug = doc.slug || ''
   return slug ? `${siteUrl}/docs/${slug}` : siteUrl
 }
 
 /**
- * 构建文档唯一标识
+ * 构建文档唯一标识（permalink 已移除，统一使用链接作为稳定 ID）
  */
-export function buildDocId(doc: FeedDoc, fallbackLink: string): string {
-  return doc.permalink || fallbackLink
+export function buildDocId(_doc: FeedDoc, fallbackLink: string): string {
+  return fallbackLink
 }
 
 /**
@@ -134,7 +132,6 @@ export function xmlCdata(text: string): string {
 export function docContentToCdata(doc: FeedDoc): string {
   // FeedDoc 与 DocItem 结构兼容，转换为 DocItem 类型
   const item: DocItem = {
-    permalink: doc.permalink,
     slug: doc.slug,
     title: doc.title,
     description: doc.description,

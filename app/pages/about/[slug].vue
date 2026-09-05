@@ -31,7 +31,6 @@ const slug = computed(() => (route.params.slug as string) || "");
 
 // 关于页面详情响应体
 interface AboutDetailResponse {
-  permalink: string
   slug: string
   title: string
   description: string

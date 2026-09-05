@@ -73,6 +73,7 @@
     "deployment": "部署自动化",
     "i18n": "国际化",
     "backend": "后端集成",
+    "gin-gorm": "GORM 实战",
     "performance": "性能优化",
     "ecosystem": "生态适配",
     "moongate-vue": "MoonGate UI 组件库",
