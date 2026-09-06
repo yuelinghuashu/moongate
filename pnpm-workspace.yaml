@@ -1,6 +1,11 @@
-# pnpm 11：允许特定依赖执行 postinstall 构建脚本
-# （pnpm approve-builds 生成；Dockerfile 构建时 COPY 本文件进镜像，
-#   确保 esbuild / unrs-resolver 的构建脚本在干净环境同样执行）
+# pnpm 11 配置
+# - allowBuilds: 允许特定依赖执行 postinstall 构建脚本（pnpm approve-builds 生成，
+#   Dockerfile 构建时 COPY 本文件进镜像，确保 esbuild / unrs-resolver 构建脚本在干净环境同样执行）
+# - minimumReleaseAgeExclude: 供应链策略豁免——moongate-vue 为自研包，
+#   刚发布（不足默认 24h 冷却）即被本仓库引用，放行以免 CI 被 ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION 阻断
 allowBuilds:
   esbuild: true
   unrs-resolver: true
+
+minimumReleaseAgeExclude:
+  - moongate-vue
