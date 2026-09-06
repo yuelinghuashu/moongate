@@ -1,0 +1,6 @@
+# pnpm 11：允许特定依赖执行 postinstall 构建脚本
+# （pnpm approve-builds 生成；Dockerfile 构建时 COPY 本文件进镜像，
+#   确保 esbuild / unrs-resolver 的构建脚本在干净环境同样执行）
+allowBuilds:
+  esbuild: true
+  unrs-resolver: true
