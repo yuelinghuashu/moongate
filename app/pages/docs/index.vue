@@ -8,8 +8,6 @@
         @toggle-filter="isFilterVisible = !isFilterVisible"
       />
 
-      <DocsNavigationLevel :level="level" />
-
       <DocsTagFilter v-show="isFilterVisible" />
 
       <Skeleton v-if="!docs" />
@@ -18,7 +16,6 @@
         v-else-if="(docs?.total || 0) > 0"
         :docs="docs?.data || []"
         :view-mode="viewMode"
-        :level="level"
       />
 
       <!-- 空状态 -->
@@ -79,7 +76,6 @@ const {
   viewMode,
   page,
   size,
-  level,
   tags,
   resetFilters,
 } = useDocs();
@@ -100,10 +96,9 @@ const { searchInputDebounced } = useDebouncedSearch(searchInput, page, 500);
 // 空状态提示
 const emptyStateMessage = computed(() => {
   const hasSearch = searchInput.value?.trim() ?? false;
-  const hasLevel = level.value ?? false;
   const hasTags = (tags.value?.length ?? 0) > 0;
 
-  if (hasSearch || hasLevel || hasTags) {
+  if (hasSearch || hasTags) {
     return t("docs.emptyMessage");
   }
   return t("docs.emptyState");

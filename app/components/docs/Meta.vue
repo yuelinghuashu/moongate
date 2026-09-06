@@ -3,7 +3,6 @@
     <div class="flex justify-between items-center gap-3 mb-1">
       <div class="flex gap-3">
         <span>// Created At {{ formattedDate }}</span>
-        <span>// {{ level }}</span>
       </div>
       <Button
         :label="buttonText"
@@ -23,7 +22,6 @@ import dayjs from "dayjs";
 
 const props = defineProps({
   date: { type: String, required: true },
-  level: { type: String, required: true },
   tags: { type: Array, default: () => [] },
 });
 

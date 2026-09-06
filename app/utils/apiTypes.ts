@@ -8,7 +8,6 @@ export interface DocItem {
   slug: string
   title: string
   description: string
-  level: string
   series: string | null
   tags: string[]
   date: string

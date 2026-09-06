@@ -67,7 +67,6 @@ export default defineCachedEventHandler(async (event) => {
       <content:encoded><![CDATA[${fullContent}]]></content:encoded>
       <description><![CDATA[${description}]]></description>
       ${tagsXml}
-      ${doc.level ? `<dc:subject>${xmlEscape(doc.level)}</dc:subject>` : ''}
       ${doc.series ? `<dc:relation><![CDATA[series:${xmlCdata(doc.series)}]]></dc:relation>` : ''}
     </item>
 `

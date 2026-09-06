@@ -12,7 +12,6 @@ export interface FeedDoc {
   description: string
   date: string
   slug: string
-  level: string
   series: string | null
   tags: string[]
   content: string
@@ -65,7 +64,6 @@ export async function getFeedDocs(apiUrl: string): Promise<FeedDoc[]> {
       description: doc.description || '',
       date: doc.date || '',
       slug: doc.slug || '',
-      level: doc.level || '',
       series: doc.series || null,
       tags: doc.tags || [],
       content: doc.content || '',
@@ -135,7 +133,6 @@ export function docContentToCdata(doc: FeedDoc): string {
     slug: doc.slug,
     title: doc.title,
     description: doc.description,
-    level: doc.level,
     series: doc.series,
     tags: doc.tags,
     date: doc.date,

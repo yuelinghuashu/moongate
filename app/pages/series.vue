@@ -1,10 +1,5 @@
 <template>
   <Container size="sm" style="padding: 0">
-    <div class="text-sm opacity-80 text-center">
-      <span> 📖 本博客文章按 P1–P5 分级。P1 为入门，P5 为底层实现。 </span>
-      <NuxtLink to="/protocol" class="mg-link">了解详情 →</NuxtLink>
-    </div>
-
     <div class="flex justify-end items-center">
       <Button @click="toggleAll">
         <template #icon>
@@ -48,7 +43,7 @@
               {{ article.title }}
             </NuxtLink>
             <div class="text-xs text-gray-500">
-              {{ article.level }} · {{ formatDate(article.date) }}
+              {{ formatDate(article.date) }}
             </div>
           </div>
         </div>
@@ -70,7 +65,6 @@ interface SeriesDoc {
   title: string
   date: string
   slug: string
-  level: string
 }
 
 interface SeriesGroup {

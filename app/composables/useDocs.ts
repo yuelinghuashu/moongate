@@ -14,7 +14,6 @@ const DEFAULTS = {
   page: 1,
   size: 10,
   viewMode: 1,
-  level: '',
 } as const
 
 /**
@@ -49,9 +48,6 @@ const _useDocs = () => {
   /** 视图模式：1=详细 | 2=简洁 */
   const viewMode = useRouteQueryNumber('viewMode', { defaultValue: DEFAULTS.viewMode })
 
-  /** 等级筛选：P1-P5 */
-  const level = useRouteQueryString('level', { defaultValue: DEFAULTS.level })
-
   /** 标签筛选：支持多标签（URL 中为 ?tag=a&tag=b） */
   const tags = useRouteQueryArray('tag')
 
@@ -63,7 +59,7 @@ const _useDocs = () => {
    * 当筛选条件变化时，自动重置到第一页
    * 避免筛选后停留在不存在的页码
    */
-  watch([searchInput, searchMode, level, tags], () => {
+  watch([searchInput, searchMode, tags], () => {
     page.value = DEFAULTS.page
   }, { deep: true })
 
@@ -90,11 +86,6 @@ const _useDocs = () => {
     // 搜索模式（非默认值时传递）
     if (searchMode.value !== DEFAULTS.searchMode) {
       params.append('searchMode', searchMode.value)
-    }
-
-    // 等级筛选
-    if (level.value) {
-      params.append('level', level.value)
     }
 
     // 标签筛选（每个标签单独一个参数）
@@ -126,7 +117,7 @@ const _useDocs = () => {
       })
     },
     {
-      watch: [searchInput, searchMode, page, size, level, tags, lang],
+      watch: [searchInput, searchMode, page, size, tags, lang],
     }
   )
 
@@ -144,7 +135,6 @@ const _useDocs = () => {
     page.value = DEFAULTS.page
     size.value = DEFAULTS.size
     viewMode.value = DEFAULTS.viewMode
-    level.value = DEFAULTS.level
     tags.value = []
   }
 
@@ -159,7 +149,6 @@ const _useDocs = () => {
     page,
     size,
     viewMode,
-    level,
     tags,
 
     // 数据状态

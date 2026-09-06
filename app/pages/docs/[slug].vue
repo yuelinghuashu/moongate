@@ -1,7 +1,10 @@
 <template>
   <Skeleton v-if="!page" />
   <div v-else>
-    <DocsMeta :date="page.date" :level="page.level" :tags="page.tags" />
+    <DocsMeta :date="page.date" :tags="page.tags" />
+
+    <!-- 系列目录导航（当前文档属于某系列时显示） -->
+    <DocsSeriesNavigation :series="page.series" :active="slug" />
 
     <!-- 请求语言无译文时回退到中文的提示条 -->
     <div
@@ -52,7 +55,6 @@ interface DocDetailResponse {
   title: string;
   description: string;
   date: string;
-  level: string;
   series: string;
   tags: string[];
   content: string; // 原始未高亮的 HTML 内容

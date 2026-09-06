@@ -10,7 +10,9 @@
       @click="navigateToDoc(item.slug)"
     >
       <template #header>
-        <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-2">
+        <div
+          class="flex flex-col md:flex-row md:justify-between md:items-start gap-2"
+        >
           <div class="flex-1">
             <h2 class="text-xl font-medium">{{ item.title }}</h2>
             <div class="flex flex-wrap mt-1">
@@ -26,7 +28,6 @@
           </div>
 
           <div class="flex items-center gap-2 flex-shrink-0">
-            <Badge v-if="level !== item.level" :label="item.level" />
             <!-- 语言角标：英文界面下回退为中文内容的文章；中文界面下存在英文译文的文章 -->
             <Badge
               v-if="item.isFallback"
@@ -40,7 +41,10 @@
               color="primary"
               :label="t('docs.enBadge')"
             />
-            <time :datetime="item.date" class="text-xs text-ui-text-muted whitespace-nowrap">
+            <time
+              :datetime="item.date"
+              class="text-xs text-ui-text-muted whitespace-nowrap"
+            >
               {{ dayjs(item.date).format("YYYY-MM-DD") }}
             </time>
           </div>
@@ -62,21 +66,20 @@ import dayjs from "dayjs";
 
 // ---------- 定义 Props ----------
 defineProps<{
-  docs: DocItem[]
-  viewMode: number
-}>()
-
+  docs: DocItem[];
+  viewMode: number;
+}>();
 
 // ---------- 响应式工具 ----------
-const localePath = useLocalePath()
-const { t } = useI18n()
+const localePath = useLocalePath();
+const { t } = useI18n();
 
 // ---------- 全局状态 ----------
-const { tags, level } = useDocs()
-const { isTagSelected, handleTagClick } = useTagsFilter(tags)
+const { tags } = useDocs();
+const { isTagSelected, handleTagClick } = useTagsFilter(tags);
 
 // ---------- 导航 ----------
 const navigateToDoc = (slug: string) => {
-  return navigateTo(localePath(`/docs/${slug}`))
-}
+  return navigateTo(localePath(`/docs/${slug}`));
+};
 </script>

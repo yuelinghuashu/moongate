@@ -40,7 +40,6 @@ export default defineCachedEventHandler(async (event) => {
           tags: doc.tags || [],
           // 额外字段
           _slug: doc.slug,
-          _level: doc.level,
           _series: doc.series
         }
       })
