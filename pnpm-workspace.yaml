@@ -10,5 +10,7 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - moongate-vue
 
-overrides:
-  moongate-vue: link:../moongate-vue
+# 注意：不要在这里用 link:../moongate-vue 覆盖 moongate-vue——
+# CI/Docker 的构建上下文只有本仓库，link 目标不存在会产出坏符号链接，
+# 导致构建期 ENOENT（moongate-vue/style.css）。本地想对组件库源码联调时，
+# 请勿提交地执行：pnpm link ../moongate-vue（需先 pnpm --dir ../moongate-vue build）。
