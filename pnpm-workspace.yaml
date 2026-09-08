@@ -9,3 +9,6 @@ allowBuilds:
 
 minimumReleaseAgeExclude:
   - moongate-vue
+
+overrides:
+  moongate-vue: link:../moongate-vue

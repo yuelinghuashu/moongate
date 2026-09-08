@@ -45,6 +45,7 @@ export const TAG_GROUPS: TagGroup[] = [
       "Hydration",
       "i18n",
       "LLM",
+      "Agent",
       "OAuth",
       "ORM",
       "Performance",

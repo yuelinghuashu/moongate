@@ -67,6 +67,7 @@
     "i18n": "Internationalization",
     "backend": "Backend Integration",
     "gin-gorm": "GORM Practice",
+    "go-agent": "Go Agent Practice",
     "performance": "Performance Optimization",
     "ecosystem": "Ecosystem Adaptation",
     "moongate-vue": "MoonGate UI Component Library",

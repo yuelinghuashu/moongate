@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  moongate-vue: link:../moongate-vue
+
 importers:
 
   .:
@@ -39,8 +42,8 @@ importers:
         specifier: ^3.4.13
         version: 3.4.14
       moongate-vue:
-        specifier: 1.7.0
-        version: 1.7.0(vue@3.5.41(typescript@6.0.3))
+        specifier: link:../moongate-vue
+        version: link:../moongate-vue
       pinia:
         specifier: ^3.0.4
         version: 3.0.4(typescript@6.0.3)(vue@3.5.41(typescript@6.0.3))
@@ -4140,12 +4143,6 @@ packages:
 
   mocked-exports@0.1.1:
     resolution: {integrity: sha512-aF7yRQr/Q0O2/4pIXm6PZ5G+jAd7QS4Yu8m+WEeEHGnbo+7mE36CbLSDQiXYV8bVL3NfmdeqPJct0tUlnjVSnA==}
-
-  moongate-vue@1.7.0:
-    resolution: {integrity: sha512-wa53XGQ+WQDJsar7TcU9BbZILn6dCFu/ey3WMxIB7JSewgc/6UmmRGF33iPWMRdyGtqLxiZmav3x1a7LOu4pzA==}
-    engines: {node: '>=20.0.0', pnpm: '>=9.0.0'}
-    peerDependencies:
-      vue: ^3.5.0
 
   mrmime@2.0.1:
     resolution: {integrity: sha512-Y3wQdFg2Va6etvQ5I82yUhGdsKrcYox6p7FfL1LbK2J4V01F9TGlepTIhnK24t7koZibmg82KGglhA1XK5IsLQ==}
@@ -10061,10 +10058,6 @@ snapshots:
       ufo: 1.6.4
 
   mocked-exports@0.1.1: {}
-
-  moongate-vue@1.7.0(vue@3.5.41(typescript@6.0.3)):
-    dependencies:
-      vue: 3.5.41(typescript@6.0.3)
 
   mrmime@2.0.1: {}
 
