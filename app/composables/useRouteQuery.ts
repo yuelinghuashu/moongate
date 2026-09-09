@@ -12,7 +12,10 @@ interface QueryRegistration {
 }
 
 /**
- * 全局注册表：维护当前页面所有 useRouteQuery* 创建的参数。
+ * 创建页面级注册表：维护当前页面所有 useRouteQuery* 创建的参数。
+ *
+ * 使用 weakMap 按组件实例隔离注册表，避免模块级全局变量在 SSR
+ * 请求间共享导致的内存泄漏。
  *
  * 当多个参数在同一 tick 内批量修改（如 resetFilters 同时重置 6 个参数）时，
  * 每个参数的独立 watch 都会触发 router.replace。
@@ -21,10 +24,28 @@ interface QueryRegistration {
  * 改用注册表读取所有参数的「最新值」来构建完整 query，
  * 保证无论 watch 的执行顺序如何，最终 URL 包含所有参数的正确状态。
  */
-const registry = new Set<QueryRegistration>()
+
+// 按组件实例隔离的注册表（WeakMap 允许实例被 GC 回收）
+const registryMap = new WeakMap<object, Set<QueryRegistration>>()
+
+/** 获取当前组件实例对应的注册表 */
+function getRegistry(): Set<QueryRegistration> | null {
+  const instance = getCurrentInstance()
+  if (!instance) return null // 服务端无组件实例时不注册（避免内存泄漏）
+  
+  let registry = registryMap.get(instance)
+  if (!registry) {
+    registry = new Set<QueryRegistration>()
+    registryMap.set(instance, registry)
+  }
+  return registry
+}
 
 /** 从注册表构建完整 query（用最新 ref 值，而非 route.query 旧快照） */
 function buildQueryFromRegistry(): LocationQueryRaw {
+  const registry = getRegistry()
+  if (!registry) return {}
+  
   const query: LocationQueryRaw = {}
   for (const { name, getValue } of registry) {
     const val = getValue()
@@ -45,13 +66,16 @@ function useRouteQueryRaw(name: string) {
   const router = useRouter()
   const value = ref(route.query[name])
 
-  // 注册到全局注册表，用于批量写回时获取最新值
-  const registration: QueryRegistration = { name, getValue: () => value.value }
-  registry.add(registration)
+  // 注册到当前组件实例的注册表（服务端无实例时不注册）
+  const registry = getRegistry()
+  if (registry) {
+    const registration: QueryRegistration = { name, getValue: () => value.value }
+    registry.add(registration)
 
-  const instance = getCurrentInstance()
-  if (instance) {
-    onUnmounted(() => registry.delete(registration))
+    const instance = getCurrentInstance()
+    if (instance) {
+      onUnmounted(() => registry.delete(registration))
+    }
   }
 
   // 监听路由变化，同步到内部 ref
@@ -134,13 +158,16 @@ export function useRouteQueryArray(name: string) {
 
   const value = ref<string[]>(getValueFromRoute())
 
-  // 注册到全局注册表
-  const registration: QueryRegistration = { name, getValue: () => value.value }
-  registry.add(registration)
+  // 注册到当前组件实例的注册表（服务端无实例时不注册）
+  const registry = getRegistry()
+  if (registry) {
+    const registration: QueryRegistration = { name, getValue: () => value.value }
+    registry.add(registration)
 
-  const instance = getCurrentInstance()
-  if (instance) {
-    onUnmounted(() => registry.delete(registration))
+    const instance = getCurrentInstance()
+    if (instance) {
+      onUnmounted(() => registry.delete(registration))
+    }
   }
 
   // 监听路由变化，同步到内部 ref（比较序列化结果，避免无意义更新）
