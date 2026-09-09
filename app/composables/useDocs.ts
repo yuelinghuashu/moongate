@@ -1,5 +1,4 @@
 // composables/useDocs.ts
-import { createSharedComposable } from '@vueuse/core'
 import { useRouteQueryString, useRouteQueryNumber, useRouteQueryArray } from './useRouteQuery'
 import { resolveLangParam } from '~/utils/docs'
 import type { DocsResponse } from '~/utils/apiTypes'
@@ -18,16 +17,16 @@ const DEFAULTS = {
 
 /**
  * 文档列表 Composable
- * 
+ *
  * 功能：
  * 1. 管理列表页的筛选条件（搜索、分页、排序等）
  * 2. 筛选条件自动同步到 URL（可分享、可刷新）
  * 3. 调用 API 获取文档列表
  * 4. 提供重置筛选条件的方法
- * 
- * 使用 createSharedComposable 确保全局单例
+ *
+ * Nuxt 4+ 已自动处理 SSR 请求隔离，无需 createSharedComposable
  */
-const _useDocs = () => {
+export const useDocs = () => {
   // ============================================
   // 1. URL 同步状态
   // 每个状态都自动与 URL 查询参数双向同步
@@ -161,10 +160,3 @@ const _useDocs = () => {
     resetFilters,        // 重置所有筛选
   }
 }
-
-/**
- * 导出全局单例 useDocs
- * createSharedComposable 确保在多个组件中调用时共享同一实例
- * 避免重复请求和状态不一致
- */
-export const useDocs = createSharedComposable(_useDocs)
