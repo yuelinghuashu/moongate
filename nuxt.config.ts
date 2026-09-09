@@ -7,7 +7,6 @@ export default defineNuxtConfig({
     '@unocss/nuxt',
     '@nuxtjs/i18n',
     '@nuxt/image',
-    "@nuxt/eslint",
     '@nuxt/icon',
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
@@ -28,7 +27,7 @@ export default defineNuxtConfig({
       removeConsole({ includes: ['log'] }) // 移除console.log
     ]
   },
-  colorMode:{
+  colorMode: {
     preference: 'system',
     fallback: 'light',
     classSuffix: '', // 确保是空字符串，生成 .dark

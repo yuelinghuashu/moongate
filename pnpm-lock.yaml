@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@nuxt/eslint':
-        specifier: ^1.15.2
-        version: 1.17.0(@typescript-eslint/utils@8.67.0(eslint@10.9.0(jiti@2.7.0)(supports-color@10.0.0))(supports-color@10.0.0)(typescript@6.0.3))(@vue/compiler-sfc@3.5.41)(esbuild@0.28.2)(eslint@10.9.0(jiti@2.7.0)(supports-color@10.0.0))(magic-string@1.2.2)(magicast@0.5.4)(oxc-parser@0.141.0)(rolldown@1.2.5)(rollup@4.62.5)(srvx@0.11.22)(supports-color@10.0.0)(typescript@6.0.3)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.5)(rollup@4.62.5)(vite@8.2.2(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.50.0)(yaml@2.9.0))(webpack@5.109.2(cssnano@8.0.7(postcss@8.5.26))(csso@5.0.5)(esbuild@0.28.2)(lightningcss@1.33.0)(postcss@8.5.26)))(vite@8.2.2(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.50.0)(yaml@2.9.0))(webpack@5.109.2(cssnano@8.0.7(postcss@8.5.26))(csso@5.0.5)(esbuild@0.28.2)(lightningcss@1.33.0)(postcss@8.5.26))
       '@nuxt/icon':
         specifier: ^2.2.2
         version: 2.5.0(magic-string@1.2.2)(magicast@0.5.4)(oxc-parser@0.141.0)(rolldown@1.2.5)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.5)(rollup@4.62.5)(vite@8.2.2(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.50.0)(yaml@2.9.0))(webpack@5.109.2(cssnano@8.0.7(postcss@8.5.26))(csso@5.0.5)(esbuild@0.28.2)(lightningcss@1.33.0)(postcss@8.5.26)))(vite@8.2.2(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.50.0)(yaml@2.9.0))(vue@3.5.41(typescript@6.0.3))
@@ -54,6 +51,9 @@ importers:
       '@iconify-json/tabler':
         specifier: ^1.2.35
         version: 1.2.38
+      '@nuxt/eslint':
+        specifier: ^1.15.2
+        version: 1.17.0(@typescript-eslint/utils@8.67.0(eslint@10.9.0(jiti@2.7.0)(supports-color@10.0.0))(supports-color@10.0.0)(typescript@6.0.3))(@vue/compiler-sfc@3.5.41)(esbuild@0.28.2)(eslint@10.9.0(jiti@2.7.0)(supports-color@10.0.0))(magic-string@1.2.2)(magicast@0.5.4)(oxc-parser@0.141.0)(rolldown@1.2.5)(rollup@4.62.5)(srvx@0.11.22)(supports-color@10.0.0)(typescript@6.0.3)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.5)(rollup@4.62.5)(vite@8.2.2(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.50.0)(yaml@2.9.0))(webpack@5.109.2(cssnano@8.0.7(postcss@8.5.26))(csso@5.0.5)(esbuild@0.28.2)(lightningcss@1.33.0)(postcss@8.5.26)))(vite@8.2.2(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.50.0)(yaml@2.9.0))(webpack@5.109.2(cssnano@8.0.7(postcss@8.5.26))(csso@5.0.5)(esbuild@0.28.2)(lightningcss@1.33.0)(postcss@8.5.26))
       '@unocss/nuxt':
         specifier: ^66.6.8
         version: 66.8.1(esbuild@0.28.2)(magic-string@1.2.2)(magicast@0.5.4)(oxc-parser@0.141.0)(rolldown@1.2.5)(rollup@4.62.5)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.5)(rollup@4.62.5)(vite@8.2.2(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.50.0)(yaml@2.9.0))(webpack@5.109.2(cssnano@8.0.7(postcss@8.5.26))(csso@5.0.5)(esbuild@0.28.2)(lightningcss@1.33.0)(postcss@8.5.26)))(vite@8.2.2(@types/node@26.2.0)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.50.0)(yaml@2.9.0))(webpack@5.109.2(cssnano@8.0.7(postcss@8.5.26))(csso@5.0.5)(esbuild@0.28.2)(lightningcss@1.33.0)(postcss@8.5.26))
