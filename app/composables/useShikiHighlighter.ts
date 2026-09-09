@@ -24,3 +24,14 @@ export async function getShikiHighlighter() {
   }
   return highlighterInstance
 }
+
+/**
+ * 释放 Shiki 高亮器实例（用于服务端内存管理）
+ * 注意：释放后下次调用会重新创建
+ */
+export function disposeShikiHighlighter() {
+  if (highlighterInstance) {
+    highlighterInstance.dispose()
+    highlighterInstance = null
+  }
+}
