@@ -1,4 +1,5 @@
 // composables/useDocs.ts
+import { createSharedComposable } from '@vueuse/core'
 import { useRouteQueryString, useRouteQueryNumber, useRouteQueryArray } from './useRouteQuery'
 import { resolveLangParam } from '~/utils/docs'
 import type { DocsResponse } from '~/utils/apiTypes'
@@ -24,9 +25,11 @@ const DEFAULTS = {
  * 3. 调用 API 获取文档列表
  * 4. 提供重置筛选条件的方法
  *
- * Nuxt 4+ 已自动处理 SSR 请求隔离，无需 createSharedComposable
+ * 使用 createSharedComposable 让同一页面多个组件（列表/标签筛选）
+ * 共享同一份状态；VueUse 在服务端（!isClient）会直接返回原始函数，
+ * 每个 SSR 请求独立创建状态，不会跨请求泄漏。
  */
-export const useDocs = () => {
+const _useDocs = () => {
   // ============================================
   // 1. URL 同步状态
   // 每个状态都自动与 URL 查询参数双向同步
@@ -160,3 +163,10 @@ export const useDocs = () => {
     resetFilters,        // 重置所有筛选
   }
 }
+
+/**
+ * 导出共享实例 useDocs
+ * createSharedComposable 确保同页多个组件共享同一实例和状态
+ * （服务端自动退化为逐请求独立创建，无跨请求泄漏）
+ */
+export const useDocs = createSharedComposable(_useDocs)

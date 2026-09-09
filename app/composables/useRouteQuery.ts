@@ -12,10 +12,11 @@ interface QueryRegistration {
 }
 
 /**
- * 创建页面级注册表：维护当前页面所有 useRouteQuery* 创建的参数。
+ * 请求级/应用级注册表：维护当前页面所有 useRouteQuery* 创建的参数。
  *
- * 使用 weakMap 按组件实例隔离注册表，避免模块级全局变量在 SSR
- * 请求间共享导致的内存泄漏。
+ * 使用 WeakMap 以 nuxtApp 为 key 隔离注册表：
+ * - 服务端：每个请求一个 nuxtApp → 注册表随请求释放（无内存泄漏）
+ * - 客户端：全局唯一 nuxtApp → 所有组件共享一个注册表（批量更新 URL 正确）
  *
  * 当多个参数在同一 tick 内批量修改（如 resetFilters 同时重置 6 个参数）时，
  * 每个参数的独立 watch 都会触发 router.replace。
@@ -25,27 +26,29 @@ interface QueryRegistration {
  * 保证无论 watch 的执行顺序如何，最终 URL 包含所有参数的正确状态。
  */
 
-// 按组件实例隔离的注册表（WeakMap 允许实例被 GC 回收）
+// 按 nuxtApp 隔离的注册表（WeakMap 不阻止 GC，请求结束后自动释放）
 const registryMap = new WeakMap<object, Set<QueryRegistration>>()
 
-/** 获取当前组件实例对应的注册表 */
+/** 获取当前 nuxtApp 对应的注册表（服务端每请求独立，客户端全局共享） */
 function getRegistry(): Set<QueryRegistration> | null {
-  const instance = getCurrentInstance()
-  if (!instance) return null // 服务端无组件实例时不注册（避免内存泄漏）
-  
-  let registry = registryMap.get(instance)
-  if (!registry) {
-    registry = new Set<QueryRegistration>()
-    registryMap.set(instance, registry)
+  try {
+    const nuxtApp = useNuxtApp()
+    let registry = registryMap.get(nuxtApp)
+    if (!registry) {
+      registry = new Set<QueryRegistration>()
+      registryMap.set(nuxtApp, registry)
+    }
+    return registry
+  } catch {
+    // Nuxt 上下文外（如单元测试）无法共享注册表
+    return null
   }
-  return registry
 }
 
 /** 从注册表构建完整 query（用最新 ref 值，而非 route.query 旧快照） */
-function buildQueryFromRegistry(): LocationQueryRaw {
-  const registry = getRegistry()
+function buildQueryFromRegistry(registry: Set<QueryRegistration> | null): LocationQueryRaw {
   if (!registry) return {}
-  
+
   const query: LocationQueryRaw = {}
   for (const { name, getValue } of registry) {
     const val = getValue()
@@ -66,7 +69,7 @@ function useRouteQueryRaw(name: string) {
   const router = useRouter()
   const value = ref(route.query[name])
 
-  // 注册到当前组件实例的注册表（服务端无实例时不注册）
+  // setup 期间捕获注册表引用（watch 回调中 getCurrentInstance 不可用）
   const registry = getRegistry()
   if (registry) {
     const registration: QueryRegistration = { name, getValue: () => value.value }
@@ -83,9 +86,9 @@ function useRouteQueryRaw(name: string) {
     value.value = newVal
   })
 
-  // 监听内部 ref 变化，同步到 URL（基于注册表最新值，避免批量更新互相覆盖）
+  // 监听内部 ref 变化，同步到 URL（基于捕获的注册表最新值，避免批量更新互相覆盖）
   watch(value, () => {
-    router.replace({ query: buildQueryFromRegistry() })
+    router.replace({ query: buildQueryFromRegistry(registry) })
   })
 
   return value
@@ -158,7 +161,7 @@ export function useRouteQueryArray(name: string) {
 
   const value = ref<string[]>(getValueFromRoute())
 
-  // 注册到当前组件实例的注册表（服务端无实例时不注册）
+  // setup 期间捕获注册表引用（watch 回调中 getCurrentInstance 不可用）
   const registry = getRegistry()
   if (registry) {
     const registration: QueryRegistration = { name, getValue: () => value.value }
@@ -178,9 +181,9 @@ export function useRouteQueryArray(name: string) {
     }
   })
 
-  // 监听内部 ref 变化，同步到 URL（多参数格式，基于注册表最新值）
+  // 监听内部 ref 变化，同步到 URL（多参数格式，基于捕获的注册表最新值）
   watch(value, () => {
-    router.replace({ query: buildQueryFromRegistry() })
+    router.replace({ query: buildQueryFromRegistry(registry) })
   }, { deep: true })
 
   return value
