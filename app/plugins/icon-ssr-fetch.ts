@@ -18,7 +18,11 @@ export default defineNuxtPlugin((nuxtApp) => {
   if (import.meta.server) {
     const event = nuxtApp.ssrContext?.event
     if (event?.fetch) {
-      _api.setFetch(event.fetch)
+      // h3 的 event.fetch 在运行期就是 fetch 兼容实现（返回真正的 Response），
+      // 但其类型签名是 Nitro 专用的（参数收窄为 NitroFetchRequest），
+      // 与 iconify 期望的 fetch 签名不兼容，故此处显式转换。
+      // 上游修好后删除本文件即可，不必为它调整依赖类型。
+      _api.setFetch(event.fetch as unknown as typeof globalThis.fetch)
     }
   }
 })

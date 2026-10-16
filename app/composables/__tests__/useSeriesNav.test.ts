@@ -1,8 +1,6 @@
 import { describe, it, expect } from "vitest";
-import {
-  buildSeriesNavModel,
-  type SeriesGroup,
-} from "../useSeriesNav";
+import { buildSeriesNavModel } from "../useSeriesNav";
+import type { SeriesGroup } from "~/utils/apiTypes";
 
 // 构造一个分组数据（模拟 API 返回，已按阅读顺序排好）
 const groups: SeriesGroup[] = [

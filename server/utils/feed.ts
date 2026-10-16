@@ -1,33 +1,10 @@
 // server/utils/feed.ts
 // Feed 生成公共模块：隔离 Atom/RSS/JSON Feed 的重复逻辑
 
-import { contentToHtml, safeParseDate } from '../../app/utils/docs'
+import { safeParseDate } from '../../app/utils/docs'
 import { cdataEscape, escapeXml } from '../../app/utils/xml'
 import { fetchDocs } from './docs'
-import type { DocItem } from '../../app/utils/apiTypes'
-
-/** Feed 文档类型（与后端 DocItem 对齐） */
-export interface FeedDoc {
-  title: string
-  description: string
-  date: string
-  slug: string
-  series: string | null
-  tags: string[]
-  content: string
-}
-
-/** Feed 公共元信息 */
-export interface FeedMeta {
-  siteUrl: string
-  apiUrl: string
-  feedUrl: string
-  title: string
-  subtitle: string
-  description: string
-  language: string
-  id: string
-}
+import type { ApiDocDetail } from '../../app/utils/apiTypes'
 
 /** Feed 站点常量 */
 export const FEED_CONSTANTS = {
@@ -38,36 +15,14 @@ export const FEED_CONSTANTS = {
 } as const
 
 /**
- * 构建 Feed 元信息
+ * 安全获取 Feed 文档列表（含正文；失败或为空时返回空数组）。
+ *
+ * 直接使用后端 DocDetail 视图，不再另立一套同形 FeedDoc 再转回去——
+ * 那份"结构兼容"的搬运只是让类型说谎（把摘要当详情用）。
  */
-export function buildFeedMeta(siteUrl: string, feedPath: string): FeedMeta {
-  return {
-    siteUrl,
-    apiUrl: '', // 由调用方填充
-    feedUrl: `${siteUrl}${feedPath}`,
-    title: FEED_CONSTANTS.title,
-    subtitle: FEED_CONSTANTS.subtitle,
-    description: FEED_CONSTANTS.description,
-    language: FEED_CONSTANTS.language,
-    id: siteUrl,
-  }
-}
-
-/**
- * 安全获取 Feed 文档列表（空时返回空数组）
- */
-export async function getFeedDocs(apiUrl: string): Promise<FeedDoc[]> {
+export async function getFeedDocs(apiUrl: string): Promise<ApiDocDetail[]> {
   try {
-    const docs = await fetchDocs(apiUrl, { includeContent: true })
-    return docs.map((doc: DocItem) => ({
-      title: doc.title || '',
-      description: doc.description || '',
-      date: doc.date || '',
-      slug: doc.slug || '',
-      series: doc.series || null,
-      tags: doc.tags || [],
-      content: doc.content || '',
-    }))
+    return await fetchDocs(apiUrl, { includeContent: true })
   } catch (error) {
     console.error('获取 Feed 文档失败:', error)
     return []
@@ -77,16 +32,9 @@ export async function getFeedDocs(apiUrl: string): Promise<FeedDoc[]> {
 /**
  * 构建文档链接
  */
-export function buildDocLink(siteUrl: string, doc: FeedDoc): string {
+export function buildDocLink(siteUrl: string, doc: ApiDocDetail): string {
   const slug = doc.slug || ''
   return slug ? `${siteUrl}/docs/${slug}` : siteUrl
-}
-
-/**
- * 构建文档唯一标识（permalink 已移除，统一使用链接作为稳定 ID）
- */
-export function buildDocId(_doc: FeedDoc, fallbackLink: string): string {
-  return fallbackLink
 }
 
 /**
@@ -104,13 +52,6 @@ export function formatDateUtc(dateStr: string): string {
 }
 
 /**
- * 安全格式化日期为 date-only 字符串（YYYY-MM-DD，Sitemap 专用）
- */
-export function formatDateOnly(dateStr: string): string {
-  return safeParseDate(dateStr).toISOString().split('T')[0]!
-}
-
-/**
  * XML 转义（非 CDATA 场景）
  */
 export function xmlEscape(text: string): string {
@@ -125,18 +66,11 @@ export function xmlCdata(text: string): string {
 }
 
 /**
- * 将文档内容转为安全的 CDATA HTML
+ * 把文档正文放进 CDATA。
+ *
+ * 正文 HTML 已由后端在加载期清洗（白名单），这里只处理 CDATA 分隔符冲突。
+ * 旧实现绕了一圈 contentToHtml(minimarkToHtml)——那层已退化为透传。
  */
-export function docContentToCdata(doc: FeedDoc): string {
-  // FeedDoc 与 DocItem 结构兼容，转换为 DocItem 类型
-  const item: DocItem = {
-    slug: doc.slug,
-    title: doc.title,
-    description: doc.description,
-    series: doc.series,
-    tags: doc.tags,
-    date: doc.date,
-    content: doc.content,
-  }
-  return cdataEscape(contentToHtml(item))
+export function docContentToCdata(doc: ApiDocDetail): string {
+  return cdataEscape(doc.content || '')
 }

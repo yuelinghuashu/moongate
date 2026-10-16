@@ -1,172 +1,203 @@
 // composables/useDocs.ts
-import { createSharedComposable } from '@vueuse/core'
-import { useRouteQueryString, useRouteQueryNumber, useRouteQueryArray } from './useRouteQuery'
-import { resolveLangParam } from '~/utils/docs'
+// 文档列表页的筛选状态 + 列表数据。
+//
+// 设计要点（与旧实现的关键差别）：
+//
+//  1. URL 是筛选条件的唯一真相。`filters` 由 route.query 派生，
+//     因此深链、刷新、前进/后退天然正确，不需要任何"反向同步"。
+//  2. 只有**一个**写入口 setFilters()：合并 patch、默认值不写入 URL、一次 router.replace。
+//     旧实现为每个参数建一个双向 watch + 一个按 nuxtApp 隔离的 WeakMap 注册表（189 行），
+//     只为解决"同一 tick 批量改参数时后写的覆盖先写的"——单写入口让这个问题不再存在，
+//     也不再依赖 watch 的执行顺序。
+//  3. 筛选条件真正变化时自动回到第 1 页（旧实现把这件事故在防抖 composable 里，
+//     同一语义有两处实现）。
+//  4. useAsyncData 的 key 直接使用请求 URL：请求内容与缓存 key 不可能各说一套。
+//     旧实现的 key 只含语言，所有筛选组合共用一个 key，跨筛选导航/预取会命中同一 key。
+
+import type { WritableComputedRef } from 'vue'
+import { docsApiUrl, resolveLangParam, type DocsQuery, type SearchMode } from '~/utils/docs'
 import type { DocsResponse } from '~/utils/apiTypes'
 
-/**
- * 默认筛选条件
- * 与 URL 查询参数默认值保持同步
- */
-const DEFAULTS = {
-  search: '',
-  searchMode: 'all',
-  page: 1,
-  size: 10,
-  viewMode: 1,
-} as const
-
-/**
- * 文档列表 Composable
- *
- * 功能：
- * 1. 管理列表页的筛选条件（搜索、分页、排序等）
- * 2. 筛选条件自动同步到 URL（可分享、可刷新）
- * 3. 调用 API 获取文档列表
- * 4. 提供重置筛选条件的方法
- *
- * 使用 createSharedComposable 让同一页面多个组件（列表/标签筛选）
- * 共享同一份状态；VueUse 在服务端（!isClient）会直接返回原始函数，
- * 每个 SSR 请求独立创建状态，不会跨请求泄漏。
- */
-const _useDocs = () => {
-  // ============================================
-  // 1. URL 同步状态
-  // 每个状态都自动与 URL 查询参数双向同步
-  // ============================================
-
-  /** 搜索关键词 */
-  const searchInput = useRouteQueryString('search', { defaultValue: DEFAULTS.search })
-
-  /** 搜索模式：all | title | description */
-  const searchMode = useRouteQueryString('searchMode', { defaultValue: DEFAULTS.searchMode })
-
-  /** 当前页码 */
-  const page = useRouteQueryNumber('page', { defaultValue: DEFAULTS.page })
-
-  /** 每页条数 */
-  const size = useRouteQueryNumber('size', { defaultValue: DEFAULTS.size })
-
-  /** 视图模式：1=详细 | 2=简洁 */
-  const viewMode = useRouteQueryNumber('viewMode', { defaultValue: DEFAULTS.viewMode })
-
-  /** 标签筛选：支持多标签（URL 中为 ?tag=a&tag=b） */
-  const tags = useRouteQueryArray('tag')
-
-  /** 内容语言：由 i18n locale（/en URL 前缀）驱动，仅 en 时请求英文内容 */
-  const { locale } = useI18n()
-  const lang = computed(() => resolveLangParam(locale.value))
-
-  /**
-   * 当筛选条件变化时，自动重置到第一页
-   * 避免筛选后停留在不存在的页码
-   */
-  watch([searchInput, searchMode, tags], () => {
-    page.value = DEFAULTS.page
-  }, { deep: true })
-
-  // ============================================
-  // 2. 构建 API 请求参数
-  // ============================================
-
-  /**
-   * 将当前筛选条件转换为 URLSearchParams
-   * 自动跳过空值，保持 URL 干净
-   */
-  const queryParams = computed(() => {
-    const params = new URLSearchParams()
-
-    // 分页参数（必传）
-    params.append('page', String(page.value))
-    params.append('limit', String(size.value))
-
-    // 搜索关键词
-    if (searchInput.value.trim()) {
-      params.append('search', searchInput.value.trim())
-    }
-
-    // 搜索模式（非默认值时传递）
-    if (searchMode.value !== DEFAULTS.searchMode) {
-      params.append('searchMode', searchMode.value)
-    }
-
-    // 标签筛选（每个标签单独一个参数）
-    tags.value.forEach(t => params.append('tag', t))
-
-    // 内容语言（仅 en 时发送）
-    if (lang.value) {
-      params.append('lang', lang.value)
-    }
-
-    return params
-  })
-
-  // ============================================
-  // 3. 调用 API 获取数据
-  // ============================================
-
-  /**
-   * 使用 useAsyncData 获取文档列表
-   * 当 watch 中的依赖变化时自动重新请求
-   */
-  const config = useRuntimeConfig()
-  const { data, pending, refresh, error } = useAsyncData<DocsResponse>(
-    // key 随语言变化，避免 SSR payload 跨语言错位
-    computed(() => `docs-list-${lang.value}`),
-    async () => {
-      return await $fetch<DocsResponse>(`/api/docs?${queryParams.value.toString()}`, {
-        baseURL: config.public.apiUrl
-      })
-    },
-    {
-      watch: [searchInput, searchMode, page, size, tags, lang],
-    }
-  )
-
-  // ============================================
-  // 4. 工具方法
-  // ============================================
-
-  /**
-   * 重置所有筛选条件到默认值
-   * 常用于点击"清空筛选"按钮
-   */
-  const resetFilters = () => {
-    searchInput.value = DEFAULTS.search
-    searchMode.value = DEFAULTS.searchMode
-    page.value = DEFAULTS.page
-    size.value = DEFAULTS.size
-    viewMode.value = DEFAULTS.viewMode
-    tags.value = []
-  }
-
-  // ============================================
-  // 5. 对外暴露
-  // ============================================
-
-  return {
-    // 筛选状态（双向绑定）
-    searchInput,
-    searchMode,
-    page,
-    size,
-    viewMode,
-    tags,
-
-    // 数据状态
-    docs: data,          // 文档列表数据
-    pending,             // 加载中状态
-    error,               // 错误信息
-    refresh,             // 手动刷新
-
-    // 操作方法
-    resetFilters,        // 重置所有筛选
-  }
+/** 列表页筛选条件：参数名与默认值集中在此 */
+export interface DocsFilters {
+  search: string
+  searchMode: SearchMode
+  page: number
+  limit: number
+  /** 视图模式：1=详细 | 2=简洁（纯前端展示，不发给后端） */
+  viewMode: number
+  tags: string[]
 }
 
 /**
- * 导出共享实例 useDocs
- * createSharedComposable 确保同页多个组件共享同一实例和状态
- * （服务端自动退化为逐请求独立创建，无跨请求泄漏）
+ * 默认筛选条件。page/limit 的默认值与后端保持一致
+ * （moongate-api internal/api/docs.go: defaultPage=1, defaultLimit=10）。
  */
-export const useDocs = createSharedComposable(_useDocs)
+export const DOCS_FILTER_DEFAULTS: DocsFilters = {
+  search: '',
+  searchMode: 'all',
+  page: 1,
+  limit: 10,
+  viewMode: 1,
+  tags: [],
+}
+
+/** 会触发"回到第 1 页"的筛选项：改这些以后再停在第 3 页没有意义 */
+const PAGE_RESET_KEYS: readonly string[] = ['search', 'searchMode', 'tags']
+
+const SEARCH_MODES: readonly string[] = ['all', 'title', 'description']
+
+/** 把 URL query 解析为筛选条件：非法值一律回落默认值，保证任何深链都能渲染 */
+export function parseDocsFilters(query: Record<string, unknown>): DocsFilters {
+  const str = (name: string): string | undefined => {
+    const val = query[name]
+    if (Array.isArray(val)) return typeof val[0] === 'string' ? val[0] : undefined
+    return typeof val === 'string' ? val : undefined
+  }
+
+  const num = (name: string, fallback: number): number => {
+    const raw = str(name)
+    if (raw === undefined) return fallback
+    const parsed = Number.parseInt(raw, 10)
+    return Number.isFinite(parsed) && parsed >= 1 ? parsed : fallback
+  }
+
+  const rawMode = str('searchMode')
+  const mode = SEARCH_MODES.includes(rawMode ?? '')
+    ? (rawMode as SearchMode)
+    : DOCS_FILTER_DEFAULTS.searchMode
+
+  const rawTags = query.tag
+  const tagList = Array.isArray(rawTags) ? rawTags : rawTags === undefined ? [] : [rawTags]
+  const tags = tagList.filter((tag): tag is string => typeof tag === 'string' && tag !== '')
+
+  return {
+    search: str('search') ?? DOCS_FILTER_DEFAULTS.search,
+    searchMode: mode,
+    page: num('page', DOCS_FILTER_DEFAULTS.page),
+    limit: num('limit', DOCS_FILTER_DEFAULTS.limit),
+    viewMode: num('viewMode', DOCS_FILTER_DEFAULTS.viewMode),
+    tags,
+  }
+}
+
+/** 把筛选条件序列化为 URL query：与默认值相同的项不写入，保持 URL 干净 */
+export function filtersToQuery(filters: DocsFilters): Record<string, string | string[]> {
+  const query: Record<string, string | string[]> = {}
+
+  if (filters.search) query.search = filters.search
+  if (filters.searchMode !== DOCS_FILTER_DEFAULTS.searchMode) query.searchMode = filters.searchMode
+  if (filters.page !== DOCS_FILTER_DEFAULTS.page) query.page = String(filters.page)
+  if (filters.limit !== DOCS_FILTER_DEFAULTS.limit) query.limit = String(filters.limit)
+  if (filters.viewMode !== DOCS_FILTER_DEFAULTS.viewMode) query.viewMode = String(filters.viewMode)
+  if (filters.tags.length > 0) query.tag = [...filters.tags]
+
+  return query
+}
+
+/** 把筛选条件映射为内容 API 的查询参数（默认值不发送，请求与缓存 key 都保持最小） */
+export function filtersToApiQuery(filters: DocsFilters, lang: string): DocsQuery {
+  return {
+    page: filters.page,
+    limit: filters.limit,
+    search: filters.search,
+    // searchMode 的默认值就是 all，交给后端默认值即可
+    searchMode: filters.searchMode === DOCS_FILTER_DEFAULTS.searchMode ? undefined : filters.searchMode,
+    tags: filters.tags,
+    lang,
+  }
+}
+
+/** 值比较（tags 是数组，需要按内容比较） */
+function isSameValue(a: unknown, b: unknown): boolean {
+  if (Array.isArray(a) && Array.isArray(b)) {
+    return a.length === b.length && a.every((item, i) => item === b[i])
+  }
+  return a === b
+}
+
+/**
+ * 文档列表 Composable。
+ *
+ * 只在页面组件里调用一次（`pages/docs/index.vue`），筛选状态通过 props 往下传，
+ * 不再用 createSharedComposable 做隐式共享单例。
+ */
+export function useDocs() {
+  const route = useRoute()
+  const router = useRouter()
+  const config = useRuntimeConfig()
+  const { locale } = useI18n()
+
+  /** 内容语言：由 i18n locale（/en URL 前缀）驱动，仅 en 时请求英文内容 */
+  const lang = computed(() => resolveLangParam(locale.value))
+
+  /** 筛选条件：唯一真相是 URL */
+  const filters = computed<DocsFilters>(() => parseDocsFilters(route.query))
+
+  /**
+   * 唯一的写入口：合并 patch → 一次 router.replace。
+   *
+   * - 没有任何字段真的变化时不导航（避免把前进/后退还原出来的 URL 又写回去）；
+   * - 筛选条件变化时强制回到第 1 页；
+   * - 默认值不写入 URL。
+   */
+  function setFilters(patch: Partial<DocsFilters>) {
+    const current = filters.value
+    const changedKeys = (Object.keys(patch) as (keyof DocsFilters)[]).filter(
+      key => !isSameValue(current[key], patch[key]),
+    )
+    if (changedKeys.length === 0) return Promise.resolve()
+
+    const next: DocsFilters = { ...current, ...patch }
+    if (changedKeys.some(key => PAGE_RESET_KEYS.includes(key))) {
+      next.page = DOCS_FILTER_DEFAULTS.page
+    }
+
+    return router.replace({ query: filtersToQuery(next) })
+  }
+
+  /** 重置所有筛选条件到默认值（一次 replace 完成，不是 6 个参数各写一次） */
+  function resetFilters() {
+    return router.replace({ query: filtersToQuery({ ...DOCS_FILTER_DEFAULTS, tags: [] }) })
+  }
+
+  /**
+   * 某个筛选参数的可写模型：模板里可继续用 v-model，
+   * 但写入统一经过 setFilters（因此不存在"每个参数一套双向 watch"）。
+   */
+  function filterModel<K extends keyof DocsFilters>(key: K): WritableComputedRef<DocsFilters[K]> {
+    return computed({
+      get: () => filters.value[key],
+      set: (value: DocsFilters[K]) => {
+        void setFilters({ [key]: value } as Partial<DocsFilters>)
+      },
+    })
+  }
+
+  /** 发往后端的查询参数 */
+  const apiQuery = computed(() => filtersToApiQuery(filters.value, lang.value))
+
+  /**
+   * 列表数据请求。key 与请求 URL 是同一个字符串：
+   * 请求一变 key 就变，Nuxt 会据此重新取数（不需要再列 watch 依赖），
+   * 缓存条目也会在引用归零时被清理，不会随筛选/翻页累积。
+   */
+  const { data: docs, pending, error, refresh } = useAsyncData<DocsResponse>(
+    computed(() => `docs-list:${docsApiUrl(apiQuery.value)}`),
+    () => $fetch<DocsResponse>(docsApiUrl(apiQuery.value), { baseURL: config.public.apiUrl }),
+  )
+
+  return {
+    // 筛选状态
+    filters,
+    filterModel,
+    setFilters,
+    resetFilters,
+
+    // 数据状态
+    docs,
+    pending,
+    error,
+    refresh,
+  }
+}

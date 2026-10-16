@@ -38,7 +38,7 @@
           :key="tag"
           type="button"
           class="block p-2 mx-1 nav-link cursor-pointer"
-          :class="{ active: isTagSelected(tag) }"
+          :class="{ active: isTagSelected(tags, tag) }"
           @click="handleTagClick(tag, $event)"
         >
           <em>#{{ tag }}</em>
@@ -51,34 +51,29 @@
 <script lang="ts" setup>
 import { Card, Divider } from "moongate-vue";
 import { TAG_GROUPS } from "~/utils/tags";
-import { useDocs } from "~/composables/useDocs";
-import { useTagsFilter } from "~/composables/useTagsFilter";
+import { isTagSelected } from "~/composables/useTagsFilter";
+
+// 标签筛选状态由页面传入（模板里直接用 tags），组件只负责交互与渲染
+defineProps<{
+  tags: string[];
+}>();
+
+const emit = defineEmits<{
+  "toggle-tag": [tag: string, additive: boolean];
+}>();
 
 const { t } = useI18n();
 const { isDesktop, isMobile } = useResponsive();
 const multiSelectMode = ref(false);
 
-// 从全局单例获取 tags
-const { tags } = useDocs();
-const { isTagSelected, handleTagClick: originalHandleTagClick } =
-  useTagsFilter(tags);
-
 /**
- * 处理标签点击，支持桌面端 Ctrl/Cmd 多选、移动端多选模式开关
+ * 处理标签点击：桌面端 Ctrl/Cmd 多选，移动端由多选模式开关决定
  */
 const handleTagClick = (tag: string, event: MouseEvent) => {
-  let isMulti = false;
+  const additive = isMobile.value
+    ? multiSelectMode.value
+    : event.ctrlKey || event.metaKey;
 
-  if (isMobile.value) {
-    isMulti = multiSelectMode.value;
-  } else {
-    isMulti = event.ctrlKey || event.metaKey;
-  }
-
-  // 直接传递修改后的修饰符标志
-  originalHandleTagClick(tag, {
-    ctrlKey: isMulti,
-    metaKey: isMulti,
-  } as MouseEvent);
+  emit("toggle-tag", tag, additive);
 };
 </script>

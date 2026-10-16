@@ -1,7 +1,6 @@
 import {
   FEED_CONSTANTS,
   buildDocLink,
-  buildDocId,
   docContentToCdata,
   formatDateIso,
   getFeedDocs,
@@ -42,7 +41,7 @@ export default defineCachedEventHandler(async (event) => {
       const published = formatDateIso(doc.date)
 
       const link = buildDocLink(siteUrl, doc)
-      const id = buildDocId(doc, link)
+      const id = link
 
       // 转义特殊字符
       const title = xmlCdata(doc.title || '无标题')

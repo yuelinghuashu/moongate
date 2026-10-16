@@ -1,5 +1,4 @@
 // composables/useOutline.ts
-import { useLocalStorage } from "@vueuse/core";
 import { computed } from "vue";
 import type { Ref } from "vue";
 
@@ -10,19 +9,15 @@ export interface OutlineItem {
   children?: OutlineItem[]
 }
 
+/**
+ * 从正文 HTML 提取大纲（目录）。
+ *
+ * 纯提取逻辑：不持有任何 UI 状态，因此可以被多次调用、也可以直接单测。
+ * "目录抽屉是否展开"这个开关的唯一来源是 stores/setting.ts
+ * （此前分散在 Pinia store、本 composable 的 localStorage、以及 AppHeader 的
+ * watchEffect 三处；同一个开关有三个来源，谁也不知道以谁为准）。
+ */
 export function useOutline(contentRef?: Ref<string | undefined>) {
-  // ==================== UI 状态 ====================
-  const isOutlineIconVisible = useLocalStorage("isOutlineIconVisible", false);
-  const isOutlineVisible = useLocalStorage("isOutlineVisible", false);
-
-  const toggleIcon = () => {
-    isOutlineIconVisible.value = !isOutlineIconVisible.value;
-  };
-
-  const toggleOutline = () => {
-    isOutlineVisible.value = !isOutlineVisible.value;
-  };
-
   // ==================== 大纲提取 ====================
   const outline = computed<OutlineItem[]>(() => {
     const rawContent = contentRef?.value
@@ -92,13 +87,6 @@ export function useOutline(contentRef?: Ref<string | undefined>) {
   })
 
   return {
-    // UI 状态
-    isOutlineIconVisible,
-    isOutlineVisible,
-    toggleIcon,
-    toggleOutline,
-
-    // 大纲数据
     outline,
     nestedOutline,
   };

@@ -29,6 +29,15 @@ jobs:
       - name: Run tests
         run: pnpm test
 
+      # 与后端 API 的契约断言（app/utils/__tests__/apiContract.test.ts 里的
+      # expectTypeOf）只在类型检查时才会失败：vitest 运行期不检查类型。
+      # 少了这一步，"编译期护栏"就是纸面护栏——后端 DTO 改了也不会有人被拦下。
+      - name: Typecheck（含 API 契约类型断言）
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
   deploy:
     runs-on: ubuntu-latest
     needs: test

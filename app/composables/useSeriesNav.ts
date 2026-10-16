@@ -2,34 +2,14 @@
 // 系列导航数据装配：把 API 的系列分组映射为 <SeriesNav> 所需的 items + active + 标题。
 //
 // 职责（只做"拿到数据 + 映射"，不负责排序——排序由后端按 order/date 保证）：
-// 1. 拉取全部分组（/api/docs?group=series，按 lang 缓存）
+// 1. 拉取全部分组（/api/docs?group=series，按请求 URL 缓存）
 // 2. 按当前文档的 series slug 取同系列篇目
 // 3. 映射为 SeriesNavItem[]（title → label，slug → href）
 // 4. 计算当前激活项 key、系列名标题（i18n）
 // 5. 无系列 / 无数据时返回空，交由上层渲染空
-import { computed } from "vue";
-import type { Ref } from "vue";
-import { resolveLangParam } from "~/utils/docs";
-
-/** 组内单篇摘要（/api/docs?group=series 返回的 DocSummary 结构） */
-export interface SeriesDocSummary {
-  slug: string;
-  title: string;
-  description: string;
-  date: string;
-  series: string | null;
-  order?: number | null;
-  tags: string[];
-  lang?: string;
-  isFallback?: boolean;
-  hasTranslation?: boolean;
-}
-
-/** 系列分组 */
-export interface SeriesGroup {
-  slug: string;
-  docs: SeriesDocSummary[];
-}
+import { docsApiUrl, resolveLangParam } from "~/utils/docs";
+import type { SeriesGroup } from "~/utils/apiTypes";
+import { resolveSeriesName, useSeriesNames } from "./useSeriesNames";
 
 /** 映射给 <SeriesNav> 的 item */
 export interface SeriesNavViewModel {
@@ -89,7 +69,7 @@ export function buildSeriesNavModel(
   }));
 
   return {
-    title: seriesNames?.[slug] || slug,
+    title: resolveSeriesName(seriesNames, slug),
     items,
     active: currentSlug,
     seriesSlug: slug,
@@ -107,33 +87,24 @@ export function useSeriesNav(
   series: Ref<string | null | undefined>,
   currentSlug: Ref<string>,
 ) {
-  const { tm } = useI18nSafe();
   const { locale } = useI18n();
   const config = useRuntimeConfig();
   const localePath = useLocalePath();
+  const seriesNames = useSeriesNames();
 
   const lang = computed(() => resolveLangParam(locale.value));
 
-  // 按语言缓存全部分组（多个文章页共享一次请求，避免重复拉取）
+  // 按请求 URL 缓存全部分组：key 与请求 URL 相同，语言变化时自动重新取数
+  // （旧实现语言既在 key 里、又在 watch 列表里，watch 属多余）
+  const url = computed(() => docsApiUrl({ group: "series", lang: lang.value }));
+
   const { data } = useAsyncData<SeriesGroup[]>(
-    computed(() => `series-nav-${lang.value}`),
-    async () => {
-      const query = lang.value ? `&lang=${lang.value}` : "";
-      return await $fetch<SeriesGroup[]>(
-        `/api/docs?group=series${query}`,
-        { baseURL: config.public.apiUrl },
-      );
-    },
-    {
-      watch: [lang],
-      server: true,
-    },
+    computed(() => `series-nav:${url.value}`),
+    () => $fetch<SeriesGroup[]>(url.value, { baseURL: config.public.apiUrl }),
+    { server: true },
   );
 
-  // 局部化的系列名
-  const seriesNames = computed(() => tm("series") as Record<string, string>);
-
-  const result = computed<UseSeriesNavResult>(() =>
+  return computed<UseSeriesNavResult>(() =>
     buildSeriesNavModel(
       data.value || [],
       series.value,
@@ -142,6 +113,4 @@ export function useSeriesNav(
       (s) => localePath(`/docs/${s}`),
     ),
   );
-
-  return result;
 }

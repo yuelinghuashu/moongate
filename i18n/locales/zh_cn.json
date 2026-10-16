@@ -10,8 +10,7 @@
       { "id": 1, "name": "文档", "link": "/docs" },
       { "id": 2, "name": "系列", "link": "/series" },
       { "id": 3, "name": "作品", "link": "/projects" },
-      { "id": 4, "name": "关于", "link": "/about" },
-      { "id": 5, "name": "设置", "link": "/settings" }
+      { "id": 4, "name": "设置", "link": "/settings" }
     ]
   },
   "docs": {

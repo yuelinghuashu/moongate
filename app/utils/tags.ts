@@ -60,8 +60,3 @@ export const TAG_GROUPS: TagGroup[] = [
     // Engineering: 研发流程、代码规范、测试策略、CI/CD、配置等工程化内容
   },
 ];
-
-/** 扁平化标签列表（保持向后兼容） */
-export const ALLOWED_TAGS: string[] = TAG_GROUPS.flatMap((group) => group.tags);
-
-export const isValidTag = (tag: string) => ALLOWED_TAGS.includes(tag);

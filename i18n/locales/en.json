@@ -10,8 +10,7 @@
       { "id": 1, "name": "Docs", "link": "/docs" },
       { "id": 2, "name": "Series", "link": "/series" },
       { "id": 3, "name": "Projects", "link": "/projects" },
-      { "id": 4, "name": "About", "link": "/about" },
-      { "id": 5, "name": "Settings", "link": "/settings" }
+      { "id": 4, "name": "Settings", "link": "/settings" }
     ]
   },
   "docs": {

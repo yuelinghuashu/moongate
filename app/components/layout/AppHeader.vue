@@ -84,14 +84,14 @@ const colorMode = useColorMode();
 const localePath = useLocalePath();
 const { isDesktop } = useResponsive();
 const route = useRoute();
-const { isOutlineIconVisible, toggleOutline } = useOutline();
-watchEffect(() => {
-  if (route.path.match(/^\/(?:[a-z_-]+\/)?(docs|about)\/.+/)) {
-    isOutlineIconVisible.value = true;
-  } else {
-    isOutlineIconVisible.value = false;
-  }
-});
+
+// 目录图标只在文章详情页出现：由路由直接派生，不写任何持久化状态
+// （旧实现用 watchEffect 把结果写进 localStorage，同一个开关因此有多个来源）
+const isOutlineIconVisible = computed(() => /^\/(?:[a-z_-]+\/)?docs\/.+/.test(route.path));
+
+// 目录抽屉的展开状态：唯一来源是 Pinia store
+const toggleOutline = () =>
+  settingStore.setOutlineVisible(!settingStore.settings.ui.isOutlineVisible);
 
 // 移动抽屉状态
 const isMenuVisible = ref(false);

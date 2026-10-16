@@ -1,7 +1,6 @@
 import {
   FEED_CONSTANTS,
   buildDocLink,
-  buildDocId,
   docContentToCdata,
   formatDateIso,
   getFeedDocs,
@@ -27,7 +26,7 @@ export default defineCachedEventHandler(async (event) => {
       }],
       items: docs.map((doc) => {
         const link = buildDocLink(siteUrl, doc)
-        const id = buildDocId(doc, link)
+        const id = link
 
         return {
           id,

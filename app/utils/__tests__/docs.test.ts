@@ -1,47 +1,9 @@
-import { describe, it, expect, vi } from 'vitest'
-import { contentToHtml, safeParseDate, resolveLangParam } from '../docs'
-import type { DocItem } from '../apiTypes'
+import { describe, it, expect } from 'vitest'
+import { safeParseDate } from '../docs'
 
-describe('contentToHtml', () => {
-  it('should return empty string when content is empty', () => {
-    const doc = { title: 'test', content: '' } as DocItem
-    expect(contentToHtml(doc)).toBe('')
-  })
-
-  it('should return content HTML directly', () => {
-    const doc = { title: 'test', content: '<p>Hello</p>' } as DocItem
-    expect(contentToHtml(doc)).toBe('<p>Hello</p>')
-  })
-
-  it('should fall back to description when conversion fails', () => {
-    // 构造一个访问属性时抛异常的对象，让 minimarkToHtml 抛异常
-    const throwingObj = {}
-    Object.defineProperty(throwingObj, 'type', {
-      get() { throw new Error('boom') }
-    })
-
-    const doc = {
-      title: 'test',
-      content: throwingObj,
-      description: 'fallback description',
-    } as unknown as DocItem
-
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-    const result = contentToHtml(doc)
-    consoleSpy.mockRestore()
-
-    expect(result).toBe('fallback description')
-  })
-
-  it('should return description when content is falsy', () => {
-    const doc = {
-      title: 'test',
-      content: '',
-      description: 'no content available',
-    } as unknown as DocItem
-    expect(contentToHtml(doc)).toBe('')
-  })
-})
+// 说明：contentToHtml / minimarkToHtml 已删除——后端返回的 content 就是最终 HTML
+// （且已在加载期清洗），那两层"透传 + 兼容历史 MinimarkTree"没有任何调用价值。
+// 正文相关的渲染行为由 useDocDetail（高亮）与后端 sanitize 测试覆盖。
 
 describe('safeParseDate', () => {
   it('should parse valid date string', () => {
@@ -79,23 +41,5 @@ describe('safeParseDate', () => {
   it('should handle ISO timestamp string', () => {
     const result = safeParseDate('2025-03-20T08:00:00.000Z')
     expect(result.toISOString()).toBe('2025-03-20T08:00:00.000Z')
-  })
-})
-
-describe('resolveLangParam', () => {
-  it('should return "en" for English locale', () => {
-    expect(resolveLangParam('en')).toBe('en')
-  })
-
-  it('should return empty string for default Chinese locale', () => {
-    expect(resolveLangParam('zh_cn')).toBe('')
-  })
-
-  it('should return empty string for Japanese locale (no ja content)', () => {
-    expect(resolveLangParam('ja')).toBe('')
-  })
-
-  it('should return empty string for unknown locale', () => {
-    expect(resolveLangParam('fr')).toBe('')
   })
 })

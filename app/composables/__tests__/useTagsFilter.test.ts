@@ -1,88 +1,51 @@
 import { describe, it, expect } from 'vitest'
-import { ref } from 'vue'
-import { useTagsFilter } from '../useTagsFilter'
+import { isTagSelected, toggleTag } from '../useTagsFilter'
 
-describe('useTagsFilter', () => {
-  it('should check if tag is selected', () => {
-    const tags = ref(['vue', 'nuxt'])
-    const { isTagSelected } = useTagsFilter(tags)
+// 标签交互现在是纯函数（状态由 URL 承载，见 useDocs），
+// 因此这里不需要任何响应式包装，直接断言输入 → 输出。
+describe('isTagSelected', () => {
+  it('判断标签是否选中', () => {
+    expect(isTagSelected(['vue', 'nuxt'], 'vue')).toBe(true)
+    expect(isTagSelected(['vue', 'nuxt'], 'nuxt')).toBe(true)
+    expect(isTagSelected(['vue', 'nuxt'], 'react')).toBe(false)
+    expect(isTagSelected([], 'anything')).toBe(false)
+  })
+})
 
-    expect(isTagSelected('vue')).toBe(true)
-    expect(isTagSelected('nuxt')).toBe(true)
-    expect(isTagSelected('react')).toBe(false)
+describe('toggleTag（单选）', () => {
+  it('空列表点击后只选中该标签', () => {
+    expect(toggleTag([], 'vue', false)).toEqual(['vue'])
   })
 
-  it('should select a single tag on normal click', () => {
-    const tags = ref<string[]>([])
-    const { handleTagClick } = useTagsFilter(tags)
-
-    handleTagClick('vue', new MouseEvent('click'))
-
-    expect(tags.value).toEqual(['vue'])
+  it('已选其它标签时替换为当前标签', () => {
+    expect(toggleTag(['vue', 'nuxt'], 'react', false)).toEqual(['react'])
   })
 
-  it('should replace existing tags with single tag on normal click', () => {
-    const tags = ref(['vue', 'nuxt'])
-    const { handleTagClick } = useTagsFilter(tags)
+  it('点击已选标签则清空', () => {
+    expect(toggleTag(['vue'], 'vue', false)).toEqual([])
+  })
+})
 
-    handleTagClick('react', new MouseEvent('click'))
-
-    expect(tags.value).toEqual(['react'])
+describe('toggleTag（多选）', () => {
+  it('追加未选中的标签', () => {
+    expect(toggleTag(['vue'], 'nuxt', true)).toEqual(['vue', 'nuxt'])
   })
 
-  it('should clear tags when clicking selected tag without modifier', () => {
-    const tags = ref(['vue'])
-    const { handleTagClick } = useTagsFilter(tags)
-
-    handleTagClick('vue', new MouseEvent('click'))
-
-    expect(tags.value).toEqual([])
+  it('移除已选中的标签', () => {
+    expect(toggleTag(['vue', 'nuxt'], 'vue', true)).toEqual(['nuxt'])
   })
 
-  it('should add tag with ctrl+click for multi-select', () => {
-    const tags = ref(['vue'])
-    const { handleTagClick } = useTagsFilter(tags)
-
-    handleTagClick('nuxt', new MouseEvent('click', { ctrlKey: true }))
-
-    expect(tags.value).toEqual(['vue', 'nuxt'])
+  it('重复多选不会产生重复项（第二次点击即移除）', () => {
+    const once = toggleTag(['vue', 'nuxt'], 'vue', true)
+    expect(once).toEqual(['nuxt'])
+    expect(toggleTag(once, 'vue', true)).toEqual(['nuxt', 'vue'])
   })
+})
 
-  it('should remove tag with ctrl+click when already selected', () => {
-    const tags = ref(['vue', 'nuxt'])
-    const { handleTagClick } = useTagsFilter(tags)
-
-    handleTagClick('vue', new MouseEvent('click', { ctrlKey: true }))
-
-    expect(tags.value).toEqual(['nuxt'])
-  })
-
-  it('should add tag with meta+click for multi-select (Mac)', () => {
-    const tags = ref(['vue'])
-    const { handleTagClick } = useTagsFilter(tags)
-
-    handleTagClick('nuxt', new MouseEvent('click', { metaKey: true }))
-
-    expect(tags.value).toEqual(['vue', 'nuxt'])
-  })
-
-  it('should not duplicate tags when adding existing tag with multi-select', () => {
-    const tags = ref(['vue', 'nuxt'])
-    const { handleTagClick } = useTagsFilter(tags)
-
-    handleTagClick('vue', new MouseEvent('click', { ctrlKey: true }))
-
-    // 已选中的被移除而不是保留
-    expect(tags.value).toEqual(['nuxt'])
-  })
-
-  it('should handle empty tags list', () => {
-    const tags = ref<string[]>([])
-    const { isTagSelected, handleTagClick } = useTagsFilter(tags)
-
-    expect(isTagSelected('anything')).toBe(false)
-
-    handleTagClick('vue', new MouseEvent('click'))
-    expect(tags.value).toEqual(['vue'])
+describe('toggleTag（不可变性）', () => {
+  it('不修改入参数组', () => {
+    const tags = ['vue']
+    toggleTag(tags, 'nuxt', true)
+    expect(tags).toEqual(['vue'])
   })
 })

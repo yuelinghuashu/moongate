@@ -2,9 +2,6 @@ const useSettingStore = defineStore('setting', () => {
   const { setLocale, locales, locale } = useI18n()
   const colorMode = useColorMode()
 
-  // 是否显示目录图标
-  const isOutlineIconVisible = ref(false)
-
   // 默认语言
   const defaultLocale = locales.value.findIndex(
     (item) => item.code === locale.value,
@@ -21,6 +18,11 @@ const useSettingStore = defineStore('setting', () => {
     },
     // 是否跳过首页（31=显示首页，32=跳过首页）
     homepageBehavior: 31,
+    // 阅读界面的临时开关（持久化，刷新后保持）
+    ui: {
+      // 目录抽屉是否展开（"是否显示目录图标"由路由派生，不在这里）
+      isOutlineVisible: false,
+    },
   })
 
   // 设置主题
@@ -35,9 +37,14 @@ const useSettingStore = defineStore('setting', () => {
     settings.value.appearance.language = lang
   }
 
+  // 设置目录抽屉的展开状态
+  const setOutlineVisible = (visible: boolean) => {
+    settings.value.ui.isOutlineVisible = visible
+  }
+
   return {
-    isOutlineIconVisible,
     setLanguage,
+    setOutlineVisible,
     setTheme,
     settings
   }

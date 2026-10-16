@@ -19,6 +19,11 @@
       class="prose dark:prose-invert max-w-none prose-sm md:prose-base lg:prose-lg"
     >
       <h1 class="text-3xl font-bold">{{ page.title }}</h1>
+      <!-- 正文 HTML 由后端在加载期做白名单清洗（moongate-api internal/loader/sanitize.go），
+           SSR 与浏览器拿到的是同一份内容，因此这里直接渲染、不做运行期清洗
+           （客户端清洗会造成首帧与服务端不一致）。Shiki 之后注入的高亮标记由
+           shiki 自身转义，不引入新的注入面。 -->
+      <!-- eslint-disable-next-line vue/no-v-html -- 见上方说明：内容已在后端清洗 -->
       <div class="shiki-content" v-html="contentRef" />
     </article>
 
@@ -40,6 +45,8 @@
 <script lang="ts" setup>
 import { Drawer, Skeleton } from "moongate-vue";
 import { resolveLangParam } from "~/utils/docs";
+import useSettingStore from "~/stores/setting";
+import type { ApiDocDetail } from "~/utils/apiTypes";
 
 const route = useRoute();
 const { t, locale } = useI18n();
@@ -49,29 +56,22 @@ const slug = computed(() => (route.params.slug as string) || "");
 // 内容语言：由 /en URL 前缀（i18n locale）驱动
 const lang = computed(() => resolveLangParam(locale.value));
 
-// 文档详情响应体
-interface DocDetailResponse {
-  slug: string;
-  title: string;
-  description: string;
-  date: string;
-  series: string;
-  tags: string[];
-  content: string; // 原始未高亮的 HTML 内容
+// 详情响应 = 摘要字段 + 正文；契约见 utils/apiTypes.ts（与后端 DocDetail 对齐）
+type DocDetailResponse = ApiDocDetail & {
   highlightedContent?: string; // 服务端异步高亮生成的完全体 HTML
-  lang?: string; // 实际返回内容的语言
-  isFallback?: boolean; // 请求语言无译文时回退到了另一语言
-  hasTranslation?: boolean; // 该 slug 是否存在英文译文
-}
+};
 
 // 复用公共 useDocDetail：数据获取 + Shiki 高亮 + 大纲提取
-const { page, contentRef, nestedOutline, isOutlineVisible } =
-  useDocDetail<DocDetailResponse>(
-    `doc-${slug.value}`,
-    slug,
-    (s) => `/api/docs/${s}`,
-    lang,
-  );
+// key 与请求 URL 都由 slug/lang 派生，因此这里不需要再传 fetchKey
+const { page, contentRef, nestedOutline } =
+  useDocDetail<DocDetailResponse>(slug, lang);
+
+// 目录抽屉的展开状态只有一个来源：stores/setting.ts（持久化，刷新后保持）
+const settingStore = useSettingStore();
+const isOutlineVisible = computed({
+  get: () => settingStore.settings.ui.isOutlineVisible,
+  set: (value: boolean) => settingStore.setOutlineVisible(value),
+});
 
 // ---------- SEO：canonical + hreflang 双语交替 ----------
 const siteUrl = computed(() =>

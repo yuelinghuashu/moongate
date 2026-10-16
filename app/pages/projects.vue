@@ -18,12 +18,19 @@ const { tm } = useI18nSafe();
 
 /** 作品列表行数据结构 */
 interface ProjectRow {
-  name: string
-  description: string
-  link: string
+  name: string;
+  description: string;
+  link: string;
 }
 
 // i18n 翻译数据是运行时获取的，类型断言确保与 TableColumn<ProjectRow> 匹配
 const columns = tm("projects.columns") as TableColumn<ProjectRow>[];
 const projectsData = tm("projects.data") as ProjectRow[];
+
+useSeoMeta({
+  title: "作品 | Projects",
+  description: "探索 Moongate 的系列作品。",
+  ogTitle: "Moongate 作品库",
+  ogDescription: "我的 github 项目。",
+});
 </script>

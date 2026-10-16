@@ -6,7 +6,7 @@
         {{ t("error.statusMessage") }}
       </h1>
       <p class="text-dim mb-8">{{ t("error.message") }}</p>
-      <Button variant="filled" color="primary" size="md" @click="goHome">
+      <Button variant="filled" color="primary" @click="goHome">
         {{ t("error.backToHome") }}
       </Button>
     </Container>

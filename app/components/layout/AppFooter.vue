@@ -9,9 +9,6 @@
           </span>
         </div>
 
-        <!-- 中间区域（预留，可放友情链接） -->
-        <div class="center flex-1 flex justify-center" />
-
         <!-- 右侧区域 -->
         <div class="right flex items-center gap-3">
           <NuxtLink

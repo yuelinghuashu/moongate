@@ -10,6 +10,10 @@ export default defineNuxtConfig({
     '@nuxt/icon',
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
+    // 仅用于生成 .nuxt/eslint.config.mjs（eslint.config.mjs 从这里 import）。
+    // 它不产出任何运行时代码；曾一度被移出 modules，结果是 `pnpm lint` 直接
+    // 报 "Cannot find module .nuxt/eslint.config.mjs"——CI 现在会跑 lint，必须留着。
+    '@nuxt/eslint',
   ],
   ssr: true,
   devtools: {

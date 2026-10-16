@@ -19,17 +19,17 @@
     "@nuxtjs/i18n": "^10.3.0",
     "@pinia/nuxt": "^0.11.3",
     "@vueuse/core": "^14.3.0",
-    "@vueuse/router": "^14.3.0",
     "dayjs": "^1.11.20",
-    "dompurify": "^3.4.13",
-    "moongate-vue": "1.7.0",
+    "moongate-vue": "1.7.1",
     "pinia": "^3.0.4",
     "pinia-plugin-persistedstate": "^4.7.1",
-    "vue": "^3.5.34"
+    "vue": "^3.5.34",
+    "vue-i18n": "^11.4.8"
   },
   "devDependencies": {
-    "@nuxt/eslint": "^1.15.2",
     "@iconify-json/tabler": "^1.2.35",
+    "@iconify/vue": "^5.0.1",
+    "@nuxt/eslint": "^1.15.2",
     "@unocss/nuxt": "^66.6.8",
     "@vue/test-utils": "^2.4.11",
     "eslint": "^10.5.0",

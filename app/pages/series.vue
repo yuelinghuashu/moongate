@@ -30,7 +30,11 @@
             class="flex-shrink-0"
           />
           <span>{{ series.name }}</span>
-          <Badge size="sm" color="primary" :label="String(series.docs.length)" />
+          <Badge
+            size="sm"
+            color="primary"
+            :label="String(series.docs.length)"
+          />
         </button>
 
         <!-- 系列文章列表：v-show 保持 DOM 挂载，切换流畅 -->
@@ -55,46 +59,34 @@
 <script setup lang="ts">
 import { Badge, Button, Container } from "moongate-vue";
 import dayjs from "dayjs";
-import { resolveLangParam } from "~/utils/docs";
+import { docsApiUrl, resolveLangParam } from "~/utils/docs";
+import { resolveSeriesName, useSeriesNames } from "~/composables/useSeriesNames";
+import type { SeriesGroup } from "~/utils/apiTypes";
 
-const { tm } = useI18nSafe();
 const localePath = useLocalePath();
-
-// ==================== 类型定义 ====================
-interface SeriesDoc {
-  title: string
-  date: string
-  slug: string
-}
-
-interface SeriesGroup {
-  slug: string
-  docs: SeriesDoc[]
-}
 
 // ==================== API 调用 ====================
 const config = useRuntimeConfig();
 const { locale } = useI18n();
 const lang = computed(() => resolveLangParam(locale.value));
 
+// key 与请求 URL 相同：语言变化时 Nuxt 自动重新取数
+const url = computed(() => docsApiUrl({ group: "series", lang: lang.value }));
+
 const { data: seriesData } = await useAsyncData<SeriesGroup[]>(
-  computed(() => `series-list-${lang.value}`),
-  async () => {
-    const query = lang.value ? `&lang=${lang.value}` : '';
-    return await $fetch<SeriesGroup[]>(`/api/docs?group=series${query}`, {
-      baseURL: config.public.apiUrl,
-    });
-  },
+  computed(() => `series-list:${url.value}`),
+  () => $fetch<SeriesGroup[]>(url.value, { baseURL: config.public.apiUrl }),
 );
 
 // ==================== 合并 i18n 系列名 ====================
-const seriesNames = tm("series") as Record<string, string>;
+// 系列名解析（含缺失回退 slug）只在 useSeriesNames/resolveSeriesName 一处
+const seriesNames = useSeriesNames();
 
 const seriesList = computed(() => {
   if (!seriesData.value) return [];
   return seriesData.value.map((group: SeriesGroup) => ({
     slug: group.slug,
-    name: seriesNames[group.slug] || group.slug,
+    name: resolveSeriesName(seriesNames.value, group.slug),
     docs: group.docs,
   }));
 });
@@ -140,12 +132,21 @@ const toggleAll = () => {
   if (isAnyExpanded.value) {
     expandedSeries.value = [];
   } else {
-    expandedSeries.value = seriesList.value.map((s: { slug: string }) => s.slug);
+    expandedSeries.value = seriesList.value.map(
+      (s: { slug: string }) => s.slug,
+    );
   }
 };
 
 // ==================== 辅助函数 ====================
 const formatDate = (date: string) => dayjs(date).format("YYYY-MM-DD");
+
+useSeoMeta({
+  title: "系列 | Series",
+  description: "探索 Moongate 的系列文档。",
+  ogTitle: "Moongate 文档库",
+  ogDescription: "Moongate 的系列文档，涵盖 Nuxt、Vue、数据库等前沿技术。",
+});
 </script>
 
 <style scoped>

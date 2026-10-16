@@ -29,16 +29,16 @@ useHead({
     },
   ],
 
-  //  Google tag (gtag.js) — 使用 defer 避免阻塞渲染
+  //  Google tag (gtag.js)
+  //  外部脚本用 async（defer 对 async 脚本无意义）；行内脚本不接受 defer——
+  //  浏览器本来就忽略行内脚本的 defer，而 useHead 的类型也不允许，去掉即可。
   script: [
     {
       src: "https://www.googletagmanager.com/gtag/js?id=G-3P4XXTRN7Z",
       async: true,
-      defer: true,
     },
     {
       innerHTML: `window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-3P4XXTRN7Z');`,
-      defer: true,
     },
   ],
 });

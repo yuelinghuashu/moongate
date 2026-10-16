@@ -3,7 +3,6 @@ import { useRuntimeConfig } from '#imports'
 import {
   FEED_CONSTANTS,
   buildDocLink,
-  buildDocId,
   docContentToCdata,
   formatDateUtc,
   getFeedDocs,
@@ -43,7 +42,8 @@ export default defineCachedEventHandler(async (event) => {
 
         // 构建链接和标识
         const link = buildDocLink(siteUrl, doc)
-        const guid = buildDocId(doc, link)
+        // permalink 概念已移除：链接即稳定 ID
+        const guid = link
 
         // 安全处理日期
         const pubDate = formatDateUtc(doc.date)

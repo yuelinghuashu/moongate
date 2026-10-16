@@ -20,8 +20,8 @@
                 v-for="tag in item.tags"
                 :key="tag"
                 class="inline-block nav-link text-sm cursor-pointer"
-                :class="{ active: isTagSelected(tag) }"
-                @click="handleTagClick(tag, $event)"
+                :class="{ active: isTagSelected(tags, tag) }"
+                @click.stop="emit('toggle-tag', tag, isAdditive($event))"
                 >#{{ tag }}</span
               >
             </div>
@@ -59,24 +59,30 @@
 
 <script lang="ts" setup>
 import { Card, Badge } from "moongate-vue";
-import { useDocs } from "~/composables/useDocs";
-import { useTagsFilter } from "~/composables/useTagsFilter";
+import { isTagSelected } from "~/composables/useTagsFilter";
 import type { DocItem } from "~/utils/apiTypes";
 import dayjs from "dayjs";
 
 // ---------- 定义 Props ----------
+// 标签筛选状态由页面经 props 传入（不再从隐式共享单例里取），
+// 点击只 emit 意图：写入 URL 的唯一入口是页面上的 useDocs().setFilters。
 defineProps<{
   docs: DocItem[];
   viewMode: number;
+  tags: string[];
+}>();
+
+const emit = defineEmits<{
+  "toggle-tag": [tag: string, additive: boolean];
 }>();
 
 // ---------- 响应式工具 ----------
 const localePath = useLocalePath();
 const { t } = useI18n();
 
-// ---------- 全局状态 ----------
-const { tags } = useDocs();
-const { isTagSelected, handleTagClick } = useTagsFilter(tags);
+// ---------- 交互 ----------
+/** 文章卡片上的标签沿用桌面端惯例：Ctrl/Cmd 点击多选 */
+const isAdditive = (event: MouseEvent) => event.ctrlKey || event.metaKey;
 
 // ---------- 导航 ----------
 const navigateToDoc = (slug: string) => {

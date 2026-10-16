@@ -2,25 +2,12 @@
 import { escapeXml } from '../../app/utils/xml'
 import { fetchDocs } from '../utils/docs'
 
-interface AboutPage {
-  slug?: string
-  path?: string
-}
-
-interface AboutResponse {
-  data?: AboutPage[]
-}
-
 export default defineEventHandler(async (event) => {
   const { siteUrl, apiUrl } = useRuntimeConfig().public
 
   try {
     // 1. 获取文档数据
     const docs = await fetchDocs(apiUrl, { includeContent: false })
-
-    // 获取 about 页面数据
-    const aboutResponse = await $fetch<AboutResponse>(`${apiUrl}/api/about`)
-    const about = aboutResponse.data || []
 
     // 获取当前时间作为 lastmod
     const lastmod = docs[0]?.date
@@ -40,11 +27,6 @@ export default defineEventHandler(async (event) => {
         priority: '0.9',
         changefreq: 'weekly',
         lastmod
-      },
-      {
-        loc: `${siteUrl}/about`,
-        priority: '0.5',
-        changefreq: 'monthly'
       },
       {
         loc: `${siteUrl}/404`,
@@ -67,12 +49,6 @@ export default defineEventHandler(async (event) => {
           changefreq: 'monthly',
           lastmod: doc.date ? new Date(doc.date).toISOString().split('T')[0] : lastmod
         })),
-      // about 页面
-      ...about.map((page) => ({
-        loc: `${siteUrl}/about/${page.slug || page.path}`,
-        priority: '0.6',
-        changefreq: 'monthly'
-      })),
     ]
 
     // 3. 生成 XML（优化性能）
