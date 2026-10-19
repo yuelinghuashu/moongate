@@ -15,7 +15,7 @@
     >
       <Select
         v-model="searchMode"
-        :options="tm('docs.searchMode')"
+        :options="tm<SelectOption[]>('docs.searchMode')"
         label-key="name"
         value-key="value"
         class="min-w-40 px-0"
@@ -24,7 +24,7 @@
 
       <Select
         v-model="viewMode"
-        :options="tm('docs.viewMode')"
+        :options="tm<SelectOption[]>('docs.viewMode')"
         label-key="name"
         value-key="id"
         :placeholder="t('docs.viewModePlaceholder')"
@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Button, Select, Input } from "moongate-vue";
+import { Button, Select, Input, type SelectOption } from "moongate-vue";
 const { t, tm } = useI18nSafe();
 
 const search = defineModel<string>("search", { default: "" });

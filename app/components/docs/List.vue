@@ -16,14 +16,17 @@
           <div class="flex-1">
             <h2 class="text-xl font-medium">{{ item.title }}</h2>
             <div class="flex flex-wrap mt-1">
-              <span
+              <!-- 用 button 而不是 span：卡片本身可点击，标签要能被 Tab 聚焦、回车/空格触发 -->
+              <button
                 v-for="tag in item.tags"
                 :key="tag"
+                type="button"
                 class="inline-block nav-link text-sm cursor-pointer"
                 :class="{ active: isTagSelected(tags, tag) }"
                 @click.stop="emit('toggle-tag', tag, isAdditive($event))"
-                >#{{ tag }}</span
               >
+                #{{ tag }}
+              </button>
             </div>
           </div>
 

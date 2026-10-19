@@ -27,7 +27,7 @@
 | 国际化   | Nuxt i18n                                                  |
 | 状态管理 | Pinia                                                      |
 | 组件库   | [moongate-vue](https://www.npmjs.com/package/moongate-vue) |
-| 测试     | Vitest + @vue/test-utils + happy-dom                       |
+| 测试     | Vitest + happy-dom                                         |
 
 ## 🚀 快速开始
 
@@ -64,7 +64,7 @@ pnpm dev
 CI 的 `test` job 会依次跑这三条命令（缺一不可）：
 
 ```bash
-pnpm test          # Vitest 单元测试（75 个）
+pnpm test          # Vitest 单元测试（76 个）
 pnpm typecheck     # 类型检查：API 契约断言（apiContract.test.ts）只在这里才会失败
 pnpm lint          # ESLint 代码检查
 ```

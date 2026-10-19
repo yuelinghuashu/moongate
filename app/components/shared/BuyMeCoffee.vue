@@ -4,18 +4,18 @@
       {{ t("site.coffeeTip") }}
     </summary>
     <div class="flex justify-center gap-4">
-      <NuxtImg
+      <img
         src="/images/ali-pay.jpg"
         alt="Ali Pay"
         class="w-32"
         loading="lazy"
-      />
-      <NuxtImg
+      >
+      <img
         src="/images/wechat-pay.jpg"
         alt="Wechat Pay"
         class="w-32"
         loading="lazy"
-      />
+      >
     </div>
   </details>
 </template>
@@ -23,5 +23,4 @@
 <script lang="ts" setup>
 const { containerRef, onDetailsToggle } = useDetailsScroll();
 const { t } = useI18n();
-
 </script>

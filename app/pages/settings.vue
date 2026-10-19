@@ -5,7 +5,7 @@
         <h2 class="text-base font-medium">{{ t("settings.theme.name") }}</h2>
         <div :class="['flex', isDesktop ? ' gap-2' : 'flex-col space-y-2']">
           <Radio
-            v-for="item in tm('settings.theme.options')"
+            v-for="item in tm<SettingOption[]>('settings.theme.options')"
             :key="item.id"
             v-model="settings.appearance.theme"
             :label="item.name"
@@ -21,7 +21,7 @@
         <h2 class="text-base font-medium">{{ t("settings.language.name") }}</h2>
         <div :class="['flex', isDesktop ? ' gap-2' : 'flex-col space-y-2']">
           <Radio
-            v-for="item in tm('settings.language.options')"
+            v-for="item in tm<LanguageOption[]>('settings.language.options')"
             :key="item.id"
             v-model="settings.appearance.language"
             :label="item.name"
@@ -37,7 +37,7 @@
         <h2 class="text-base font-medium">{{ t("settings.homePage.name") }}</h2>
         <div :class="['flex', isDesktop ? ' gap-2' : 'flex-col space-y-2']">
           <Radio
-            v-for="item in tm('settings.homePage.options')"
+            v-for="item in tm<SettingOption[]>('settings.homePage.options')"
             :key="item.id"
             v-model="settings.homepageBehavior"
             :label="item.name"
@@ -56,6 +56,18 @@ const { t, tm } = useI18nSafe();
 const { isDesktop } = useResponsive();
 
 const { settings, setTheme, setLanguage } = useSettingStore();
+
+/**
+ * i18n 设置项的条目形状（三种语言的语言文件保持一致）
+ * 语言项比其它设置项多一个 code（用作 setLocale 的入参）
+ */
+interface SettingOption {
+  id: number;
+  name: string;
+}
+interface LanguageOption extends SettingOption {
+  code: string;
+}
 
 // pages/settings.vue 或对应的路由文件
 useSeoMeta({
